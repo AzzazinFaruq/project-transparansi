@@ -50,26 +50,26 @@ func Login(c *gin.Context)  {
 	// Find the user
 	var user models.User
 	if err := models.DB.Where("email = ?", input.Email).First(&user).Error; err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
+		c.JSON(http.StatusOK, gin.H{"error": "Invalid username or password","authenticated":false})
 		return
 	}
 
 	// Check password
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
+		c.JSON(http.StatusOK, gin.H{"error": "Invalid username or password","authenticated":false})
 		return
 	}
 
 	// Generate token JWT menggunakan helper
 	tokenString, err := utils.GenerateJWT(uint(user.Id))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+		c.JSON(http.StatusOK, gin.H{"error": "Failed to generate token, Internal Server Error","authenticated":false})
 		return
 	}
 
 	// Set cookie dengan token JWT
 	c.SetCookie("Authorization", tokenString, 3600*24, "/", "localhost", false, true)
-	c.JSON(http.StatusOK, gin.H{"message": "Login successful"})
+	c.JSON(http.StatusOK, gin.H{"message": "Login successful","authenticated":true})
 
 }
 
@@ -94,6 +94,7 @@ func GetCurrentUser(c *gin.Context) {
 		"id":       user.Id,
 		"username": user.Username,
 		"email" : user.Email,
+		"status": true,
 	})
 }
 

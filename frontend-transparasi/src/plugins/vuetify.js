@@ -14,6 +14,13 @@ import { createVuetify } from 'vuetify'
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
   theme: {
-    defaultTheme: 'light',
+    defaultTheme: 'myCustomTheme',
+    themes: {
+      myCustomTheme: {
+        variables: {
+          'font-family': 'Helvetica, Arial, sans-serif', // Mengatur font ke Helvetica
+        },
+      },
+    },
   },
 })

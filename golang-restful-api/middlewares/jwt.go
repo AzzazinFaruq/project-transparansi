@@ -15,7 +15,7 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString, err := c.Cookie("Authorization")
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization cookie not found"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization cookie not found", "status":false})
 			c.Abort()
 			return
 		}

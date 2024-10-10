@@ -4,10 +4,8 @@
         color=""
         prominent
       >
-        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-
+        <v-app-bar-nav-icon  variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title>Transparasi Publik</v-toolbar-title>
-
         <v-spacer></v-spacer>
 
       </v-app-bar>
@@ -24,7 +22,6 @@
           v-for="(links, i) in items"
           :key="i"
           :value="links"
-          :prepend-icon="links.icon"
           :to="links.route"
           :title="links.text"
           ></v-list-item>
@@ -58,7 +55,4 @@
   }
 </script>
 <style scoped>
-.v-list-item--variant-text .v-list-item__overlay {
-    background: none;
-}
 </style>

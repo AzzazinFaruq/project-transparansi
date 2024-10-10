@@ -6,6 +6,7 @@
 
 // Plugins
 import { registerPlugins } from '@/plugins'
+import './styles/font.css'
 
 // Components
 import App from './App.vue'
@@ -18,9 +19,12 @@ axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 // Composables
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 
+const pinia = createPinia()
 const app = createApp(App)
 
 registerPlugins(app)
+app.use(pinia)
 
 app.mount('#app')
