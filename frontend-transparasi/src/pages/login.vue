@@ -65,36 +65,5 @@ export default{
 }
 </script>
 <style scooped>
-.header-login{
 
-  .title{
-
-  }
-  .caption{
-
-  }
-}
-.form-login{
-width: 500px;
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%,-50%);
-@media screen and (max-width:600px) {
-  width: 300px;
-}
-.form{
-  .label-form{
-  font-weight: bold;
-
-}
-}
-
-
-.button-login{
-  text-transform: none; /* Menonaktifkan auto capitalization */
-  font-size: 16px;
-  height: 50px;
-}
-}
 </style>

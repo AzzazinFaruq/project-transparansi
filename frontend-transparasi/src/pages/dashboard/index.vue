@@ -25,7 +25,7 @@ export default{
   },
   methods: {
     todayDate(){
-      const date = new Date();  
+      const date = new Date();
       const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
@@ -40,12 +40,5 @@ export default{
 </script>
 
 <style scooped>
-.header-page{
-  .title{
-    font-size: 24px;
-  }
-  .caption{
-    font-size: 16px;
-  }
-}
+
 </style>
