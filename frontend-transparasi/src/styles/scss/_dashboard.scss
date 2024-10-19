@@ -1,0 +1,36 @@
+
+.dashboard-card{
+    .title{
+        margin-top: 5px;
+        font-size: medium;
+    }
+    .dots{
+        color: black;
+        .icon{
+            font-size: 24px;
+        }
+    }
+    .icon-container{
+        background-color: #B1B1B1;
+        border-radius: 8px;
+        .icon{
+            font-size: 1.5rem;
+            color: white;
+            margin: 0px 5px 0px 5px;
+        }
+    }
+    .nominal{
+        font-size: large;
+        font-weight: bold;
+    }
+    .persentase{
+        font-size: 15px;
+    }
+    .caption{
+        font-size: 12px;
+    }
+}
+
+.activity-table{
+
+}

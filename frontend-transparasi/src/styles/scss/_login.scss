@@ -1,24 +1,28 @@
-.header-login{
-    
-  }
-  .form-login{
-  width: 500px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  @media screen and (max-width:600px) {
+
+.form-login{
+    width: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    @media screen and (max-width:600px) {
     width: 300px;
-  }
-  .form{
-    .label-form{
-    font-weight: bold;
-  
-  }
-  }
-  .button-login{
-    text-transform: none; /* Menonaktifkan auto capitalization */
-    font-size: 17.5px;
-    height: 50px !important;
-  }
-  }
+    }
+    .logo-login{
+        width: auto;
+        height: 60px;
+        margin-bottom: 20px;
+        margin-right: 20px;
+    }
+    .form{
+        .label-form{
+        font-weight: bold;
+        }
+    }
+    .button-login{
+        text-transform: none; /* Menonaktifkan auto capitalization */
+        font-size: 17.5px;
+        height: 50px !important;
+        background-color: #FF3636 !important;
+    }
+}

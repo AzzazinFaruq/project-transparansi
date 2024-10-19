@@ -12,6 +12,8 @@ import './styles/scss/main.scss'
 // Components
 import App from './App.vue'
 import axios from 'axios'
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 axios.defaults.baseURL = 'http://localhost:8000';
 axios.defaults.withCredentials = true;
@@ -22,10 +24,14 @@ axios.defaults.headers.common['Content-Type'] = 'application/json';
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
+//sweetAlert
+
 const pinia = createPinia()
 const app = createApp(App)
 
 registerPlugins(app)
 app.use(pinia)
+
+app.use(VueSweetalert2);
 
 app.mount('#app')

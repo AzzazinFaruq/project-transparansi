@@ -3,19 +3,29 @@
     color: white; /* Warna teks */
   
     .v-list-item {
-        margin: 12px;
+        margin: 8px 18px 0px 18px;
       &:hover {
-        background-color: #B1B1B1; /* Warna saat di-hover */
+        background-color: #ffacac; /* Warna saat di-hover */
         color: white;
         border-radius: 10px !important;
       }
       .v-list-item-title {
         font-weight: bold;
+        font-size: 16px;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow: hidden;
       }
       
     }
+    .v-list-item__prepend {
+      align-items: center;
+      align-self: center;
+      display: unset;
+      grid-area: prepend;
+  }
     .active-item {
-        background-color: #B1B1B1; /* Warna saat item dipilih */
+        background-color: #FF3636; /* Warna saat item dipilih */
         color: white;
         border-radius: 10px !important;
     

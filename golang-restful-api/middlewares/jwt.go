@@ -15,7 +15,7 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString, err := c.Cookie("Authorization")
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization cookie not found", "status":false})
+			c.JSON(http.StatusOK, gin.H{"error": "Authorization cookie not found", "status":false})
 			c.Abort()
 			return
 		}
@@ -23,7 +23,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		// token validator
 		token, err := utils.ValidateJWT(tokenString)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.JSON(http.StatusOK, gin.H{"error": "Invalid token", "status":false})
 			c.Abort()
 			return
 		}
@@ -31,14 +31,14 @@ func AuthMiddleware() gin.HandlerFunc {
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 			expiration := int64(claims["exp"].(float64))
 			if time.Now().Unix() > expiration {
-				c.JSON(http.StatusUnauthorized, gin.H{"error": "Token has expired"})
+				c.JSON(http.StatusOK, gin.H{"error": "Token has expired", "status":false})
 				c.Abort()
 				return
 			}
 			c.Set("user", claims["sub"])
 			c.Next()
 		} else {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.JSON(http.StatusOK, gin.H{"error": "Invalid token", "status":false})
 			c.Abort()
 		}
 	}
