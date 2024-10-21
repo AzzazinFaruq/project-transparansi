@@ -93,7 +93,10 @@ export default{
               text:"Welcome "+name,
               showConfirmButton :false
               });
-        } else {
+        }
+      })
+      .catch(err=>{
+        if (err.response.data.authenticated == false) {
           this.$swal({
           toast: "true",
           timer:2000,

@@ -8,10 +8,10 @@ export const authStore = defineStore('auth', {
       var stat = false;
         axios.get('/api/user')
         .then((res)=>{
-          console.log(res.data.status)
           stat = res.data.status;
-          var name = res.data.username;
-          if (stat ==  false) {
+        })
+        .catch(err=>{
+          if (err.response.data.status ==  false) {
             router.push("/login")
             swal({
               toast: "true",
@@ -22,9 +22,6 @@ export const authStore = defineStore('auth', {
               text:"Anda Belum Login",
               showConfirmButton :false
               });
-          }
-          else{
-
           }
         })
 
