@@ -24,6 +24,7 @@ func main() {
 	protected.Use(middleware.AuthMiddleware())
 	protected.GET("/user", controllers.GetCurrentUser)
 	protected.POST("/logout", controllers.Logout)
-	protected.GET("/index-Institusi", controllers.GetAllInstitusi)
+	protected.GET("/index-institusi", controllers.GetAllInstitusi)
+	protected.GET("/index-program", controllers.GetAllProgram)
 	router.Run(":8000")
 }
