@@ -26,5 +26,6 @@ func main() {
 	protected.POST("/logout", controllers.Logout)
 	protected.GET("/index-institusi", controllers.GetAllInstitusi)
 	protected.GET("/index-program", controllers.GetAllProgram)
+	protected.GET("/index-aduan", controllers.GetAllAduan)
 	router.Run(":8000")
 }
