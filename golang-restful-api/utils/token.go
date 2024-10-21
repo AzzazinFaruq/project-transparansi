@@ -1,22 +1,23 @@
-//this file is used to generate new JWT Token
+// this file is used to generate new JWT Token
 package utils
 
 import (
 	"fmt"
 	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 )
 
 var jwtSecret = []byte("secret")
 
-//generate token JWT 
+// generate token JWT
 func GenerateJWT(userID uint) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": userID,
 		"exp": time.Now().Add(time.Hour * 24).Unix(), // Token valid selama 1 hari
 	})
 
-// Sign token with secret key
+	// Sign token with secret key
 	tokenString, err := token.SignedString(jwtSecret)
 	if err != nil {
 		return "", err
@@ -40,4 +41,3 @@ func ValidateJWT(tokenString string) (*jwt.Token, error) {
 
 	return token, nil
 }
-
