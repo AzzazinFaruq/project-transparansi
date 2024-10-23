@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Program struct {
-	Id                   int64  `gorm:"primary_key"`
+	Id                   string `gorm:"type:char(36);primary_key;autoIncrement:false"`
 	NamaProgram          string `json:"nama_program"`
 	Deskripsi            string `json:"deskripsi"`
 	InstitusiId          string
@@ -28,10 +28,10 @@ type Program struct {
 }
 
 type KategoriPenggunaan struct {
-	Id       int64  `gorm:"primary_key"`
+	Id       string `gorm:"type:char(36);primary_key;autoIncrement:false"`
 	Kategori string `json:"kategori"`
 }
 type JenisAnggaran struct {
-	Id    int64  `gorm:"primary_key"`
+	Id    string `gorm:"type:char(36);primary_key;autoIncrement:false"`
 	Jenis string `json:"jenis"`
 }
