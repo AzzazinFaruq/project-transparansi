@@ -28,10 +28,12 @@
 <v-app-bar
   color=""
   prominent
-  elevation="1"
+  elevation="0"
 >
 <div class="d-lg-none">
-  <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+  <v-app-bar-nav-icon @click="drawer = !drawer">
+    <img src="../assets/favicon.png" alt="" style="width: 40px;margin-left: 25px;margin-top: 5px;">
+  </v-app-bar-nav-icon>
 </div>
   <v-spacer></v-spacer>
   <div class="mx-4">
@@ -53,28 +55,23 @@ import axios from 'axios';
       items: [
         {
           text: 'Dashboard',
-          icon: 'mdi-view-dashboard-outline',
+          icon: 'mdi-home',
           route:'/dashboard'
         },
         {
           text: 'Manajemen Pengguna',
-          icon: 'mdi-view-dashboard-outline',
+          icon: 'mdi-account',
           route:'/manajemen-pengguna'
         },
         {
-          text: 'Manajemen Dana',
-          icon: 'mdi-view-dashboard-outline',
-          route:'/manajemen-dana'
-        },
-        {
           text: 'Manajemen Program',
-          icon: 'mdi-view-dashboard-outline',
+          icon: 'mdi-list-box',
           route:'/manajemen-program'
         },
         {
-          text: 'Laporan',
-          icon: 'mdi-view-dashboard-outline',
-          route:'/laporan'
+          text: 'Keluhan',
+          icon: 'mdi-list-box',
+          route:'/keluhan'
         },
 
       ],
