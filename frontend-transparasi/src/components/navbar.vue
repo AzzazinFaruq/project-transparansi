@@ -46,39 +46,21 @@
 <script>
 import router from '@/router';
 import { authStore } from '@/store/auth';
+import { navitemstore } from '@/store/navitem';
 import axios from 'axios';
 
 
   export default {
     data: () => ({
       drawer: true,
-      items: [
-        {
-          text: 'Dashboard',
-          icon: 'mdi-home',
-          route:'/dashboard'
-        },
-        {
-          text: 'Manajemen Pengguna',
-          icon: 'mdi-account',
-          route:'/manajemen-pengguna'
-        },
-        {
-          text: 'Manajemen Program',
-          icon: 'mdi-list-box',
-          route:'/manajemen-program'
-        },
-        {
-          text: 'Keluhan',
-          icon: 'mdi-list-box',
-          route:'/keluhan'
-        },
-
-      ],
+      items: [],
     }),
     mounted(){
       const auth = authStore();
+      const item = navitemstore();
+      this.items = item.navitemlist;
       auth.check(router,this.$swal)
+      item.check();
     },
     methods:{
       handleLogout(){
