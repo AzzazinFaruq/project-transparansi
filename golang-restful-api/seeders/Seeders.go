@@ -15,6 +15,7 @@ func SeedersUser(db gorm.DB) {
 	password, _ := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.DefaultCost)
 
 	user = models.User{
+		Id: "2",
 		Username:  "Admin",
 		Email:     "test@user.com",
 		Password:  string(password),
