@@ -1,17 +1,18 @@
 .custom-drawer {
-    background-color: #6200ea; /* Warna latar belakang drawer */
-    color: white; /* Warna teks */
+    background-color: #BF3232 !important; /* Warna latar belakang drawer */
+    color: white !important; /* Warna teks */
   
     .v-list-item {
         margin: 8px 18px 0px 18px;
       &:hover {
-        background-color: #ffacac; /* Warna saat di-hover */
+        background-color: rgba(255, 255, 255, 0.422); /* Warna saat di-hover */
         color: white;
         border-radius: 10px !important;
       }
       .v-list-item-title {
         font-weight: bold;
         font-size: 16px;
+        margin-left: 10px;
         white-space: normal;
         word-wrap: break-word;
         overflow: hidden;
@@ -25,8 +26,8 @@
       grid-area: prepend;
   }
     .active-item {
-        background-color: #FF3636; /* Warna saat item dipilih */
-        color: white;
+        background-color: white; /* Warna saat item dipilih */
+        color: #BF3232;
         border-radius: 10px !important;
     
         .v-list-item-title {
