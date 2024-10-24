@@ -3,24 +3,24 @@ package models
 import "time"
 
 type Program struct {
-	Id                   string `gorm:"type:char(36);primary_key;autoIncrement:false"`
+	Id                   int64  `gorm:"primary_key"`
 	NamaProgram          string `json:"nama_program"`
 	Deskripsi            string `json:"deskripsi"`
-	InstitusiId          string
+	InstitusiId          int64
 	Institusi            Institusi
-	JenisAnggaranId      string
+	JenisAnggaranId      int64
 	JenisAnggaran        JenisAnggaran
 	JumlahAnggaran       string `json:"jumlah_anggaran"`
-	KategoriPenggunaanId string
+	KategoriPenggunaanId int64
 	KategoriPenggunaan   KategoriPenggunaan
 	FotoBefore           string
 	FotoProgress         string
 	FotoAfter            string
 	Dusun                string
-	DesaId               string
-	KecamatanId          string
-	KabupatenId          string
-	UserId               string
+	DesaId               int64
+	KecamatanId          int64
+	KabupatenId          int64
+	UserId               int64
 	User                 User
 	Status               string
 	CreatedAt            time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`                             // Menggunakan TIMESTAMP dengan default nilai CURRENT_TIMESTAMP
@@ -28,10 +28,10 @@ type Program struct {
 }
 
 type KategoriPenggunaan struct {
-	Id       string `gorm:"type:char(36);primary_key;autoIncrement:false"`
+	Id       int64  `gorm:"primary_key"`
 	Kategori string `json:"kategori"`
 }
 type JenisAnggaran struct {
-	Id    string `gorm:"type:char(36);primary_key;autoIncrement:false"`
+	Id    int64  `gorm:"primary_key"`
 	Jenis string `json:"jenis"`
 }

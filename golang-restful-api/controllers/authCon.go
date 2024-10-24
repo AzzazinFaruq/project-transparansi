@@ -77,7 +77,7 @@ func Login(c *gin.Context) {
 	}
 
 	// Generate token JWT menggunakan helper
-	tokenString, err := utils.GenerateJWT(user.Id)
+	tokenString, err := utils.GenerateJWT(uint(user.Id))
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Failed to generate token, Internal Server Error", "authenticated": false})
 		return
@@ -123,3 +123,4 @@ func Logout(c *gin.Context) {
 	// Kirim respon logout sukses
 	c.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
 }
+
