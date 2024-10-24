@@ -20,8 +20,8 @@ func Register(c *gin.Context) {
 		Password  string `json:"password" binding:"required,min=8"`
 		NoHp      string `json:"no_hp" binding:"required"`
 		Alamat    string `json:"alamat" binding:"required"`
-		RoleId    string `json:"role_id" binding:"required"`
-		JabatanId string `json:"jabatan_id" binding:"required"`
+		RoleId    int64  `json:"role_id" binding:"required"`
+		JabatanId int64  `json:"jabatan_id" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
