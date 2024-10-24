@@ -15,14 +15,13 @@ func SeedersUser(db gorm.DB) {
 	password, _ := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.DefaultCost)
 
 	user = models.User{
-		Id: "2",
 		Username:  "Admin",
 		Email:     "test@user.com",
 		Password:  string(password),
 		NoHp:      "08229485792",
 		Alamat:    "Malang",
-		RoleId:    "1",
-		JabatanId: "1",
+		RoleId:    "b8c50ce1-91e6-11ef-b785-200b745f7213",
+		JabatanId: "caa81aaf-91e6-11ef-b785-200b745f7213",
 	}
 
 	// Cek apakah sudah ada data di tabel aduans

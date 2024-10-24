@@ -5,6 +5,7 @@ export const navitemstore = defineStore('navItem', {
   state: () => {
     return{
       navitemlist:[],
+      stat:[],
       itemAdmin: [
         {
           text: 'Dashboard',
@@ -32,11 +33,12 @@ export const navitemstore = defineStore('navItem', {
   },
   actions:{
     check(){
-      var stat = 'user';
+
         axios.get('/api/user')
         .then((res)=>{
-          stat = res.data.role;
-          switch (stat) {
+          this.stat=res.data.data.Role.role;
+          console.log(this.stat)
+          switch (this.stat) {
             case 'user':
               break;
             case 'anggota':
@@ -50,18 +52,18 @@ export const navitemstore = defineStore('navItem', {
           }
         })
         .catch(err=>{
-          if (err.response.data.status ==  false) {
-            router.push("/login")
-            swal({
-              toast: "true",
-              timer:2000,
-              position:"top-end",
-              icon: "error",
-              title: "Error ",
-              text:"Error Memuat data Navigasi",
-              showConfirmButton :false
-              });
-          }
+          // if (err.response.data.status ==  false) {
+          //   router.push("/login")
+          //   swal({
+          //     toast: "true",
+          //     timer:2000,
+          //     position:"top-end",
+          //     icon: "error",
+          //     title: "Error ",
+          //     text:"Error Memuat data Navigasi",
+          //     showConfirmButton :false
+          //     });
+          // }
         })
 
 
