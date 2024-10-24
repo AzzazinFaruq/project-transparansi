@@ -20,8 +20,8 @@ func SeedersUser(db gorm.DB) {
 		Password:  string(password),
 		NoHp:      "08229485792",
 		Alamat:    "Malang",
-		RoleId:    "b8c50ce1-91e6-11ef-b785-200b745f7213",
-		JabatanId: "caa81aaf-91e6-11ef-b785-200b745f7213",
+		RoleId:    1,
+		JabatanId: 1,
 	}
 
 	// Cek apakah sudah ada data di tabel aduans

@@ -26,10 +26,7 @@ func main() {
 	// Route User
 	protected.GET("/user", controllers.GetCurrentUser)
 	protected.GET("/user/all", controllers.GetAllUser) 				// get all user
-	protected.GET("/user/admin-all/:1", controllers.GetUserByRole) 	// get Admin
-	protected.GET("/user/dprd-all/:2", controllers.GetUserByRole) 	// get DPRD
-	protected.GET("/user/user-all/:3", controllers.GetUserByRole) 	// get Masyarakat
-	protected.POST("/user/adduser", controllers.AddUser)			// add user (admin only)
+	protected.GET("/user/byrole/:id", controllers.GetUserByRole) 	// get user by role
 	protected.PUT("/user/edituser/:id", controllers.EditUser)		// edit user (admin only)
 	protected.DELETE("/user/deleteuser/:id", controllers.DeleteUser)// delete user (admin only)
 	protected.POST("/logout", controllers.Logout)
@@ -45,6 +42,6 @@ func main() {
 	// Route Aduan
 	protected.GET("/index-aduan", controllers.GetAllAduan)
 
-
+	protected.GET("/log", controllers.GetAllLog)
 	router.Run(":8000")
 }
