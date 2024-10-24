@@ -4,7 +4,7 @@ import "time"
 
 //Structur Table User
 type User struct {
-	Id        string `gorm:"type:char(36);primary_key;autoIncrement:false"`
+	Id        int64  `gorm:"primary_key"`
 	Username  string `json:"username"`
 	Email     string `json:"email"`
 	Password  string `json:"-"`
@@ -19,11 +19,11 @@ type User struct {
 }
 
 type Role struct {
-	Id   string `gorm:"type:char(36);primary_key;autoIncrement:false"`
+	Id   int64  `gorm:"primary_key"`
 	Role string `json:"role"`
 }
 
 type Jabatan struct {
-	Id      string `gorm:"type:char(36);primary_key;autoIncrement:false"`
+	Id      int64  `gorm:"primary_key"`
 	Jabatan string `json:"jabatan"`
 }

@@ -3,10 +3,10 @@ package models
 import "time"
 
 type Aduan struct {
-	Id        string `gorm:"type:char(36);primary_key;autoIncrement:false"`
-	ProgramId string
+	Id        int64 `gorm:"primary_key"`
+	ProgramId int64
 	Program   Program
-	UserId    string
+	UserId    int64
 	User      User
 	Keluhan   string    `json:"keluhan"`
 	Status    string    `json:"status"`

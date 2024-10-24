@@ -18,7 +18,7 @@ func ConnectDatabase() { //username:password(if exist)@tcp(database URL)/databas
 	}
 
 	database.AutoMigrate(models.Aduan{})
-	database.AutoMigrate(models.User{}, models.Role{}, models.Institusi{}, models.Program{}, models.JenisAnggaran{}, models.KategoriPenggunaan{})
+	database.AutoMigrate(models.User{}, models.Role{}, models.Institusi{}, models.Program{}, models.JenisAnggaran{}, models.KategoriPenggunaan{}, models.Log{})
 
 	DB = database
 
