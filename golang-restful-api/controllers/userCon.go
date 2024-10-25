@@ -23,7 +23,7 @@ func GetAllUser(c *gin.Context) {
 }
 
 func GetUserByRole(c *gin.Context) {
-	roleId := c.Param("roleId")
+	roleId := c.Param("id")
 
 	var users []models.User
 
@@ -31,14 +31,14 @@ func GetUserByRole(c *gin.Context) {
 		Preload("Role").
 		Preload("Jabatan").
 		Joins("JOIN roles ON users.role_id = roles.id").
-		Where("roles.id = ?", roleId).
+		Where("role_id = ?", roleId).
 		Find(&users).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data pengguna"})
 		return
 	}
 
 	if len(users) == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Tidak ada pengguna dengan peran tersebut"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Tidak ada user dengan role ini"})
 		return
 	}
 

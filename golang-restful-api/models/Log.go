@@ -4,7 +4,7 @@ import "time"
 
 type Log struct {
 	Id        int64     `gorm:"primary_key"`
-	UserId    int64
+	UserId    int64     `json:"user_id"`
 	User      User
 	Aktivitas string    `json:"aktivitas"`
 	Status    string    `json:"status"`
