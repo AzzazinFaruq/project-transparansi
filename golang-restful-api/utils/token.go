@@ -11,7 +11,7 @@ import (
 var jwtSecret = []byte("secret")
 
 // generate token JWT
-func GenerateJWT(userID string) (string, error) {
+func GenerateJWT(userID uint) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": userID,
 		"exp": time.Now().Add(time.Hour * 24).Unix(), // Token valid selama 1 hari
