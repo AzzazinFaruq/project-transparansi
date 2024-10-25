@@ -8,21 +8,21 @@ type Program struct {
 	Deskripsi            string `json:"deskripsi"`
 	InstitusiId          int64  `json:"institusi_id"`
 	Institusi            Institusi
-	JenisAnggaranId      int64
+	JenisAnggaranId      int64  `json:"jenis_anggaran_id"`
 	JenisAnggaran        JenisAnggaran
 	JumlahAnggaran       string `json:"jumlah_anggaran"`
-	KategoriPenggunaanId int64
+	KategoriPenggunaanId int64  `json:"kategori_penggunaan_id"`
 	KategoriPenggunaan   KategoriPenggunaan
-	FotoBefore           string
-	FotoProgress         string
-	FotoAfter            string
-	Dusun                string
-	DesaId               int64
-	KecamatanId          int64
-	KabupatenId          int64
-	UserId               int64
+	FotoBefore           string `json:"foto_before"`
+	FotoProgress         string `json:"foto_progress"`
+	FotoAfter            string `json:"foto_after"`
+	Dusun                string `json:"dusun"`
+	DesaId               int64  `json:"desa_id"`
+	KecamatanId          int64  `json:"kecamatan_id"`
+	KabupatenId          int64  `json:"kabupaten_id"`
+	UserId               int64  `json:"user_id"`
 	User                 User
-	Status               string
+	Status               string `json:"status"`
 	CreatedAt            time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`                             // Menggunakan TIMESTAMP dengan default nilai CURRENT_TIMESTAMP
 	UpdatedAt            time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"` // Menggunakan TIMESTAMP dengan auto-update
 }

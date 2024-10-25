@@ -31,6 +31,7 @@ func SeedersUser(db gorm.DB) {
 		Alamat:    "Malang",
 		RoleId:    "1",
 		JabatanId: "1",
+
 	}
 
 	// Cek apakah sudah ada data di tabel aduans
