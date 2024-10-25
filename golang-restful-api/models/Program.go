@@ -6,7 +6,7 @@ type Program struct {
 	Id                   int64  `gorm:"primary_key"`
 	NamaProgram          string `json:"nama_program"`
 	Deskripsi            string `json:"deskripsi"`
-	InstitusiId          int64
+	InstitusiId          int64  `json:"institusi_id"`
 	Institusi            Institusi
 	JenisAnggaranId      int64
 	JenisAnggaran        JenisAnggaran

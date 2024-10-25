@@ -45,6 +45,9 @@ func main() {
 	// Route Aduan
 	protected.GET("/index-aduan", controllers.GetAllAduan)
 
+	//Route Log
+	protected.GET("/index-log", controllers.GetAllLog)
+
 
 	router.Run(":8000")
 }

@@ -13,11 +13,6 @@ export const navitemstore = defineStore('navItem', {
           route:'/admin/dashboard'
         },
         {
-          text: 'Manajemen Pengguna',
-          icon: 'mdi-account',
-          route:'/admin/manajemen-pengguna'
-        },
-        {
           text: 'Manajemen Program',
           icon: 'mdi-list-box',
           route:'/admin/manajemen-program'
