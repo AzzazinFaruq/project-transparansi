@@ -19,7 +19,7 @@
 
     <div class="mt-8">
       <v-row>
-        <v-col md="12" lg="4">
+        <v-col col="12" lg="4">
           <v-card variant="outlined" style="border-color: #BF3232;">
             <div class="d-flex justify-space-between dashboard-card" style="color: black">
               <div class="title">
@@ -31,7 +31,7 @@
             </div>
           </v-card>
         </v-col>
-        <v-col md="12" lg="4">
+        <v-col md="6" lg="4">
           <v-card style="background-color: #387144">
             <div class="d-flex justify-space-between dashboard-card">
               <div class="title">
@@ -43,7 +43,7 @@
             </div>
           </v-card>
         </v-col>
-        <v-col md="12" lg="4">
+        <v-col md="6" lg="4">
           <v-card style="background-color: #BFAD32;">
             <div class="d-flex justify-space-between dashboard-card">
               <div class="title">
@@ -92,8 +92,8 @@
               <td>{{ item.created_at }}</td>
               <td>{{ item.username }}</td>
               <td>{{ item.aktivitas }}</td>
-              <td>{{ item.status }}</td>
-
+              <td>
+                <v-badge dot inline color="blue"></v-badge>{{ item.status }}</td>
               </tr>
               </tbody>
           </v-table>
