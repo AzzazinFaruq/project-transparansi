@@ -68,14 +68,14 @@
   >
     <div class="d-lg-none">
       <v-app-bar-nav-icon @click="drawer = !drawer">
-        <img src="../assets/favicon.png" alt="" style="width: 40px;margin-left: 25px;margin-top: 5px;">
+        
       </v-app-bar-nav-icon>
     </div>
     <v-spacer></v-spacer>
     <div class="mx-4">
       <v-icon class="mx-2" @click="handleLogout()">mdi-logout</v-icon>
       <v-icon class="mx-2">mdi-bell</v-icon>
-      <v-btn class="mx-2" rounded="lg" color="black" variant="outlined"><b>admin</b></v-btn>
+      <v-btn append-icon="mdi-chevron-down" class="mx-2" rounded="lg" color="black" variant="outlined" style="border-color: #BF3232;  text-transform: none; font-weight: 600;letter-spacing: 0.5px;">Admin</v-btn>
     </div>
   </v-app-bar>
 </template>
