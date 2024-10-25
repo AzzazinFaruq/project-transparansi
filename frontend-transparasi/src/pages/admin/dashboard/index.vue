@@ -84,6 +84,18 @@
                 </th>
               </tr>
             </thead>
+              <tbody>
+                <tr
+                v-for="item in log"
+                :key="item.name"
+                >
+              <td>{{ item.CreatedAt }}</td>
+              <td>{{ item.User.username }}</td>
+              <td>{{ item.aktivitas }}</td>
+              <td>{{ item.status }}</td>
+
+              </tr>
+              </tbody>
           </v-table>
         </div>
     </div>
@@ -92,11 +104,13 @@
 </template>
 <script>
 import cardDashboard from '@/components/card-dashboard.vue';
+import axios from 'axios';
 
 export default{
   components: { cardDashboard },
   data() {
     return {
+      log:[],
       options: {
         chart: {
           id: 'vuechart-example',
@@ -131,6 +145,9 @@ export default{
       today : this.todayDate()
     }
   },
+  mounted(){
+    this.historyLog();
+  },
   methods: {
     todayDate(){
       const date = new Date();
@@ -142,8 +159,16 @@ export default{
     const month = months[date.getMonth()]; // Mendapatkan nama bulan singkat
     const day = String(date.getDate()).padStart(2, '0'); // Mendapatkan tanggal dan memastikan dua digit
     return `${month}, ${day} ${year}`; // Format: "Oct, 10 2024"
+    },
+    historyLog(){
+      axios.get('/api/log')
+      .then(res=>{
+        console.log(res.data.data)
+        this.log = res.data.data
+      })
     }
   },
+  
 }
 </script>
 

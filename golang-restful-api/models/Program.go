@@ -8,7 +8,7 @@ type Program struct {
 	Deskripsi            string `json:"deskripsi"`
 	InstitusiId          int64  `json:"institusi_id"`
 	Institusi            Institusi
-	JenisAnggaranId      int64  `json:"jenis_anggaran_id"`
+	JenisAnggaranId      int64 `json:"jenis_anggaran_id"`
 	JenisAnggaran        JenisAnggaran
 	JumlahAnggaran       string `json:"jumlah_anggaran"`
 	KategoriPenggunaanId int64  `json:"kategori_penggunaan_id"`
@@ -22,7 +22,7 @@ type Program struct {
 	KabupatenId          int64  `json:"kabupaten_id"`
 	UserId               int64  `json:"user_id"`
 	User                 User
-	Status               string `json:"status"`
+	Status               string    `json:"status"`
 	CreatedAt            time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`                             // Menggunakan TIMESTAMP dengan default nilai CURRENT_TIMESTAMP
 	UpdatedAt            time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"` // Menggunakan TIMESTAMP dengan auto-update
 }

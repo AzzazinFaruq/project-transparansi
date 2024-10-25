@@ -11,7 +11,7 @@ import (
 func GetAllLog(c *gin.Context) {
 	var log []models.Log
 
-	if err := setup.DB.Find(&log).Error; err != nil {
+	if err := setup.DB.Preload("User").Find(&log).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
