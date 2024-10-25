@@ -40,7 +40,7 @@
 
         <!-- Child item: DPRD -->
         <v-list-item
-        to="/dprd"
+        to="/admin/manajemen-pengguna/dprd"
         title="Anggota DPRD"
         prepend-icon="mdi-account"
         active-class="active-item"
@@ -50,7 +50,7 @@
 
         <!-- Child item: User -->
         <v-list-item
-        to="/user"
+        to="/admin/manajemen-pengguna/user"
         title="Masyarakat"
         prepend-icon="mdi-account"
         active-class="active-item"

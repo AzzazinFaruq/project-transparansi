@@ -25,3 +25,13 @@ $breakpoint-mobile: 768px;
     height: 500px;
     }
 }
+
+.no-divider th,
+.no-divider td {
+  border-bottom: none !important; /* Menghilangkan garis bawah */
+}
+
+.no-divider thead tr,
+.no-divider tbody tr {
+  border-bottom: none !important; /* Menghilangkan garis pemisah */
+}
