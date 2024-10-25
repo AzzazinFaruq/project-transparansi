@@ -22,7 +22,7 @@ func GetAllLog(c *gin.Context) {
 	for i, log := range log {
 		formattedLog[i] = gin.H{
 			"id":         log.Id,
-			"user_id":    log.UserId,
+			"username":    log.User.Username,
 			"aktivitas":  log.Aktivitas,
 			"status":     log.Status,
 			"created_at": log.FormattedCreatedAt(),

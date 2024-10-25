@@ -67,7 +67,7 @@
         </div>
         <v-divider class="mx-2"></v-divider>
         <div class="">
-          <v-table>
+          <v-table class="no-divider">
             <thead>
               <tr class="">
                 <th class="text-left font-weight-bold">
@@ -89,8 +89,8 @@
                 v-for="item in log"
                 :key="item.name"
                 >
-              <td>{{ item.CreatedAt }}</td>
-              <td>{{ item.User.username }}</td>
+              <td>{{ item.created_at }}</td>
+              <td>{{ item.username }}</td>
               <td>{{ item.aktivitas }}</td>
               <td>{{ item.status }}</td>
 
@@ -161,14 +161,14 @@ export default{
     return `${month}, ${day} ${year}`; // Format: "Oct, 10 2024"
     },
     historyLog(){
-      axios.get('/api/log')
+      axios.get('/api/index-log')
       .then(res=>{
         console.log(res.data.data)
         this.log = res.data.data
       })
     }
   },
-  
+
 }
 </script>
 
