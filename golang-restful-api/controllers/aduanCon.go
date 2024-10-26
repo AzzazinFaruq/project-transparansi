@@ -4,7 +4,7 @@ import (
 	"Azzazin/backend/models"
 	"Azzazin/backend/setup"
 	"net/http"
-	
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -92,23 +92,23 @@ func CreateAduan(c *gin.Context) {
 }
 
 func CountAduan(c *gin.Context){
-	var aduan models.Program
 	var count_aduan int64
 	var count_aduan_disetujui int64
 	var count_aduan_menunggu int64
-	if err := setup.DB.First(&aduan).Count(&count_aduan).Error; err != nil {
+
+	if err := setup.DB.Model(&models.Aduan{}).Count(&count_aduan).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if err := setup.DB.First(&aduan).Where("status = Menunggu").Count(&count_aduan_menunggu).Error; err != nil {
+	if err := setup.DB.Model(&models.Aduan{}).Where("status = ?", "Menunggu").Count(&count_aduan_menunggu).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if err := setup.DB.First(&aduan).Where("status = Disetujui").Count(&count_aduan_disetujui).Error; err != nil {
+	if err := setup.DB.Model(&models.Aduan{}).Where("status = ?", "Disetujui").Count(&count_aduan_disetujui).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"total": count_aduan,"disetujui": count_aduan_disetujui, "menunggu":count_aduan_menunggu})
+	c.JSON(http.StatusOK, gin.H{"total": count_aduan, "disetujui": count_aduan_disetujui, "menunggu": count_aduan_menunggu})
 }
 
 func GetAduanPerBulan(c *gin.Context) {
@@ -160,4 +160,93 @@ func GetAduanPerTahun(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": aduan})
+}
+
+func DetailAduan(c *gin.Context) {
+	id := c.Param("id")
+
+	var aduan models.Aduan
+
+	if err := setup.DB.
+		Preload("Program").
+		Preload("User.Jabatan").
+		Preload("User.Role").
+		First(&aduan, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Aduan tidak ditemukan"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": aduan})
+}
+
+func AcceptAduan(c *gin.Context) {
+	id := c.Param("id")
+	var aduan models.Aduan
+
+	if err := setup.DB.First(&aduan, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Aduan tidak ditemukan"})
+		return
+	}
+
+	aduan.Status = "Disetujui"
+
+	tx := setup.DB.Begin()
+
+	if err := tx.Save(&aduan).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyetujui aduan"})
+		return
+	}
+
+	newLog := models.Log{
+		UserId:    aduan.UserId,
+		Aktivitas: "Penyetujuan Aduan",
+		Status:    "Disetujui",
+	}
+
+	if err := tx.Create(&newLog).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
+		return
+	}
+
+	tx.Commit()
+
+	c.JSON(http.StatusOK, gin.H{"message": "Aduan berhasil disetujui", "data": aduan})
+}
+
+func RejectAduan(c *gin.Context) {
+	id := c.Param("id")
+	var aduan models.Aduan
+
+	if err := setup.DB.Find(&aduan, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Aduan tidak ditemukan"})
+		return
+	}
+	
+	aduan.Status = "Ditolak"
+
+	tx := setup.DB.Begin()
+
+	if err := tx.Save(&aduan).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menolak aduan"})
+		return
+	}
+
+	newLog := models.Log{
+		UserId:    aduan.UserId,
+		Aktivitas: "Penolakan Aduan",
+		Status:    "Ditolak",
+	}
+
+	if err := tx.Create(&newLog).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
+		return
+	}
+
+	tx.Commit()
+
+	c.JSON(http.StatusOK, gin.H{"message": "Aduan berhasil ditolak", "data": aduan})
 }
