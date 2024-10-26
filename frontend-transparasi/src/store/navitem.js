@@ -19,7 +19,7 @@ export const navitemstore = defineStore('navItem', {
         },
         {
           text: 'Keluhan',
-          icon: 'mdi-list-box',
+          icon: 'mdi-email',
           route:'/admin/keluhan'
         },
 

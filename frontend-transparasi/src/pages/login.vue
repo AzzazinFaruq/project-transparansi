@@ -7,7 +7,7 @@
         <div class="d-flex align-center">
           <img src="../assets/logo-dprd-1.png" alt="" class="logo-login">
           <div class="">
-          <h1 class="title ">Halo</h1>
+          <h1 class="title ">Selamat Datang!</h1>
           <p class="caption mb-5">Lanjutkan untuk masuk!</p>
         </div>
 
@@ -27,7 +27,7 @@
     v-model="input.password">
   </v-text-field>
   <v-checkbox v-model="input.remember_me" label="Keep me logged in"></v-checkbox>
-  <v-btn class="d-flex justify-space-between button-login" width="100%" append-icon="mdi-arrow-right" color="grey" type="submit">
+  <v-btn class="d-flex justify-space-between button-login" width="100%" append-icon="mdi-chevron-right" color="grey" type="submit">
     Masuk
   </v-btn>
   </v-form>

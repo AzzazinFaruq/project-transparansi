@@ -26,7 +26,7 @@
                 <h4>Total Keluhan</h4>
               </div>
               <div class="data-angka">
-                <h1>100</h1>
+                <h1>{{ counterAduan.total }}</h1>
               </div>
             </div>
           </v-card>
@@ -38,7 +38,7 @@
                 <h4>Keluhan Sudah Ditanggapi</h4>
               </div>
               <div class="data-angka">
-                <h1>100</h1>
+                <h1>{{ counterAduan.disetujui }}</h1>
               </div>
             </div>
           </v-card>
@@ -50,7 +50,7 @@
                 <h4>Keluhan Belum Ditanggapi</h4>
               </div>
               <div class="data-angka">
-                <h1>100</h1>
+                <h1>{{ counterAduan.menunggu }}</h1>
               </div>
             </div>
           </v-card>
@@ -93,7 +93,10 @@
               <td>{{ item.username }}</td>
               <td>{{ item.aktivitas }}</td>
               <td>
-                <v-badge dot inline color="blue"></v-badge>{{ item.status }}</td>
+                <v-badge v-if="item.status=='Menunggu'" dot inline color="#FFE642"></v-badge>
+                <v-badge v-else-if="item.status=='Disetujui'" dot inline color="#4A975B"></v-badge>
+                <v-badge v-else-if="item.status=='Ditolak'" dot inline color="#FF4242"></v-badge>{{ item.status }}
+              </td>
               </tr>
               </tbody>
           </v-table>
@@ -111,6 +114,7 @@ export default{
   data() {
     return {
       log:[],
+      counterAduan:[],
       options: {
         chart: {
           id: 'vuechart-example',
@@ -147,6 +151,7 @@ export default{
   },
   mounted(){
     this.historyLog();
+    this.aduanCount();
   },
   methods: {
     todayDate(){
@@ -165,6 +170,22 @@ export default{
       .then(res=>{
         console.log(res.data.data)
         this.log = res.data.data
+      })
+    },
+    aduanCount(){
+      axios.get("/api/count-aduan")
+      .then(res=>{
+        console.log(res.data)
+        this.counterAduan = res.data
+        if (this.counterAduan.menunggu < 10) {
+          this.counterAduan.menunggu = "0"+res.data.menunggu
+        }
+        if (this.counterAduan.disetujui < 10) {
+          this.counterAduan.disetujui = "0"+res.data.disetujui
+        }
+        if (this.counterAduan.total < 10) {
+          this.counterAduan.total = "0"+res.data.total
+        }
       })
     }
   },
