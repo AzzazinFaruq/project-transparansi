@@ -92,18 +92,19 @@ func CreateAduan(c *gin.Context) {
 }
 
 func CountAduan(c *gin.Context){
+	var aduan models.Program
 	var count_aduan int64
 	var count_aduan_disetujui int64
 	var count_aduan_menunggu int64
-	if err := setup.DB.Model(&models.Aduan{}).Count(&count_aduan).Error; err != nil {
+	if err := setup.DB.First(&aduan).Count(&count_aduan).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if err := setup.DB.Model(&models.Aduan{}).Where("status = ?", "Menunggu").Count(&count_aduan_menunggu).Error; err != nil {
+	if err := setup.DB.First(&aduan).Where("status = Menunggu").Count(&count_aduan_menunggu).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if err := setup.DB.Model(&models.Aduan{}).Where("status = ?", "Disetujui").Count(&count_aduan_disetujui).Error; err != nil {
+	if err := setup.DB.First(&aduan).Where("status = Disetujui").Count(&count_aduan_disetujui).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

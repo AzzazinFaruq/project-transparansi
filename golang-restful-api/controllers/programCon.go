@@ -96,7 +96,7 @@ func PengajuanProgram(c *gin.Context) {
 }
 
 func AcceptProgram(c *gin.Context) {
-	id := c.Param("Id")
+	id := c.Param("id")
 	var program models.Program
 
 	if err := setup.DB.First(&program, id).Error; err != nil {
@@ -132,14 +132,14 @@ func AcceptProgram(c *gin.Context) {
 }
 
 func RejectProgram(c *gin.Context) {
-	id := c.Param("Id")
+	id := c.Param("id")
 	var program models.Program
 
-	if err := setup.DB.First(&program, id).Error; err != nil {
+	if err := setup.DB.Find(&program, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
 		return
 	}
-
+	
 	program.Status = "Ditolak"
 
 	tx := setup.DB.Begin()
