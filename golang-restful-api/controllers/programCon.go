@@ -21,14 +21,28 @@ func GetAllProgram(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	formattedPrograms := make([]gin.H, len(program))
 
-	c.JSON(http.StatusOK, gin.H{"data": program})
+	for i, program := range program {
+		formattedPrograms[i] = gin.H{
+			"id": program.Id,
+			"nama_program": program.NamaProgram,
+			"institusi": program.Institusi,
+			"jenis_anggaran": program.JenisAnggaran,
+			"kategori_penggunaan": program.KategoriPenggunaan,
+			"user": program.User,
+			"status": program.Status,
+			"created_at": program.CreatedAt.Format("02-01-2006"),
+			"updated_at": program.UpdatedAt.Format("02-01-2006"),
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": formattedPrograms})
 }
 
 func PengajuanProgram(c *gin.Context) {
 	var input models.Program
 
-	// Mengikat input JSON ke struktur Program
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Data input tidak valid"})
 		return
@@ -79,4 +93,142 @@ func PengajuanProgram(c *gin.Context) {
 		First(&newProgram, newProgram.Id)
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Program berhasil diajukan", "data": newProgram})
+}
+
+func AcceptProgram(c *gin.Context) {
+	id := c.Param("Id")
+	var program models.Program
+
+	if err := setup.DB.First(&program, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
+		return
+	}
+
+	program.Status = "Disetujui"
+
+	tx := setup.DB.Begin()
+
+	if err := tx.Save(&program).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyetujui program"})
+		return
+	}
+
+	newLog := models.Log{
+		UserId:    program.UserId,
+		Aktivitas: "Penyetujuan Program",
+		Status:    "Disetujui",
+	}
+
+	if err := tx.Create(&newLog).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
+		return
+	}
+
+	tx.Commit()
+
+	c.JSON(http.StatusOK, gin.H{"message": "Program berhasil disetujui", "data": program})
+}
+
+func RejectProgram(c *gin.Context) {
+	id := c.Param("Id")
+	var program models.Program
+
+	if err := setup.DB.First(&program, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
+		return
+	}
+
+	program.Status = "Ditolak"
+
+	tx := setup.DB.Begin()
+
+	if err := tx.Save(&program).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menolak program"})
+		return
+	}
+
+	newLog := models.Log{
+		UserId:    program.UserId,
+		Aktivitas: "Penolakan Program",
+		Status:    "Ditolak",
+	}
+
+	if err := tx.Create(&newLog).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
+		return
+	}
+
+	tx.Commit()
+
+	c.JSON(http.StatusOK, gin.H{"message": "Program berhasil ditolak", "data": program})
+}
+
+func GetProgramByStatus(status string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var programs []models.Program
+
+		if err := setup.DB.
+			Preload("Institusi").
+			Preload("KategoriPenggunaan").
+			Preload("JenisAnggaran").
+			Preload("User.Jabatan").
+			Preload("User.Role").
+			Where("status = ?", status).
+			Find(&programs).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		formattedPrograms := make([]gin.H, len(programs))
+
+		for i, program := range programs {
+			formattedPrograms[i] = gin.H{
+				"id": program.Id,
+				"nama_program": program.NamaProgram,
+				"institusi": program.Institusi,
+				"jenis_anggaran": program.JenisAnggaran,
+				"kategori_penggunaan": program.KategoriPenggunaan,
+				"user": program.User,
+				"status": program.Status,
+				"created_at": program.CreatedAt.Format("02-01-2006"),
+				"updated_at": program.UpdatedAt.Format("02-01-2006"),
+			}
+		}
+
+		c.JSON(http.StatusOK, gin.H{"data": formattedPrograms})
+	}
+}
+
+func GetProgramByStatusMenunggu(c *gin.Context) {
+	GetProgramByStatus("Menunggu")(c)
+}
+
+func GetProgramByStatusDisetujui(c *gin.Context) {
+	GetProgramByStatus("Disetujui")(c)
+}
+
+func GetProgramByStatusDitolak(c *gin.Context) {
+	GetProgramByStatus("Ditolak")(c)
+}
+
+func DetailProgram(c *gin.Context) {
+	id := c.Param("id")
+
+	var program models.Program
+
+	if err := setup.DB.
+		Preload("Institusi").
+		Preload("KategoriPenggunaan").
+		Preload("JenisAnggaran").
+		Preload("User.Jabatan").
+		Preload("User.Role").
+		First(&program, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": program})
 }
