@@ -100,11 +100,11 @@ func CountAduan(c *gin.Context){
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if err := setup.DB.First(&aduan).Where("status = Menunggu").Count(&count_aduan_menunggu).Error; err != nil {
+	if err := setup.DB.First(&aduan).Where("status = ?","Menunggu").Count(&count_aduan_menunggu).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if err := setup.DB.First(&aduan).Where("status = Disetujui").Count(&count_aduan_disetujui).Error; err != nil {
+	if err := setup.DB.First(&aduan).Where("status = ?","Disetujui").Count(&count_aduan_disetujui).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

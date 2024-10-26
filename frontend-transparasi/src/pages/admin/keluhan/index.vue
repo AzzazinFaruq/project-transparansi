@@ -1,7 +1,7 @@
 <template>
   <div class="mt-3">
         <div class="d-flex align-center justify-space-between mr-3 mt-2">
-          <v-card-title><b>Daftar Program</b></v-card-title>
+          <v-card-title><b>Daftar Keluhan</b></v-card-title>
           <a href="">
             <v-icon class="">mdi-dots-vertical</v-icon>
           </a>
@@ -18,10 +18,13 @@
                   Nama
                 </th>
                 <th class=" font-weight-bold">
+                  Keluhan
+                </th>
+                <th class=" font-weight-bold">
                   Status
                 </th>
                 <th class=" font-weight-bold">
-                  Action
+                  Aksi
                 </th>
               </tr>
             </thead>
@@ -30,17 +33,12 @@
                 v-for="(item, index) in paginatedItems" :key="index"
                 >
               <td>{{ item.created_at}}</td>
-              <td>{{ item.nama_program }}</td>
+              <td>{{ item.program.nama_program }}</td>
+              <td>{{ item.keluhan }}</td>
               <td>{{ item.status }}</td>
               <td>
-                <v-btn class="rounded-lg" style="background-color:#3884B0;color: white;text-transform: none;" @click="detail(item.id)">
+                <v-btn class="rounded-lg" style="background-color:#3884B0;color: white;text-transform: none;" >
                   Detail
-                </v-btn>
-                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #387144;color: white;" @click="disetujui(item.id)" icon>
-                  <v-icon>mdi-check-bold</v-icon>
-                </v-btn>
-                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" @click="ditolak(item.id)" icon>
-                  <b style="font-weight: 900;">X</b>
                 </v-btn>
               </td>
 
@@ -68,10 +66,16 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      detailProgram:[],
+      headers: [
+        { title: "Nama", value: "username" },
+        { title: "Jabatan", value: "" },
+        { title: "Email", value: "email" },
+        { title: "No Hp", value: "no_hp" },
+        { title: "Action", value: "actions" },
+      ],
       Userlist:[],
       currentPage: 1,
-      itemsPerPage: 5,
+      itemsPerPage: 2,
     }
   },
   mounted() {
@@ -79,7 +83,7 @@ export default {
   },
   methods: {
     user(){
-      axios.get("/api/index-program")
+      axios.get("/api/index-aduan")
       .then(res=>{
         console.log(res.data.data)
         this.Userlist=res.data.data
@@ -88,29 +92,6 @@ export default {
     changePage(page) {
       this.currentPage = page;
     },
-    detail(id){
-
-      axios.get(`/api/program/${id}`)
-      .then(res=>{
-        this.detailProgram = res.data.data
-      })
-    },
-    disetujui(id){
-      console.log(id)
-      axios.get(`/api/program/accept/${id}`)
-      .then(res=>{
-        console.log(res.data.data)
-        this.user();
-      })
-    },
-    ditolak(id){
-      console.log(id)
-      axios.get(`/api/program/reject/${id}`)
-      .then(res=>{
-        console.log(res.data.data)
-        this.user();
-      })
-    }
   },
   computed: {
     totalPages() {
