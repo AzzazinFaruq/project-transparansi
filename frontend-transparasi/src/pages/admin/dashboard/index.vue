@@ -86,7 +86,7 @@
             </thead>
               <tbody>
                 <tr
-                v-for="item in log"
+                v-for="item in log.slice(0,5)"
                 :key="item.name"
                 >
               <td>{{ item.created_at }}</td>
@@ -133,8 +133,8 @@ export default{
         },
         yaxis: {
           min: 0, // Nilai minimum di sumbu Y
-          max: 150, // Nilai maksimum di sumbu Y
-          tickAmount: 3, // Membagi skala dengan kelipatan 50
+          max: 200, // Nilai maksimum di sumbu Y
+          tickAmount: 4, // Membagi skala dengan kelipatan 50
           labels: {
             formatter: function (value) {
               return value.toFixed(0); // Tampilkan angka bulat
