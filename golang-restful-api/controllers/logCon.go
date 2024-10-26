@@ -11,7 +11,10 @@ import (
 func GetAllLog(c *gin.Context) {
 	var log []models.Log
 
-	if err := setup.DB.Preload("User").Find(&log).Error; err != nil {
+	if err := setup.DB.
+		Preload("User").
+		Order("created_at DESC").
+		Find(&log).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -22,7 +25,7 @@ func GetAllLog(c *gin.Context) {
 	for i, log := range log {
 		formattedLog[i] = gin.H{
 			"id":         log.Id,
-			"username":    log.User.Username,
+			"username":   log.User.Username,
 			"aktivitas":  log.Aktivitas,
 			"status":     log.Status,
 			"created_at": log.FormattedCreatedAt(),

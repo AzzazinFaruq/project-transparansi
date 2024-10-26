@@ -36,18 +36,23 @@ func main() {
 
 	// Route Program
 	protected.GET("/index-program", controllers.GetAllProgram)
+	protected.GET("/program/:id", controllers.DetailProgram)
 	protected.POST("/program/pengajuan", controllers.PengajuanProgram)
-	// protected.GET("/program/detail/:id", controllers.DetailProgram)
+	protected.PUT("/program/:id/accept", controllers.AcceptProgram)
+	protected.PUT("/program/:id/reject", controllers.RejectProgram)
+	protected.GET("/program/menunggu", controllers.GetProgramByStatusMenunggu)
+	protected.GET("/program/disetujui", controllers.GetProgramByStatusDisetujui)
+	protected.GET("/program/ditolak", controllers.GetProgramByStatusDitolak)
 
 	// Route Aduan
 	protected.GET("/index-aduan", controllers.GetAllAduan)
 	protected.POST("/create-aduan", controllers.CreateAduan)
-
+	protected.GET("/count-aduan", controllers.CountAduan)
+	protected.GET("/aduan/perbulan", controllers.GetAduanPerBulan)
+	protected.GET("/aduan/pertahun", controllers.GetAduanPerTahun)
+	
 	//Route Log
 	protected.GET("/index-log", controllers.GetAllLog)
-
-	//Count Aduan
-	protected.GET("/count-aduan", controllers.CountAduan)
 
 	router.Run(":8000")
 }
