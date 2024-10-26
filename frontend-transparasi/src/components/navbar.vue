@@ -68,7 +68,7 @@
   >
     <div class="d-lg-none">
       <v-app-bar-nav-icon @click="drawer = !drawer">
-        
+
       </v-app-bar-nav-icon>
     </div>
     <v-spacer></v-spacer>

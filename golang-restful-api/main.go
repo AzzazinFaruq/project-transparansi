@@ -41,10 +41,13 @@ func main() {
 
 	// Route Aduan
 	protected.GET("/index-aduan", controllers.GetAllAduan)
+	protected.POST("/create-aduan", controllers.CreateAduan)
 
 	//Route Log
-
 	protected.GET("/index-log", controllers.GetAllLog)
+
+	//Count Aduan
+	protected.GET("/count-aduan", controllers.CountAduan)
 
 	router.Run(":8000")
 }

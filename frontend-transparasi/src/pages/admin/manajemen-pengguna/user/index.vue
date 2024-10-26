@@ -1,7 +1,7 @@
 <template>
   <div class="mt-3">
         <div class="d-flex align-center justify-space-between mr-3 mt-2">
-          <v-card-title><b>Aktifitas Terbaru</b></v-card-title>
+          <v-card-title><b>Daftar Pengguna</b></v-card-title>
           <a href="">
             <v-icon class="">mdi-dots-vertical</v-icon>
           </a>
