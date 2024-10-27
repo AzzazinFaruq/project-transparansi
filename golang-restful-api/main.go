@@ -25,13 +25,15 @@ func main() {
 
 	// Route User
 	protected.GET("/user", controllers.GetCurrentUser)
-	protected.GET("/user/all", controllers.GetAllUser)   
+	protected.GET("/user/all", controllers.GetAllUser)
 	protected.GET("/user/:id", controllers.GetDetailUser)            // get all user
 	protected.GET("/user/byrole/:id", controllers.GetUserByRole)     // get user by role
 	protected.PUT("/user/edituser/:id", controllers.EditUser)        // edit user (admin only)
 	protected.DELETE("/user/deleteuser/:id", controllers.DeleteUser) // delete user (admin only)
 	protected.POST("/logout", controllers.Logout)
 	protected.POST("/create-dprd", controllers.CreateDPRD)
+	protected.GET("/index-jabatan", controllers.GetAllJabatan)
+	protected.GET("/index-role", controllers.GetAllRole)
 
 	// Route Institusi
 	protected.GET("/index-institusi", controllers.GetAllInstitusi)
@@ -42,9 +44,9 @@ func main() {
 	protected.POST("/program/pengajuan", controllers.PengajuanProgram)
 	protected.GET("/program/accept/:id", controllers.AcceptProgram)
 	protected.GET("/program/reject/:id", controllers.RejectProgram)
-	protected.GET("/program/menunggu", controllers.GetProgramByStatusMenunggu)
-	protected.GET("/program/disetujui", controllers.GetProgramByStatusDisetujui)
-	protected.GET("/program/ditolak", controllers.GetProgramByStatusDitolak)
+	protected.GET("/program/status/:status", controllers.GetProgramByStatus)
+	protected.GET("/index-jenis-anggaran", controllers.GetAllJenisAnggaran)
+	protected.GET("/index-kategori-penggunaan", controllers.GetAllKategoriPenggunaan)
 
 	// Route Aduan
 	protected.GET("/index-aduan", controllers.GetAllAduan)

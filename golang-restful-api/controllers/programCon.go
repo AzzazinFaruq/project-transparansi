@@ -25,15 +25,15 @@ func GetAllProgram(c *gin.Context) {
 
 	for i, program := range program {
 		formattedPrograms[i] = gin.H{
-			"id": program.Id,
-			"nama_program": program.NamaProgram,
-			"institusi": program.Institusi,
-			"jenis_anggaran": program.JenisAnggaran,
+			"id":                  program.Id,
+			"nama_program":        program.NamaProgram,
+			"institusi":           program.Institusi,
+			"jenis_anggaran":      program.JenisAnggaran,
 			"kategori_penggunaan": program.KategoriPenggunaan,
-			"user": program.User,
-			"status": program.Status,
-			"created_at": program.CreatedAt.Format("02-01-2006"),
-			"updated_at": program.UpdatedAt.Format("02-01-2006"),
+			"user":                program.User,
+			"status":              program.Status,
+			"created_at":          program.CreatedAt.Format("02-01-2006"),
+			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
 		}
 	}
 
@@ -61,7 +61,7 @@ func PengajuanProgram(c *gin.Context) {
 		KecamatanId:          input.KecamatanId,
 		KabupatenId:          input.KabupatenId,
 		UserId:               input.UserId,
-		Status:               "Menunggu", 
+		Status:               "Menunggu",
 	}
 
 	tx := setup.DB.Begin()
@@ -139,7 +139,7 @@ func RejectProgram(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
 		return
 	}
-	
+
 	program.Status = "Ditolak"
 
 	tx := setup.DB.Begin()
@@ -167,51 +167,55 @@ func RejectProgram(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Program berhasil ditolak", "data": program})
 }
 
-func GetProgramByStatus(status string) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var programs []models.Program
+func GetProgramByStatus(c *gin.Context) {
+	status := c.Param("status")
 
-		if err := setup.DB.
-			Preload("Institusi").
-			Preload("KategoriPenggunaan").
-			Preload("JenisAnggaran").
-			Preload("User.Jabatan").
-			Preload("User.Role").
-			Where("status = ?", status).
-			Find(&programs).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		formattedPrograms := make([]gin.H, len(programs))
-
-		for i, program := range programs {
-			formattedPrograms[i] = gin.H{
-				"id": program.Id,
-				"nama_program": program.NamaProgram,
-				"institusi": program.Institusi,
-				"jenis_anggaran": program.JenisAnggaran,
-				"kategori_penggunaan": program.KategoriPenggunaan,
-				"user": program.User,
-				"status": program.Status,
-				"created_at": program.CreatedAt.Format("02-01-2006"),
-				"updated_at": program.UpdatedAt.Format("02-01-2006"),
-			}
-		}
-
-		c.JSON(http.StatusOK, gin.H{"data": formattedPrograms})
+	validStatus := map[string]bool{
+		"Menunggu":  true,
+		"Disetujui": true,
+		"Ditolak":   true,
 	}
-}
 
-func GetProgramByStatusMenunggu(c *gin.Context) {
-	GetProgramByStatus("Menunggu")(c)
-}
+	if !validStatus[status] {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Status tidak valid"})
+		return
+	}
 
-func GetProgramByStatusDisetujui(c *gin.Context) {
-	GetProgramByStatus("Disetujui")(c)
-}
+	var programs []models.Program
 
-func GetProgramByStatusDitolak(c *gin.Context) {
-	GetProgramByStatus("Ditolak")(c)
+	if err := setup.DB.
+		Preload("Institusi").
+		Preload("KategoriPenggunaan").
+		Preload("JenisAnggaran").
+		Preload("User.Jabatan").
+		Preload("User.Role").
+		Where("status = ?", status).
+		Find(&programs).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	formattedPrograms := make([]gin.H, len(programs))
+
+	for i, program := range programs {
+		formattedPrograms[i] = gin.H{
+			"id":                  program.Id,
+			"nama_program":        program.NamaProgram,
+			"institusi":           program.Institusi,
+			"jenis_anggaran":      program.JenisAnggaran,
+			"jumlah_anggaran":     program.JumlahAnggaran,
+			"kategori_penggunaan": program.KategoriPenggunaan,
+			"user":                program.User,
+			"status":              program.Status,
+			"created_at":          program.CreatedAt.Format("02-01-2006"),
+			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": status,
+		"data":   formattedPrograms,
+	})
 }
 
 func DetailProgram(c *gin.Context) {
