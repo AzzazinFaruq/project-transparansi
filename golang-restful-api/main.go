@@ -31,6 +31,7 @@ func main() {
 	protected.PUT("/user/edituser/:id", controllers.EditUser)        // edit user (admin only)
 	protected.DELETE("/user/deleteuser/:id", controllers.DeleteUser) // delete user (admin only)
 	protected.POST("/logout", controllers.Logout)
+	protected.POST("/create-dprd", controllers.CreateDPRD)
 
 	// Route Institusi
 	protected.GET("/index-institusi", controllers.GetAllInstitusi)
@@ -52,11 +53,15 @@ func main() {
 	protected.GET("/aduan/perbulan", controllers.GetAduanPerBulan)
 	protected.GET("/aduan/pertahun", controllers.GetAduanPerTahun)
 	protected.GET("/aduan/:id", controllers.DetailAduan)
+	// protected.GET("/aduan/:status", controllers.GetAduanByStatus)
 	protected.GET("/aduan/accept/:id", controllers.AcceptAduan)
 	protected.GET("/aduan/reject/:id", controllers.RejectAduan)
 
 	//Route Log
 	protected.GET("/index-log", controllers.GetAllLog)
+
+	// Route File Upload
+	router.Static("/uploads", "./uploads")
 
 	router.Run(":8000")
 }
