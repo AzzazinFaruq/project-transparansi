@@ -37,7 +37,7 @@
               <td>{{ item.keluhan }}</td>
               <td>{{ item.status }}</td>
               <td>
-                <v-btn class="rounded-lg" style="background-color:#3884B0;color: white;text-transform: none;" >
+                <v-btn class="rounded-lg" style="background-color:#3884B0;color: white;text-transform: none;" @click="detailAduan(item.id)">
                   Detail
                 </v-btn>
               </td>
@@ -47,10 +47,21 @@
           </v-table>
         </div>
         <v-divider class="my-3"></v-divider>
-        <div class="d-flex justify-end">
+        <div class="d-flex justify-end align-center">
+          <p class="mr-3">Data/Halaman :</p>
+          <div class="mr-5" style="width: 100px;height: 40px;">
+            <v-select
+            density="compact"
+            class="custom-outline"
+            v-model="itemsPerPage"
+            :items="[5, 10, 25, 50, 100]"
+            variant="outlined"
+          ></v-select>
+          </div>
+          <p class="mr-5">{{ currentPage }} dari {{ totalPages }} Halaman</p>
           <v-pagination
             class="custom-pagination"
-            :total-visible="3"
+            :total-visible="0"
             border
             v-model="currentPage"
             :length="totalPages"
@@ -75,7 +86,7 @@ export default {
       ],
       Userlist:[],
       currentPage: 1,
-      itemsPerPage: 2,
+      itemsPerPage: 10,
     }
   },
   mounted() {
@@ -92,6 +103,13 @@ export default {
     changePage(page) {
       this.currentPage = page;
     },
+    detailAduan(id){
+      axios.get(`/api/aduan/${id}`)
+
+      .then(res=>{
+        console.log(res.data.data)
+      })
+    }
   },
   computed: {
     totalPages() {

@@ -37,14 +37,11 @@
               <td>{{ item.email }}</td>
               <td>{{ item.no_hp }}</td>
               <td>
-                <v-btn class="rounded-lg" style="background-color:#3884B0;color: white;text-transform: none;" >
-                  Detail
-                </v-btn>
-                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #387144;color: white;" icon>
-                  <v-icon>mdi-check-bold</v-icon>
+                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #3884B0;color: white;" icon @click="edit(item.Id)">
+                  <v-icon>mdi-pencil</v-icon>
                 </v-btn>
                 <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" icon>
-                  <b style="font-weight: 900;">X</b>
+                  <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </td>
 
@@ -53,10 +50,21 @@
           </v-table>
         </div>
         <v-divider class="my-3"></v-divider>
-        <div class="d-flex justify-end">
+        <div class="d-flex justify-end align-center">
+          <p class="mr-3">Data/Halaman :</p>
+          <div class="mr-5" style="width: 100px;height: 40px;">
+            <v-select
+            class="custom-outline"
+            density="compact"
+            v-model="itemsPerPage"
+            :items="[5, 10, 25, 50, 100]"
+            variant="outlined"
+          ></v-select>
+          </div>
+          <p class="mr-5">{{ currentPage }} dari {{ totalPages }} Halaman</p>
           <v-pagination
             class="custom-pagination"
-            :total-visible="3"
+            :total-visible="0"
             border
             v-model="currentPage"
             :length="totalPages"
@@ -81,7 +89,7 @@ export default {
       ],
       Userlist:[],
       currentPage: 1,
-      itemsPerPage: 2,
+      itemsPerPage: 10,
     }
   },
   mounted() {
@@ -98,6 +106,9 @@ export default {
     changePage(page) {
       this.currentPage = page;
     },
+    edit(id){
+      this.$router.push(`/admin/manajemen-pengguna/dprd/${id}`)
+    }
   },
   computed: {
     totalPages() {
