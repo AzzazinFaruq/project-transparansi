@@ -137,6 +137,7 @@ func CreateDPRD(c *gin.Context) {
 	alamat := c.PostForm("alamat")
 	jabatanId := c.PostForm("jabatan_id")
 
+	// Validasi input: memastikan semua field terisi
 	if username == "" || email == "" || password == "" || noHp == "" || alamat == "" || jabatanId == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Semua field harus diisi"})
 		return
