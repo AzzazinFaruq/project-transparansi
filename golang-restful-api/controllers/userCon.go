@@ -22,6 +22,21 @@ func GetAllUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": user})
 }
 
+func GetDetailUser(c *gin.Context) {
+	id := c.Param("id")
+	var user models.User
+
+	if err := setup.DB.
+		Preload("Role").
+		Preload("Jabatan").
+		First(&user, id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": user})
+}
+
 func GetUserByRole(c *gin.Context) {
 	roleId := c.Param("id")
 

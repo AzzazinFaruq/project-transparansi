@@ -1,7 +1,7 @@
 <template>
   <div class="mt-3">
         <div class="d-flex align-center justify-space-between mr-3 mt-2">
-          <v-card-title><b>Daftar Program</b></v-card-title>
+          <v-card-title><b>Daftar Keluhan</b></v-card-title>
           <a href="">
             <v-icon class="">mdi-dots-vertical</v-icon>
           </a>
@@ -12,10 +12,16 @@
             <thead style="">
               <tr class="">
                 <th class=" font-weight-bold">
+                  Tanggal
+                </th>
+                <th class=" font-weight-bold">
                   Nama
                 </th>
                 <th class=" font-weight-bold">
-                  Email
+                  Keluhan
+                </th>
+                <th class=" font-weight-bold">
+                  Status
                 </th>
                 <th class=" font-weight-bold">
                   Aksi
@@ -26,14 +32,13 @@
                 <tr
                 v-for="(item, index) in paginatedItems" :key="index"
                 >
-              <td>{{ item.username}}</td>
-              <td>{{ item.email }}</td>
+              <td>{{ item.created_at}}</td>
+              <td>{{ item.program.nama_program }}</td>
+              <td>{{ item.keluhan }}</td>
+              <td>{{ item.status }}</td>
               <td>
-                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #3884B0;color: white;" icon>
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" icon>
-                  <v-icon>mdi-delete</v-icon>
+                <v-btn class="rounded-lg" style="background-color:#3884B0;color: white;text-transform: none;" @click="detailAduan(item.id)">
+                  Detail
                 </v-btn>
               </td>
 
@@ -89,7 +94,7 @@ export default {
   },
   methods: {
     user(){
-      axios.get("/api/user/byrole/3")
+      axios.get("/api/index-aduan")
       .then(res=>{
         console.log(res.data.data)
         this.Userlist=res.data.data
@@ -98,6 +103,13 @@ export default {
     changePage(page) {
       this.currentPage = page;
     },
+    detailAduan(id){
+      axios.get(`/api/aduan/${id}`)
+
+      .then(res=>{
+        console.log(res.data.data)
+      })
+    }
   },
   computed: {
     totalPages() {

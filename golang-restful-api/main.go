@@ -25,7 +25,8 @@ func main() {
 
 	// Route User
 	protected.GET("/user", controllers.GetCurrentUser)
-	protected.GET("/user/all", controllers.GetAllUser)               // get all user
+	protected.GET("/user/all", controllers.GetAllUser)   
+	protected.GET("/user/:id", controllers.GetDetailUser)            // get all user
 	protected.GET("/user/byrole/:id", controllers.GetUserByRole)     // get user by role
 	protected.PUT("/user/edituser/:id", controllers.EditUser)        // edit user (admin only)
 	protected.DELETE("/user/deleteuser/:id", controllers.DeleteUser) // delete user (admin only)

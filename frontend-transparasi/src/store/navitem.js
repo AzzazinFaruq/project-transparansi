@@ -18,7 +18,7 @@ export const navitemstore = defineStore('navItem', {
           route:'/admin/manajemen-program'
         },
         {
-          text: 'Keluhan',
+          text: 'Manajemen Keluhan',
           icon: 'mdi-email',
           route:'/admin/keluhan'
         },

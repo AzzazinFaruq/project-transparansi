@@ -49,10 +49,21 @@
           </v-table>
         </div>
         <v-divider class="my-3"></v-divider>
-        <div class="d-flex justify-end">
+        <div class="d-flex justify-end align-center">
+          <p class="mr-3">Data/Halaman :</p>
+          <div class="mr-5" style="width: 100px;height: 40px;">
+            <v-select
+            density="compact"
+            class="custom-outline"
+            v-model="itemsPerPage"
+            :items="[5, 10, 25, 50, 100]"
+            variant="outlined"
+          ></v-select>
+          </div>
+          <p class="mr-5">{{ currentPage }} dari {{ totalPages }} Halaman</p>
           <v-pagination
             class="custom-pagination"
-            :total-visible="3"
+            :total-visible="0"
             border
             v-model="currentPage"
             :length="totalPages"
@@ -71,7 +82,7 @@ export default {
       detailProgram:[],
       Userlist:[],
       currentPage: 1,
-      itemsPerPage: 5,
+      itemsPerPage: 10,
     }
   },
   mounted() {
@@ -79,11 +90,23 @@ export default {
   },
   methods: {
     user(){
-      axios.get("/api/program/menunggu")
-      .then(res=>{
-        console.log(res.data.data)
-        this.Userlist=res.data.data
-      })
+      axios.all([
+        axios.get("/api/program/disetujui"),
+        axios.get("/api/program/ditolak")
+      ])
+      .then(axios.spread((resDisetujui, resDitolak) => {
+        // Mengambil data dari kedua respons
+        const dataDisetujui = resDisetujui.data.data; // Asumsi struktur data
+        const dataDitolak = resDitolak.data.data; // Asumsi struktur data
+
+        // Menggabungkan kedua array ke dalam Userlist
+        this.Userlist = [...dataDisetujui, ...dataDitolak];
+
+        console.log(this.Userlist); // Tampilkan hasil gabungan
+      }))
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
     },
     changePage(page) {
       this.currentPage = page;
