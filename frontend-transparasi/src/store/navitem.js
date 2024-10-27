@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import router from '@/router'
+
 
 export const navitemstore = defineStore('navItem', {
   state: () => {
     return{
       navitemlist:[],
       stat:[],
+      reload:false,
       itemAdmin: [
         {
           text: 'Dashboard',
@@ -24,9 +27,30 @@ export const navitemstore = defineStore('navItem', {
         },
 
       ],
+      itemAnggota: [
+        {
+          text: 'Dashboard',
+          icon: 'mdi-home',
+          route:'/admin/dashboard'
+        },
+        {
+          text: 'Program',
+          icon: 'mdi-list-box',
+          route:'/admin/manajemen-program'
+        },
+        {
+          text: 'Keluhan',
+          icon: 'mdi-email',
+          route:'/admin/keluhan'
+        },
+
+      ],
     }
   },
   actions:{
+    reset() {
+      this.navitemlist=[]
+    },
     check(){
 
         axios.get('/api/user')
@@ -37,13 +61,17 @@ export const navitemstore = defineStore('navItem', {
             case 'user':
               break;
             case 'anggota':
+              this.navitemlist = this.itemAnggota;
               break;
             case 'admin':
               this.navitemlist = this.itemAdmin;
               break;
-
             default:
               break;
+          }
+          if (this.reload == true) {
+            this.reload=false
+            window.location.reload();
           }
         })
         .catch(err=>{

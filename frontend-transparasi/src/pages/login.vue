@@ -40,6 +40,7 @@
 import axios from 'axios';
 import { authStore } from '@/store/auth';
 import router from '@/router';
+import { navitemstore } from '@/store/navitem';
 
 const auth = authStore();
 
@@ -82,8 +83,28 @@ export default{
       axios.post('/login', this.input)
       .then((res)=>{
         var name=res.data.username;
+        var role =res.data.role;
+        const item = navitemstore();
+        item.reload=true;
         if (res.data.authenticated == true) {
-          this.$router.push("/dashboard")
+            switch (role) {
+              case "admin":
+                this.$router.push("/admin/dashboard")
+
+                break;
+
+              case "anggota":
+              this.$router.push("/dprd/dashboard")
+
+                break;
+
+              case "user":
+              this.$router.push("/user/dashboard")
+
+                break;
+              default:
+                break;
+            }
           this.$swal({
               toast: "true",
               timer:4000,
@@ -93,6 +114,7 @@ export default{
               text:"Welcome "+name,
               showConfirmButton :false
               });
+
         }
       })
       .catch(err=>{

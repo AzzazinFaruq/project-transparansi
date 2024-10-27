@@ -87,10 +87,14 @@ import { navitemstore } from '@/store/navitem';
 import axios from 'axios';
 
 export default {
+  setup() {
+
+  },
   data: () => ({
     drawer: true,
     items: [],
-    auth:''
+    auth:'',
+
 
   }),
   mounted(){
@@ -100,6 +104,7 @@ export default {
     auth.check(router, this.$swal);
     item.check();
     this.handleManajemenUser();
+
   },
   methods:{
     handleManajemenUser(){
@@ -112,6 +117,8 @@ export default {
         .then((res)=>{
           const auth = authStore();
           auth.check(router, this.$swal);
+          const item = navitemstore();
+          item.reset();
         })
       }catch(error){
         console.error("Error during logout:", error);

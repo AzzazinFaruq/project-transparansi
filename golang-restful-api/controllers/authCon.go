@@ -57,7 +57,7 @@ func Login(c *gin.Context) {
 
 	// Find the user
 	var user models.User
-	if err := setup.DB.Where("email = ?", input.Email).First(&user).Error; err != nil {
+	if err := setup.DB.Preload("Role").Where("email = ?", input.Email).First(&user).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password", "authenticated": false})
 		return
 	}
@@ -89,6 +89,7 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message":       "Login successful",
 		"username":      user.Username,
+		"role": user.Role.Role,
 		"authenticated": true,
 	})
 }
