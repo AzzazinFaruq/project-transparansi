@@ -41,26 +41,7 @@ func GetAllProgram(c *gin.Context) {
 }
 
 func PengajuanProgram(c *gin.Context) {
-	// Ambil user_id dari JWT token yang sedang login
-	userId, exists := c.Get("user_id")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "User tidak terautentikasi"})
-		return
-	}
-
-	var input struct {
-		NamaProgram          string `json:"nama_program" binding:"required"`
-		Deskripsi            string `json:"deskripsi" binding:"required"`
-		InstitusiId          int64  `json:"institusi_id" binding:"required"`
-		JenisAnggaranId      int64  `json:"jenis_anggaran_id" binding:"required"`
-		JumlahAnggaran       string `json:"jumlah_anggaran" binding:"required"`
-		KategoriPenggunaanId int64  `json:"kategori_penggunaan_id" binding:"required"`
-		FotoBefore           string `json:"foto_before"`
-		Dusun                string `json:"dusun" binding:"required"`
-		DesaId               int64  `json:"desa_id" binding:"required"`
-		KecamatanId          int64  `json:"kecamatan_id" binding:"required"`
-		KabupatenId          int64  `json:"kabupaten_id" binding:"required"`
-	}
+	var input models.Program
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Data input tidak valid"})
@@ -79,7 +60,7 @@ func PengajuanProgram(c *gin.Context) {
 		DesaId:               input.DesaId,
 		KecamatanId:          input.KecamatanId,
 		KabupatenId:          input.KabupatenId,
-		UserId:               userId.(int64), 
+		UserId:               input.UserId,
 		Status:               "Menunggu",
 	}
 
@@ -92,7 +73,7 @@ func PengajuanProgram(c *gin.Context) {
 	}
 
 	newLog := models.Log{
-		UserId:    userId.(int64),
+		UserId:    input.UserId,
 		Aktivitas: "Pengajuan Program",
 		Status:    "Menunggu",
 	}
