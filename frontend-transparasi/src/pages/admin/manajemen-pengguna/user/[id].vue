@@ -11,16 +11,13 @@
           <label class="label-form">Alamat</label>
           <v-text-field v-model="user.alamat" variant="outlined"></v-text-field>
           <label class="label-form">No. HP</label>
-          <label class="label-form">Jabatan</label>
-          <v-text-field v-model="user.jabatan_id" variant="outlined"></v-text-field>
-          <label class="label-form">No. HP</label>
           <v-text-field v-model="user.no_hp" variant="outlined"></v-text-field>
 
           <div class="d-flex justify-start">
-            <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;">
+            <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="update()">
               Simpan
             </v-btn>
-            <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;">
+            <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="back()">
               Tutup
             </v-btn>
           </div>
@@ -34,11 +31,11 @@ import axios from 'axios';
 export default{
   data() {
     return {
+      jabatanItem:[],
       user:{
         username:'',
         email:'',
         password:'',
-        jabatan_id:0,
         no_hp:''
 
       }
@@ -54,7 +51,17 @@ export default{
         console.log(res.data.data)
         this.user = res.data.data
       })
-    }
+    },
+    update(){
+    axios.put(`/api/user/edituser/${this.$route.params.id}`, this.user)
+    .then(res=>{
+      this.$router.go(-1)
+    })
   },
+  back(){
+    this.$router.go(-1)
+  }
+  },
+
 }
 </script>

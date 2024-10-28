@@ -2,9 +2,14 @@
   <div class="mt-3">
         <div class="d-flex align-center justify-space-between mr-3 mt-2">
           <v-card-title><b>Daftar Program</b></v-card-title>
-          <a href="">
-            <v-icon class="">mdi-dots-vertical</v-icon>
-          </a>
+          <v-btn
+          style="text-transform: none;"
+          color="#BF3232"
+          prepend-icon="mdi-plus"
+          href="/admin/manajemen-pengguna/dprd/tambah"
+          >
+          Anggota
+          </v-btn>
         </div>
         <v-divider class="mx-2"></v-divider>
         <div class="">
@@ -40,7 +45,7 @@
                 <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #3884B0;color: white;" icon @click="edit(item.Id)">
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
-                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" icon>
+                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" icon @click="deleteUser(item.Id)">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </td>
@@ -108,6 +113,12 @@ export default {
     },
     edit(id){
       this.$router.push(`/admin/manajemen-pengguna/dprd/${id}`)
+    },
+    deleteUser(id){
+      axios.delete(`api/user/deleteuser/${id}`)
+      .then(res=>{
+        this.$router.go(0)
+      })
     }
   },
   computed: {

@@ -23,16 +23,18 @@
               </tr>
             </thead>
               <tbody>
+                
                 <tr
                 v-for="(item, index) in paginatedItems" :key="index"
                 >
+
               <td>{{ item.username}}</td>
               <td>{{ item.email }}</td>
               <td>
-                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #3884B0;color: white;" icon>
+                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #3884B0;color: white;" icon @click="edit(item.Id)">
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
-                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" icon>
+                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" icon @click="deleteUser(item.Id)">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </td>
@@ -88,16 +90,28 @@ export default {
     this.user();
   },
   methods: {
+    deleteUser(id){
+      axios.delete(`api/user/deleteuser/${id}`)
+      .then(res=>{
+        this.$router.go(0)
+      })
+    },
     user(){
       axios.get("/api/user/byrole/3")
       .then(res=>{
         console.log(res.data.data)
         this.Userlist=res.data.data
       })
+      .catch(err=>{
+
+      })
     },
     changePage(page) {
       this.currentPage = page;
     },
+    edit(id){
+      this.$router.push(`/admin/manajemen-pengguna/user/${id}`)
+    }
   },
   computed: {
     totalPages() {
