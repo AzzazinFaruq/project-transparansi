@@ -165,7 +165,7 @@ func CreateDPRD(c *gin.Context) {
 		Password:   string(hashedPassword),
 		NoHp:       input.NoHp,
 		Alamat:     input.Alamat,
-		RoleId:     dprdRole.Id,
+		RoleId:     2,
 		JabatanId:  input.JabatanId,
 	}
 
