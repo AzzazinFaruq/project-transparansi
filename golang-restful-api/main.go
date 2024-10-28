@@ -59,6 +59,11 @@ func main() {
 	protected.PUT("/aduan/tanggapi/:id", controllers.TanggapiAduan)
 	protected.GET("/aduan/status/:status", controllers.GetAduanByStatus)
 
+	// Route Daerah
+	protected.GET("/index-kabupaten", controllers.GetAllKabupaten)
+	protected.GET("/index-kecamatan", controllers.GetAllKecamatan)
+	protected.GET("/index-desa", controllers.GetAllDesa)
+
 	//Route Log
 	protected.GET("/index-log", controllers.GetAllLog)
 

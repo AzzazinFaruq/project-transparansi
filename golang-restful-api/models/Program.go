@@ -13,15 +13,18 @@ type Program struct {
 	JumlahAnggaran       string `json:"jumlah_anggaran"`
 	KategoriPenggunaanId int64  `json:"kategori_penggunaan_id"`
 	KategoriPenggunaan   KategoriPenggunaan
-	FotoBefore           string `json:"foto_before"`
-	FotoProgress         string `json:"foto_progress"`
-	FotoAfter            string `json:"foto_after"`
-	Dusun                string `json:"dusun"`
-	DesaId               int64  `json:"desa_id"`
-	KecamatanId          int64 `json:"kecamatan_id"`
-	KabupatenId          int64 `json:"kabupaten_id"`
-	UserId               int64 `json:"user_id"`
-	User                 User
+	FotoBefore           string    `json:"foto_before"`
+	FotoProgress         string    `json:"foto_progress"`
+	FotoAfter            string    `json:"foto_after"`
+	Dusun                string    `json:"dusun"`
+	DesaId               int64     `json:"desa_id"`
+	Desa                 Desa      `gorm:"foreignKey:DesaId;references:Id"`
+	KecamatanId          int64     `json:"kecamatan_id"`
+	Kecamatan            Kecamatan `gorm:"foreignKey:KecamatanId;references:Id"`
+	KabupatenId          int64     `json:"kabupaten_id"`
+	Kabupaten            Kabupaten `gorm:"foreignKey:KabupatenId;references:Id"`
+	UserId               int64     `json:"user_id"`
+	User                 User      `gorm:"foreignKey:UserId;references:Id"`
 	Status               string    `json:"status"`
 	CreatedAt            time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`                             // Menggunakan TIMESTAMP dengan default nilai CURRENT_TIMESTAMP
 	UpdatedAt            time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"` // Menggunakan TIMESTAMP dengan auto-update

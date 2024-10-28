@@ -55,7 +55,6 @@ func PengajuanProgram(c *gin.Context) {
 		JenisAnggaranId:      input.JenisAnggaranId,
 		JumlahAnggaran:       input.JumlahAnggaran,
 		KategoriPenggunaanId: input.KategoriPenggunaanId,
-		FotoBefore:           input.FotoBefore,
 		Dusun:                input.Dusun,
 		DesaId:               input.DesaId,
 		KecamatanId:          input.KecamatanId,
@@ -167,7 +166,7 @@ func AcceptProgram(c *gin.Context) {
 		return
 	}
 
-	program.Status = "Disetujui"
+	program.Status = "Dalam Proses"
 
 	tx := setup.DB.Begin()
 
@@ -180,7 +179,7 @@ func AcceptProgram(c *gin.Context) {
 	newLog := models.Log{
 		UserId:    program.UserId,
 		Aktivitas: "Penyetujuan Program",
-		Status:    "Disetujui",
+		Status:    "Dalam Proses",
 	}
 
 	if err := tx.Create(&newLog).Error; err != nil {
