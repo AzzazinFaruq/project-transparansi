@@ -31,17 +31,17 @@ export const navitemstore = defineStore('navItem', {
         {
           text: 'Dashboard',
           icon: 'mdi-home',
-          route:'/admin/dashboard'
+          route:'/dprd/dashboard'
         },
         {
           text: 'Program',
           icon: 'mdi-list-box',
-          route:'/admin/manajemen-program'
+          route:'/dprd/manajemen-program'
         },
         {
           text: 'Keluhan',
           icon: 'mdi-email',
-          route:'/admin/keluhan'
+          route:'/dprd/keluhan'
         },
 
       ],

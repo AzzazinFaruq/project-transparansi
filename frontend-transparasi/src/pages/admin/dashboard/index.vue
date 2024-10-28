@@ -38,7 +38,7 @@
                 <h4>Keluhan Sudah Ditanggapi</h4>
               </div>
               <div class="data-angka">
-                <h1>{{ counterAduan.disetujui }}</h1>
+                <h1>{{ counterAduan.sudah_ditanggapi }}</h1>
               </div>
             </div>
           </v-card>
@@ -50,7 +50,7 @@
                 <h4>Keluhan Belum Ditanggapi</h4>
               </div>
               <div class="data-angka">
-                <h1>{{ counterAduan.menunggu }}</h1>
+                <h1>{{ counterAduan.belum_ditanggapi }}</h1>
               </div>
             </div>
           </v-card>
@@ -177,13 +177,13 @@ export default{
       .then(res=>{
         console.log(res.data)
         this.counterAduan = res.data
-        if (this.counterAduan.menunggu < 10) {
-          this.counterAduan.menunggu = "0"+res.data.menunggu
+        if (this.counterAduan.belum_ditanggapi < 9) {
+          this.counterAduan.belum_ditanggapi = "0"+res.data.belum_ditanggapi
         }
-        if (this.counterAduan.disetujui < 10) {
-          this.counterAduan.disetujui = "0"+res.data.disetujui
+        if (this.counterAduan.sudah_ditanggapi < 9) {
+          this.counterAduan.sudah_ditanggapi = "0"+res.data.sudah_ditanggapi
         }
-        if (this.counterAduan.total < 10) {
+        if (this.counterAduan.total < 9) {
           this.counterAduan.total = "0"+res.data.total
         }
       })

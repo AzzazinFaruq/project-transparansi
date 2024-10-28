@@ -2,9 +2,38 @@
   <div class="mt-3">
         <div class="d-flex align-center justify-space-between mr-3 mt-2">
           <v-card-title><b>Daftar Program</b></v-card-title>
-          <a href="">
-            <v-icon class="">mdi-dots-vertical</v-icon>
-          </a>
+          <div class="d-flex align-center">
+           <p class="mr-3">Filter : </p>
+           <div style="">
+            <v-btn
+                class="mr-3"
+                variant="text"
+                style="border-color: #BF3232;  text-transform: none; letter-spacing: 0.5px; margin-top: 3px; padding: 0;"
+                append-icon="mdi-chevron-down"
+              >
+                {{ filter }}
+                <v-menu activator="parent">
+                  <v-list>
+                    <v-list-item
+                    v-for="item in filterList"
+                    :key="item"
+                    @click="selectedFilter(item);"
+                    >
+                      <v-list-item-title >{{ item }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-btn>
+              <v-btn
+                style="text-transform: none;"
+                color="#BF3232"
+                prepend-icon="mdi-plus"
+                href="/dprd/manajemen-program/tambah"
+                >
+                Anggota
+              </v-btn>
+          </div>
+          </div>
         </div>
         <v-divider class="mx-2"></v-divider>
         <div class="">
@@ -31,16 +60,15 @@
                 >
               <td>{{ item.created_at}}</td>
               <td>{{ item.nama_program }}</td>
-              <td>{{ item.status }}</td>
+              <td>
+                <v-badge v-if="item.status=='Menunggu'" dot inline color="#FFE642"></v-badge>
+                <v-badge v-else-if="item.status=='Disetujui'" dot inline color="#4A975B"></v-badge>
+                <v-badge v-else-if="item.status=='Ditolak'" dot inline color="#FF4242"></v-badge>
+                {{ item.status }}
+              </td>
               <td>
                 <v-btn class="rounded-lg" style="background-color:#3884B0;color: white;text-transform: none;" @click="detail(item.id)">
-                  Detail
-                </v-btn>
-                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #387144;color: white;" @click="disetujui(item.id)" icon>
-                  <v-icon>mdi-check-bold</v-icon>
-                </v-btn>
-                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" @click="ditolak(item.id)" icon>
-                  <b style="font-weight: 900;">X</b>
+                  Lihat Detail
                 </v-btn>
               </td>
 
@@ -79,6 +107,8 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      filter:'All Status',
+      filterList:["All Status","Menunggu","Disetujui","Ditolak"],
       detailProgram:[],
       Userlist:[],
       currentPage: 1,
@@ -89,34 +119,31 @@ export default {
     this.user();
   },
   methods: {
+    selectedFilter(item){
+      this.filter = item
+      if (this.filter == "All Status") {
+        axios.get("/api/index-program")
+        .then(res=>{
+          this.Userlist = res.data.data
+        })
+      } else {
+        axios.get(`/api/program/status/${item}`)
+        .then(res=>{
+          this.Userlist = res.data.data
+        })
+      }
+    },
     user(){
-      axios.all([
-        axios.get("/api/program/disetujui"),
-        axios.get("/api/program/ditolak")
-      ])
-      .then(axios.spread((resDisetujui, resDitolak) => {
-        // Mengambil data dari kedua respons
-        const dataDisetujui = resDisetujui.data.data; // Asumsi struktur data
-        const dataDitolak = resDitolak.data.data; // Asumsi struktur data
-
-        // Menggabungkan kedua array ke dalam Userlist
-        this.Userlist = [...dataDisetujui, ...dataDitolak];
-
-        console.log(this.Userlist); // Tampilkan hasil gabungan
-      }))
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+     axios.get("/api/index-program")
+     .then(res=>{
+      this.Userlist = res.data.data
+     })
     },
     changePage(page) {
       this.currentPage = page;
     },
     detail(id){
-
-      axios.get(`/api/program/${id}`)
-      .then(res=>{
-        this.detailProgram = res.data.data
-      })
+      this.$router.push(`/dprd/manajemen-program/${id}`)
     },
     disetujui(id){
       console.log(id)

@@ -7,6 +7,8 @@
           <v-text-field v-model="user.username" variant="outlined"></v-text-field>
           <label class="label-form">Email</label>
           <v-text-field v-model="user.email" variant="outlined"></v-text-field>
+          <label class="label-form">Password</label>
+          <v-text-field type="password" v-model="user.password" variant="outlined"></v-text-field>
           <h2 class="my-5">Detail Profile</h2>
           <label class="label-form">Alamat</label>
           <v-text-field v-model="user.alamat" variant="outlined"></v-text-field>
@@ -22,7 +24,7 @@
           <v-text-field v-model="user.no_hp" variant="outlined"></v-text-field>
 
           <div class="d-flex justify-start">
-            <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="update()">
+            <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="create()">
               Simpan
             </v-btn>
             <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="back()">
@@ -44,14 +46,14 @@ export default{
         username:'',
         email:'',
         password:'',
-        jabatan_id:0,
+        alamat:'',
+        jabatan_id:1,
         no_hp:''
 
       }
     }
   },
   mounted() {
-    this.getUser();
     this.getJabatan();
   },
   methods: {
@@ -63,15 +65,8 @@ export default{
         console.log(this.jabatanItem)
       })
     },
-    getUser(){
-      axios.get(`/api/user/${this.$route.params.id}`)
-      .then(res=>{
-        console.log(res.data.data)
-        this.user = res.data.data
-      })
-    },
-    update(){
-    axios.put(`/api/user/edituser/${this.$route.params.id}`, this.user)
+    create(){
+    axios.post("/api/create-dprd",this.user)
     .then(res=>{
       this.$router.go(-1)
     })
