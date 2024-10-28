@@ -35,7 +35,11 @@
               <td>{{ item.created_at}}</td>
               <td>{{ item.program.nama_program }}</td>
               <td>{{ item.keluhan }}</td>
-              <td>{{ item.status }}</td>
+              <td>
+                <v-badge v-if="item.status=='Belum Ditanggapi'" dot inline color="#FFE642"></v-badge>
+                <v-badge v-else-if="item.status=='Sudah Ditanggapi'" dot inline color="#4A975B"></v-badge>
+                {{ item.status }}
+              </td>
               <td>
                 <v-btn class="rounded-lg" style="background-color:#3884B0;color: white;text-transform: none;" @click="detailAduan(item.id)">
                   Detail
@@ -104,11 +108,7 @@ export default {
       this.currentPage = page;
     },
     detailAduan(id){
-      axios.get(`/api/aduan/${id}`)
-
-      .then(res=>{
-        console.log(res.data.data)
-      })
+      this.$router.push(`/dprd/keluhan/${id}`)
     }
   },
   computed: {

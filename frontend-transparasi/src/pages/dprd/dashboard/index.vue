@@ -7,8 +7,8 @@
             <div class="d-flex justify-space-between">
               <h3 class="pr-5">Statistik Keluhan</h3>
               <div class="d-flex">
-                <v-btn class="mr-1" color="#BF3232">Bulanan</v-btn>
-                <v-btn class="" variant="outlined" style="color: black; border-color: #BF3232 ;">Tahunan</v-btn>
+                <v-btn class="mr-1" color="#BF3232" @click="getAduanStatsBulan()">Bulanan</v-btn>
+                <v-btn class="" variant="outlined" style="color: black; border-color: #BF3232 ;" @click="getAduanStatsTahun()">Tahunan</v-btn>
               </div>
             </div>
             <v-divider class="mt-3"></v-divider>
@@ -38,7 +38,7 @@
                 <h4>Keluhan Sudah Ditanggapi</h4>
               </div>
               <div class="data-angka">
-                <h1>{{ counterAduan.disetujui }}</h1>
+                <h1>{{ counterAduan.sudah_ditanggapi }}</h1>
               </div>
             </div>
           </v-card>
@@ -50,7 +50,7 @@
                 <h4>Keluhan Belum Ditanggapi</h4>
               </div>
               <div class="data-angka">
-                <h1>{{ counterAduan.menunggu }}</h1>
+                <h1>{{ counterAduan.belum_ditanggapi }}</h1>
               </div>
             </div>
           </v-card>
@@ -93,8 +93,8 @@
               <td>{{ item.username }}</td>
               <td>{{ item.aktivitas }}</td>
               <td>
-                <v-badge v-if="item.status=='Menunggu'" dot inline color="#FFE642"></v-badge>
-                <v-badge v-else-if="item.status=='Disetujui'" dot inline color="#4A975B"></v-badge>
+                <v-badge v-if="item.status=='Menunggu' || item.status=='Belum Ditanggapi'" dot inline color="#FFE642"></v-badge>
+                <v-badge v-else-if="item.status=='Disetujui' || item.status=='Sudah Ditanggapi'" dot inline color="#4A975B"></v-badge>
                 <v-badge v-else-if="item.status=='Ditolak'" dot inline color="#FF4242"></v-badge>{{ item.status }}
               </td>
               </tr>
@@ -115,43 +115,15 @@ export default{
     return {
       log:[],
       counterAduan:[],
-      options: {
-        chart: {
-          id: 'vuechart-example',
-          zoom: {
-                enabled: false
-              }
-        },
-        grid: {
-              row: {
-                colors: ['#FFE3E3', 'transparent'], // takes an array which will be repeated on columns
-                opacity: 0.5
-              },
-            },
-        xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
-        },
-        yaxis: {
-          min: 0, // Nilai minimum di sumbu Y
-          max: 200, // Nilai maksimum di sumbu Y
-          tickAmount: 4, // Membagi skala dengan kelipatan 50
-          labels: {
-            formatter: function (value) {
-              return value.toFixed(0); // Tampilkan angka bulat
-            }
-          },
-        },
-      },
-      series: [{
-        name: 'series-1',
-        data: [30, 35, 45, 50, 49, 80, 70, 150]
-      }],
+      series: [],
+      options: {},
       today : this.todayDate()
     }
   },
   mounted(){
     this.historyLog();
     this.aduanCount();
+    this.getAduanStatsTahun()
   },
   methods: {
     todayDate(){
@@ -177,16 +149,42 @@ export default{
       .then(res=>{
         console.log(res.data)
         this.counterAduan = res.data
-        if (this.counterAduan.menunggu < 10) {
-          this.counterAduan.menunggu = "0"+res.data.menunggu
+        if (this.counterAduan.belum_ditanggapi < 9) {
+          this.counterAduan.belum_ditanggapi = "0"+res.data.belum_ditanggapi
         }
-        if (this.counterAduan.disetujui < 10) {
-          this.counterAduan.disetujui = "0"+res.data.disetujui
+        if (this.counterAduan.sudah_ditanggapi < 9) {
+          this.counterAduan.sudah_ditanggapi = "0"+res.data.sudah_ditanggapi
         }
-        if (this.counterAduan.total < 10) {
+        if (this.counterAduan.total < 9) {
           this.counterAduan.total = "0"+res.data.total
         }
       })
+    },
+    getAduanStatsBulan() {
+      axios.get("/api/count-aduan-perbulan")
+        .then(res => {
+          this.series = res.data.series
+          this.options = {
+            ...this.options,
+            ...res.data.options
+          }
+        })
+        .catch(err => {
+          console.error("Error fetching stats:", err)
+        })
+    },
+    getAduanStatsTahun() {
+      axios.get("/api/count-aduan-pertahun")
+        .then(res => {
+          this.series = res.data.series
+          this.options = {
+            ...this.options,
+            ...res.data.options
+          }
+        })
+        .catch(err => {
+          console.error("Error fetching stats:", err)
+        })
     }
   },
 
@@ -196,3 +194,4 @@ export default{
 <style scooped>
 
 </style>
+

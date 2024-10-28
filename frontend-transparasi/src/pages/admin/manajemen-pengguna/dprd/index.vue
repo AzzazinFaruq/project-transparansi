@@ -53,6 +53,9 @@
               </tr>
               </tbody>
           </v-table>
+          <div class="d-flex justify-center align-center" style="height: 100px;" v-if="notFound == true">
+                  <p>Tidak Ada Data Ditemukan</p>
+                </div>
         </div>
         <v-divider class="my-3"></v-divider>
         <div class="d-flex justify-end align-center">
@@ -85,6 +88,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      notFound:false,
       headers: [
         { title: "Nama", value: "username" },
         { title: "Jabatan", value: "" },
@@ -106,6 +110,9 @@ export default {
       .then(res=>{
         console.log(res.data.data)
         this.Userlist=res.data.data
+      })
+      .catch(err=>{
+        this.notFound=true
       })
     },
     changePage(page) {

@@ -74,7 +74,7 @@
     <v-spacer></v-spacer>
     <div class="mx-4">
       <v-icon class="mx-2" @click="handleLogout()">mdi-logout</v-icon>
-      <v-icon class="mx-2">mdi-bell</v-icon>
+      <v-icon class="mx-2">mdi-bell-outline</v-icon>
       <v-btn append-icon="mdi-chevron-down" class="mx-2" rounded="lg" color="black" variant="outlined" style="border-color: #BF3232;  text-transform: none; font-weight: 600;letter-spacing: 0.5px;">Admin</v-btn>
     </div>
   </v-app-bar>
@@ -119,6 +119,7 @@ export default {
           auth.check(router, this.$swal);
           const item = navitemstore();
           item.reset();
+          localStorage.removeItem('Role')
         })
       }catch(error){
         console.error("Error during logout:", error);
