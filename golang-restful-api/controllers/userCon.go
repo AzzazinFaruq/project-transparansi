@@ -147,12 +147,6 @@ func CreateDPRD(c *gin.Context) {
 		return
 	}
 
-	var dprdRole models.Role
-	if err := setup.DB.Where("role = ?", "DPRD").First(&dprdRole).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Role DPRD tidak ditemukan"})
-		return
-	}
-
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengenkripsi password"})
