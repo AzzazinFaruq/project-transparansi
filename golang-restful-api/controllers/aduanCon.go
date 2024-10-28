@@ -3,7 +3,9 @@ package controllers
 import (
 	"Azzazin/backend/models"
 	"Azzazin/backend/setup"
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -153,73 +155,147 @@ func TanggapiAduan(c *gin.Context) {
 
 func CountAduan(c *gin.Context) {
 	var count_aduan int64
-	var count_aduan_disetujui int64
-	var count_aduan_menunggu int64
+	var count_aduan_belum_ditanggapi int64
+	var count_aduan_sudah_ditanggapi int64
 
 	if err := setup.DB.Model(&models.Aduan{}).Count(&count_aduan).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if err := setup.DB.Model(&models.Aduan{}).Where("status = ?", "Menunggu").Count(&count_aduan_menunggu).Error; err != nil {
+	if err := setup.DB.Model(&models.Aduan{}).Where("status = ?", "Belum Ditanggapi").Count(&count_aduan_belum_ditanggapi).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if err := setup.DB.Model(&models.Aduan{}).Where("status = ?", "Disetujui").Count(&count_aduan_disetujui).Error; err != nil {
+	if err := setup.DB.Model(&models.Aduan{}).Where("status = ?", "Sudah Ditanggapi").Count(&count_aduan_sudah_ditanggapi).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"total": count_aduan, "disetujui": count_aduan_disetujui, "menunggu": count_aduan_menunggu})
+	c.JSON(http.StatusOK, gin.H{"total": count_aduan, "belum_ditanggapi": count_aduan_belum_ditanggapi, "sudah_ditanggapi": count_aduan_sudah_ditanggapi})
 }
 
-func GetAduanPerBulan(c *gin.Context) {
+func CountAduanPerBulan(c *gin.Context) {
 	tahun := c.Query("tahun")
-	bulan := c.Query("bulan")
-
-	if tahun == "" || bulan == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameter tahun dan bulan diperlukan"})
-		return
-	}
-
-	startDate := tahun + "-" + bulan + "-01"
-	endDate := tahun + "-" + bulan + "-31"
-
-	var aduan []models.Aduan
-	if err := setup.DB.
-		Preload("Program").
-		Preload("User.Jabatan").
-		Preload("User.Role").
-		Where("created_at BETWEEN ? AND ?", startDate, endDate).
-		Find(&aduan).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"data": aduan})
-}
-
-func GetAduanPerTahun(c *gin.Context) {
-	tahun := c.Query("tahun")
-
 	if tahun == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Parameter tahun diperlukan"})
-		return
+		tahun = time.Now().Format("2006") // Jika tahun tidak diisi, gunakan tahun sekarang
 	}
 
-	startDate := tahun + "-01-01"
-	endDate := tahun + "-12-31"
+	// Slice untuk menyimpan data bulanan
+	monthlyData := make([]gin.H, 12)
 
-	var aduan []models.Aduan
-	if err := setup.DB.
-		Preload("Program").
-		Preload("User.Jabatan").
-		Preload("User.Role").
+	// Nama-nama bulan dalam bahasa Indonesia
+	bulan := []string{
+		"Januari", "Februari", "Maret", "April", "Mei", "Juni",
+		"Juli", "Agustus", "September", "Oktober", "November", "Desember",
+	}
+
+	// Hitung untuk setiap bulan
+	for i := 0; i < 12; i++ {
+		bulanNum := fmt.Sprintf("%02d", i+1) // Format bulan menjadi "01", "02", dst
+
+		// Hitung total aduan
+		var totalCount int64
+		setup.DB.Model(&models.Aduan{}).
+			Where("YEAR(created_at) = ? AND MONTH(created_at) = ?", tahun, bulanNum).
+			Count(&totalCount)
+
+		// Simpan data bulanan
+		monthlyData[i] = gin.H{
+			"bulan":       bulan[i],
+			"bulan_angka": bulanNum,
+			"total":       totalCount,
+		}
+	}
+
+	var totalKeseluruhan int64
+
+	setup.DB.Model(&models.Aduan{}).
+		Where("YEAR(created_at) = ?", tahun).
+		Count(&totalKeseluruhan)
+
+	c.JSON(http.StatusOK, gin.H{
+		"tahun": tahun,
+		"total_keseluruhan": gin.H{
+			"total": totalKeseluruhan,
+		},
+		"data_bulanan": monthlyData,
+	})
+}
+
+func CountAduanPerTahun(c *gin.Context) {
+	// Mendapatkan tahun sekarang
+	currentYear := time.Now().Year()
+
+	// Slice untuk menyimpan data tahunan
+	yearlyData := make([]gin.H, 5)
+
+	// Loop untuk 5 tahun terakhir
+	for i := 0; i < 5; i++ {
+		tahun := currentYear - i
+
+		// Format tanggal awal dan akhir tahun
+		startDate := fmt.Sprintf("%d-01-01", tahun)
+		endDate := fmt.Sprintf("%d-12-31", tahun)
+
+		// Hitung total aduan
+		var totalCount int64
+		setup.DB.Model(&models.Aduan{}).
+			Where("created_at BETWEEN ? AND ?", startDate, endDate).
+			Count(&totalCount)
+
+		// Ambil detail aduan untuk tahun ini
+		var aduanList []models.Aduan
+		if err := setup.DB.
+			Preload("Program").
+			Preload("User.Jabatan").
+			Preload("User.Role").
+			Where("created_at BETWEEN ? AND ?", startDate, endDate).
+			Find(&aduanList).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		// Format data aduan
+		formattedAduan := make([]gin.H, len(aduanList))
+		for j, aduan := range aduanList {
+			formattedAduan[j] = gin.H{
+				"id":         aduan.Id,
+				"program_id": aduan.ProgramId,
+				"program":    aduan.Program,
+				"user_id":    aduan.UserId,
+				"user":       aduan.User,
+				"keluhan":    aduan.Keluhan,
+				"status":     aduan.Status,
+				"tanggapan":  aduan.Tanggapan,
+				"created_at": aduan.CreatedAt.Format("02-01-2006"),
+				"updated_at": aduan.UpdatedAt.Format("02-01-2006"),
+			}
+		}
+
+		// Simpan data tahunan
+		yearlyData[i] = gin.H{
+			"tahun":      tahun,
+			"total":      totalCount,
+			"data_aduan": formattedAduan,
+		}
+	}
+
+	// Hitung total keseluruhan untuk 5 tahun terakhir
+	var totalKeseluruhan int64
+
+	startDate := fmt.Sprintf("%d-01-01", currentYear-4)
+	endDate := fmt.Sprintf("%d-12-31", currentYear)
+
+	setup.DB.Model(&models.Aduan{}).
 		Where("created_at BETWEEN ? AND ?", startDate, endDate).
-		Find(&aduan).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+		Count(&totalKeseluruhan)
 
-	c.JSON(http.StatusOK, gin.H{"data": aduan})
+	c.JSON(http.StatusOK, gin.H{
+		"periode": fmt.Sprintf("%d-%d", currentYear-4, currentYear),
+		"total_keseluruhan": gin.H{
+			"total": totalKeseluruhan,
+		},
+		"data_tahunan": yearlyData,
+	})
 }
 
 func DetailAduan(c *gin.Context) {
