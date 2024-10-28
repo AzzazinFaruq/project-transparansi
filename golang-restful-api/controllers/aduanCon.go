@@ -70,7 +70,7 @@ func CreateAduan(c *gin.Context) {
 	newLog := models.Log{
 		UserId:    input.UserId,
 		Aktivitas: "Pengajuan Keluhan",
-		Status:    "Menunggu",
+		Status:    "Belum Ditanggapi",
 	}
 	if err := tx.Create(&newLog).Error; err != nil {
 		tx.Rollback()
@@ -83,7 +83,7 @@ func CreateAduan(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan data"})
 		return
 	}
-	
+
 	tx.Preload("Program").
 		Preload("User.Jabatan").
 		Preload("User.Role").
@@ -92,9 +92,9 @@ func CreateAduan(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"data": aduan})
 }
 
-func AcceptAduan(c *gin.Context) {
+func TanggapiAduan(c *gin.Context) {
 	id := c.Param("id")
-	
+
 	var input struct {
 		Tanggapan string `json:"tanggapan" binding:"required"`
 	}
@@ -147,11 +147,11 @@ func AcceptAduan(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Aduan berhasil ditanggapi",
-		"data": aduan,
+		"data":    aduan,
 	})
 }
 
-func CountAduan(c *gin.Context){
+func CountAduan(c *gin.Context) {
 	var count_aduan int64
 	var count_aduan_disetujui int64
 	var count_aduan_menunggu int64
@@ -239,3 +239,50 @@ func DetailAduan(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": aduan})
 }
 
+func GetAduanByStatus(c *gin.Context) {
+	status := c.Param("status")
+
+	validStatus := map[string]bool{
+		"Belum Ditanggapi": true,
+		"Sudah Ditanggapi": true,
+	}
+
+	if !validStatus[status] {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Status tidak valid"})
+		return
+	}
+
+	var aduan []models.Aduan
+
+	if err := setup.DB.
+		Preload("Program").
+		Preload("User.Jabatan").
+		Preload("User.Role").
+		Where("status = ?", status).
+		Find(&aduan).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	formattedAduan := make([]gin.H, len(aduan))
+
+	for i, aduan := range aduan {
+		formattedAduan[i] = gin.H{
+			"id":         aduan.Id,
+			"program_id": aduan.ProgramId,
+			"program":    aduan.Program,
+			"user_id":    aduan.UserId,
+			"user":       aduan.User,
+			"keluhan":    aduan.Keluhan,
+			"status":     aduan.Status,
+			"tanggapan":  aduan.Tanggapan,
+			"created_at": aduan.CreatedAt.Format("02-01-2006"),
+			"updated_at": aduan.UpdatedAt.Format("02-01-2006"),
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": status,
+		"data":   formattedAduan,
+	})
+}
