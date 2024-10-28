@@ -18,11 +18,8 @@ type Program struct {
 	FotoAfter            string `json:"foto_after"`
 	Dusun                string `json:"dusun"`
 	DesaId               int64  `json:"desa_id"`
-	Desa                 Desa
 	KecamatanId          int64 `json:"kecamatan_id"`
-	Kecamatan            Kecamatan
 	KabupatenId          int64 `json:"kabupaten_id"`
-	Kabupaten            Kabupaten
 	UserId               int64 `json:"user_id"`
 	User                 User
 	Status               string    `json:"status"`
