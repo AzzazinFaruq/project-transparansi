@@ -55,9 +55,8 @@ func main() {
 	protected.GET("/aduan/perbulan", controllers.GetAduanPerBulan)
 	protected.GET("/aduan/pertahun", controllers.GetAduanPerTahun)
 	protected.GET("/aduan/:id", controllers.DetailAduan)
-	// protected.GET("/aduan/:status", controllers.GetAduanByStatus)
+	// protected.GET("/aduan/status/:status", controllers.GetAduanByStatus)
 	protected.GET("/aduan/accept/:id", controllers.AcceptAduan)
-	protected.GET("/aduan/reject/:id", controllers.RejectAduan)
 
 	//Route Log
 	protected.GET("/index-log", controllers.GetAllLog)

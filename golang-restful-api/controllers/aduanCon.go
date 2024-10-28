@@ -31,6 +31,7 @@ func GetAllAduan(c *gin.Context) {
 			"user":       aduan.User,
 			"keluhan":    aduan.Keluhan,
 			"status":     aduan.Status,
+			"tanggapan":  aduan.Tanggapan,
 			"created_at": aduan.CreatedAt.Format("02-01-2006"), // Format d-m-y
 			"updated_at": aduan.UpdatedAt.Format("02-01-2006"), // Format d-m-y
 		}
@@ -57,7 +58,7 @@ func CreateAduan(c *gin.Context) {
 		ProgramId: input.ProgramId,
 		UserId:    input.UserId,
 		Keluhan:   input.Keluhan,
-		Status:    "Menunggu",
+		Status:    "Belum Ditanggapi",
 	}
 
 	if err := tx.Create(&aduan).Error; err != nil {
@@ -89,6 +90,65 @@ func CreateAduan(c *gin.Context) {
 		First(&aduan, aduan.Id)
 
 	c.JSON(http.StatusCreated, gin.H{"data": aduan})
+}
+
+func AcceptAduan(c *gin.Context) {
+	id := c.Param("id")
+	
+	var input struct {
+		Tanggapan string `json:"tanggapan" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Tanggapan harus diisi"})
+		return
+	}
+
+	var aduan models.Aduan
+
+	if err := setup.DB.First(&aduan, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Aduan tidak ditemukan"})
+		return
+	}
+
+	aduan.Status = "Sudah Ditanggapi"
+	aduan.Tanggapan = input.Tanggapan
+
+	tx := setup.DB.Begin()
+
+	if err := tx.Save(&aduan).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menganggapi aduan"})
+		return
+	}
+
+	newLog := models.Log{
+		UserId:    aduan.UserId,
+		Aktivitas: "Menganggapi Aduan",
+		Status:    "Sudah Ditanggapi",
+	}
+
+	if err := tx.Create(&newLog).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
+		return
+	}
+
+	tx.Commit()
+
+	if err := setup.DB.
+		Preload("Program").
+		Preload("User.Jabatan").
+		Preload("User.Role").
+		First(&aduan, id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data aduan"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Aduan berhasil ditanggapi",
+		"data": aduan,
+	})
 }
 
 func CountAduan(c *gin.Context){
@@ -179,74 +239,3 @@ func DetailAduan(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": aduan})
 }
 
-func AcceptAduan(c *gin.Context) {
-	id := c.Param("id")
-	var aduan models.Aduan
-
-	if err := setup.DB.First(&aduan, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Aduan tidak ditemukan"})
-		return
-	}
-
-	aduan.Status = "Disetujui"
-
-	tx := setup.DB.Begin()
-
-	if err := tx.Save(&aduan).Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyetujui aduan"})
-		return
-	}
-
-	newLog := models.Log{
-		UserId:    aduan.UserId,
-		Aktivitas: "Penyetujuan Aduan",
-		Status:    "Disetujui",
-	}
-
-	if err := tx.Create(&newLog).Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
-		return
-	}
-
-	tx.Commit()
-
-	c.JSON(http.StatusOK, gin.H{"message": "Aduan berhasil disetujui", "data": aduan})
-}
-
-func RejectAduan(c *gin.Context) {
-	id := c.Param("id")
-	var aduan models.Aduan
-
-	if err := setup.DB.Find(&aduan, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Aduan tidak ditemukan"})
-		return
-	}
-	
-	aduan.Status = "Ditolak"
-
-	tx := setup.DB.Begin()
-
-	if err := tx.Save(&aduan).Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menolak aduan"})
-		return
-	}
-
-	newLog := models.Log{
-		UserId:    aduan.UserId,
-		Aktivitas: "Penolakan Aduan",
-		Status:    "Ditolak",
-	}
-
-	if err := tx.Create(&newLog).Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
-		return
-	}
-
-	tx.Commit()
-
-	c.JSON(http.StatusOK, gin.H{"message": "Aduan berhasil ditolak", "data": aduan})
-}

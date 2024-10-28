@@ -10,6 +10,7 @@ type Aduan struct {
 	User      User
 	Keluhan   string    `json:"keluhan"`
 	Status    string    `json:"status"`
+	Tanggapan string    `json:"tanggapan"`
 	CreatedAt time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`                             // Menggunakan TIMESTAMP dengan default nilai CURRENT_TIMESTAMP
 	UpdatedAt time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"` // Menggunakan TIMESTAMP dengan auto-update
 }

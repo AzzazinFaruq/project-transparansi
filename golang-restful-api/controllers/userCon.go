@@ -4,10 +4,8 @@ import (
 	"Azzazin/backend/models"
 	"Azzazin/backend/setup"
 	"net/http"
-	"strconv"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"Azzazin/backend/utils"
 )
 
 func GetAllUser(c *gin.Context) {
@@ -129,87 +127,57 @@ func DeleteUser(c *gin.Context) {
 }
 
 func CreateDPRD(c *gin.Context) {
-	// Mengambil data dari form yang dikirim oleh front-end
-	username := c.PostForm("username")
-	email := c.PostForm("email")
-	password := c.PostForm("password")
-	noHp := c.PostForm("no_hp")
-	alamat := c.PostForm("alamat")
-	jabatanId := c.PostForm("jabatan_id")
+	var input struct {
+		Username   string `json:"username" binding:"required"`
+		Email      string `json:"email" binding:"required,email"`
+		Password   string `json:"password" binding:"required,min=8"`
+		NoHp       string `json:"no_hp" binding:"required"`
+		Alamat     string `json:"alamat" binding:"required"`
+		JabatanId  int64  `json:"jabatan_id" binding:"required"`
+	}
 
-	// Validasi input: memastikan semua field terisi
-	if username == "" || email == "" || password == "" || noHp == "" || alamat == "" || jabatanId == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Semua field harus diisi"})
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Data input tidak valid: " + err.Error()})
 		return
 	}
 
-	// Mengambil file foto profil dari form
-	file, err := c.FormFile("foto_profil")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Gagal mengambil file foto profil"})
-		return
-	}
-
-	// Mengunggah file foto profil
-	uploadPath := "uploads/profile_pictures"
-	filePath, err := utils.UploadFile(c, file, uploadPath)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengupload foto profil"})
-		return
-	}
-
-	// Mengkonversi jabatanId dari string ke int64
-	jabatanIdInt, err := strconv.ParseInt(jabatanId, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Format jabatan_id tidak valid"})
-		return
-	}
-
-	// Memeriksa apakah jabatan yang dipilih ada di database
 	var jabatan models.Jabatan
-	if err := setup.DB.First(&jabatan, jabatanIdInt).Error; err != nil {
+	if err := setup.DB.First(&jabatan, input.JabatanId).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Jabatan tidak ditemukan"})
 		return
 	}
 
-	// Mencari role DPRD di database
 	var dprdRole models.Role
 	if err := setup.DB.Where("role = ?", "DPRD").First(&dprdRole).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Role DPRD tidak ditemukan"})
 		return
 	}
 
-	// Mengenkripsi password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengenkripsi password"})
 		return
 	}
 
-	// Membuat user baru dengan data yang diterima
 	newUser := models.User{
-		Username:   username,
-		Email:      email,
+		Username:   input.Username,
+		Email:      input.Email,
 		Password:   string(hashedPassword),
-		NoHp:       noHp,
-		Alamat:     alamat,
+		NoHp:       input.NoHp,
+		Alamat:     input.Alamat,
 		RoleId:     dprdRole.Id,
-		JabatanId:  jabatanIdInt,
-		FotoProfil: filePath,
+		JabatanId:  input.JabatanId,
 	}
 
-	// Menyimpan user baru ke database
 	if err := setup.DB.Create(&newUser).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menambahkan DPRD baru: " + err.Error()})
 		return
 	}
 
-	// Mengambil data user yang baru dibuat beserta relasi Role dan Jabatan
 	if err := setup.DB.Preload("Role").Preload("Jabatan").First(&newUser, newUser.Id).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data DPRD yang baru dibuat"})
 		return
 	}
 
-	// Mengirim respons sukses beserta data user yang baru dibuat
 	c.JSON(http.StatusCreated, gin.H{"message": "DPRD berhasil dibuat", "data": newUser})
 }
