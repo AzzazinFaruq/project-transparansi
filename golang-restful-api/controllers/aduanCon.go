@@ -43,15 +43,9 @@ func GetAllAduan(c *gin.Context) {
 }
 
 func CreateAduan(c *gin.Context) {
-	// Ambil user_id dari JWT token yang sedang login
-	userId, exists := c.Get("user_id")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "User tidak terautentikasi"})
-		return
-	}
-
 	var input struct {
 		ProgramId int64  `json:"program_id" binding:"required"`
+		UserId    int64  `json:"user_id" binding:"required"`
 		Keluhan   string `json:"keluhan" binding:"required"`
 	}
 
@@ -64,7 +58,7 @@ func CreateAduan(c *gin.Context) {
 
 	aduan := models.Aduan{
 		ProgramId: input.ProgramId,
-		UserId:    userId.(int64), // Gunakan user_id dari token
+		UserId:    input.UserId,
 		Keluhan:   input.Keluhan,
 		Status:    "Belum Ditanggapi",
 	}
@@ -76,7 +70,7 @@ func CreateAduan(c *gin.Context) {
 	}
 
 	newLog := models.Log{
-		UserId:    userId.(int64),
+		UserId:    input.UserId,
 		Aktivitas: "Pengajuan Keluhan",
 		Status:    "Belum Ditanggapi",
 	}
