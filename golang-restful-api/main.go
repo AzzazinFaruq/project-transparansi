@@ -42,6 +42,7 @@ func main() {
 	protected.GET("/index-program", controllers.GetAllProgram)
 	protected.GET("/program/:id", controllers.DetailProgram)
 	protected.POST("/program/pengajuan", controllers.PengajuanProgram)
+	protected.PUT("/program/edit/:id", controllers.EditProgram)
 	protected.GET("/program/accept/:id", controllers.AcceptProgram)
 	protected.GET("/program/reject/:id", controllers.RejectProgram)
 	protected.GET("/program/status/:status", controllers.GetProgramByStatus)

@@ -41,7 +41,26 @@ func GetAllProgram(c *gin.Context) {
 }
 
 func PengajuanProgram(c *gin.Context) {
-	var input models.Program
+	// Ambil user_id dari JWT token yang sedang login
+	userId, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User tidak terautentikasi"})
+		return
+	}
+
+	var input struct {
+		NamaProgram          string `json:"nama_program" binding:"required"`
+		Deskripsi            string `json:"deskripsi" binding:"required"`
+		InstitusiId          int64  `json:"institusi_id" binding:"required"`
+		JenisAnggaranId      int64  `json:"jenis_anggaran_id" binding:"required"`
+		JumlahAnggaran       string `json:"jumlah_anggaran" binding:"required"`
+		KategoriPenggunaanId int64  `json:"kategori_penggunaan_id" binding:"required"`
+		FotoBefore           string `json:"foto_before"`
+		Dusun                string `json:"dusun" binding:"required"`
+		DesaId               int64  `json:"desa_id" binding:"required"`
+		KecamatanId          int64  `json:"kecamatan_id" binding:"required"`
+		KabupatenId          int64  `json:"kabupaten_id" binding:"required"`
+	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Data input tidak valid"})
@@ -60,7 +79,7 @@ func PengajuanProgram(c *gin.Context) {
 		DesaId:               input.DesaId,
 		KecamatanId:          input.KecamatanId,
 		KabupatenId:          input.KabupatenId,
-		UserId:               input.UserId,
+		UserId:               userId.(int64), 
 		Status:               "Menunggu",
 	}
 
@@ -73,7 +92,7 @@ func PengajuanProgram(c *gin.Context) {
 	}
 
 	newLog := models.Log{
-		UserId:    input.UserId,
+		UserId:    userId.(int64),
 		Aktivitas: "Pengajuan Program",
 		Status:    "Menunggu",
 	}
@@ -93,6 +112,69 @@ func PengajuanProgram(c *gin.Context) {
 		First(&newProgram, newProgram.Id)
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Program berhasil diajukan", "data": newProgram})
+}
+
+func EditProgram(c *gin.Context) {
+	id := c.Param("id")
+	var program models.Program
+	var input models.Program
+
+	if err := setup.DB.First(&program, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
+		return
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Data input tidak valid"})
+		return
+	}
+
+	tx := setup.DB.Begin()
+
+	updateData := models.Program{
+		NamaProgram:          input.NamaProgram,
+		Deskripsi:            input.Deskripsi,
+		InstitusiId:          input.InstitusiId,
+		JenisAnggaranId:      input.JenisAnggaranId,
+		JumlahAnggaran:       input.JumlahAnggaran,
+		KategoriPenggunaanId: input.KategoriPenggunaanId,
+		FotoBefore:           input.FotoBefore,
+		Dusun:                input.Dusun,
+		DesaId:               input.DesaId,
+		KecamatanId:          input.KecamatanId,
+		KabupatenId:          input.KabupatenId,
+	}
+
+	if err := tx.Model(&program).Updates(updateData).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengupdate program"})
+		return
+	}
+
+	newLog := models.Log{
+		UserId:    program.UserId,
+		Aktivitas: "Edit Program",
+		Status:    program.Status,
+	}
+
+	if err := tx.Create(&newLog).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
+		return
+	}
+
+	tx.Commit()
+
+	setup.DB.Preload("Institusi").
+		Preload("JenisAnggaran").
+		Preload("KategoriPenggunaan").
+		Preload("User").
+		First(&program, program.Id)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Program berhasil diupdate",
+		"data":    program,
+	})
 }
 
 func AcceptProgram(c *gin.Context) {
