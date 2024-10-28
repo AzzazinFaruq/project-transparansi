@@ -6,15 +6,31 @@
  */
 
 // Composables
+
 import { createRouter, createWebHistory } from 'vue-router/auto'
 import { routes } from 'vue-router/auto-routes'
-
 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
+
+router.beforeEach((to, from, next) => {
+
+  var userRole = localStorage.getItem('Role');
+
+  if (to.path.startsWith('/admin') && userRole !== 'admin') {
+    next('/401');
+  } else if (to.path.startsWith('/dprd') && userRole !== 'anggota') {
+    next('/401');
+  }else if (to.path.startsWith('/user') && userRole !== 'masyarakat') {
+  next('/401');
+  }
+  else{
+    next();
+  }
+});
 
 // Workaround for https://github.com/vitejs/vite/issues/11804
 router.onError((err, to) => {
@@ -34,5 +50,6 @@ router.onError((err, to) => {
 router.isReady().then(() => {
   localStorage.removeItem('vuetify:dynamic-reload')
 })
+
 
 export default router

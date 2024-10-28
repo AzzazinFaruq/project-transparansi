@@ -30,7 +30,7 @@
                 prepend-icon="mdi-plus"
                 href="/dprd/manajemen-program/tambah"
                 >
-                Anggota
+                Program
               </v-btn>
           </div>
           </div>

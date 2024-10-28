@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <div class="">
+    <div class="" v-if="user.status == 'Menunggu' || user.status == 'Disetujui'">
       <v-form>
         <label class="label-form">Nama Program</label>
         <v-text-field v-model="user.nama_program" variant="outlined"></v-text-field>
@@ -57,7 +57,58 @@
           <label class="label-form">After</label>
           <v-text-field v-model="user.foto_after" variant="outlined"></v-text-field>
         </div>
+
+        <div class="d-flex justify-start" v-if="user.status=='Menunggu'">
+          <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="accept()">
+              Terima
+            </v-btn>
+            <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="rejectprogram()">
+              Tolak
+            </v-btn>
+        </div>
+        <div class="d-flex justify-start" v-if="user.status=='Disetujui'">
+          <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="update()">
+              Simpan
+            </v-btn>
+            <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="back()">
+              Kembali
+            </v-btn>
+        </div>
       </v-form>
+    </div>
+    <div class="" v-if="user.status=='Ditolak'">
+      <label class="label-form">Nama Program</label>
+      <p>{{ user.nama_program }}</p>
+      <label class="label-form">Institusi</label>
+      <p>{{ user.Institusi.nama_institusi }}</p>
+      <label class="label-form">Deskripsi</label>
+      <p>{{ user.deskripsi }}</p>
+      <label class="label-form">Deskripsi</label>
+      <p>{{ user.deskripsi }}</p>
+
+      <h2 class="my-3">Detail Anggaran</h2>
+      <VDivider/>
+
+      <label class="label-form">Jenis Anggaran</label>
+      <p>{{ user.JenisAnggaran.jenis }}</p>
+      <label class="label-form">Jumlah Anggaran</label>
+      <p>{{ user.jumlah_anggaran }}</p>
+      <label class="label-form">Kategori Penggunaan</label>
+      <p>{{ user.KategoriPenggunaan.kategori}}</p>
+
+      <h2 class="my-3">Detail Alamat</h2>
+      <VDivider/>
+
+      <label class="label-form">Dusun</label>
+      <p>{{ user.nama_program }}</p>
+      <label class="label-form">Desa</label>
+      <p>{{ user.desa_id }}</p>
+      <label class="label-form">Kecamatan</label>
+      <p>{{ user.kecamatan_id }}</p>
+      <label class="label-form">Kabupaten</label>
+      <p>{{ user.kabupaten_id  }}</p>
+
+
     </div>
   </v-container>
 </template>
@@ -120,11 +171,15 @@ export default{
         this.user = res.data.data
       })
     },
-    update(){
-    axios.put(`/api/user/edituser/${this.$route.params.id}`, this.user)
+    accept(){
+    axios.get(`/api/program/accept/${this.$route.params.id}`)
     .then(res=>{
-      this.$router.go(-1)
+      this.$router.go(0)
     })
+  },
+  rejectprogram(){
+    axios.get(`/api/program/reject/${this.$route.params.id}`)
+    .then(this.$router.go(-1))
   },
   back(){
     this.$router.go(-1)

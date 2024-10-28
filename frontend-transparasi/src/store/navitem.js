@@ -7,7 +7,7 @@ export const navitemstore = defineStore('navItem', {
   state: () => {
     return{
       navitemlist:[],
-      stat:[],
+      stat:'',
       reload:false,
       itemAdmin: [
         {
@@ -52,7 +52,6 @@ export const navitemstore = defineStore('navItem', {
       this.navitemlist=[]
     },
     check(){
-
         axios.get('/api/user')
         .then((res)=>{
           this.stat=res.data.data.Role.role;

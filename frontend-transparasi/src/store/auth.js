@@ -5,10 +5,18 @@ import { useRouter } from 'vue-router'
 export const authStore = defineStore('auth', {
   state: () => {
     return{
-      user_id:''
+      user_id:'',
+      role:''
     }
   },
   actions:{
+    userRole(){
+      axios.get("/api/user")
+      .then(res=>{
+        this.role = res.data.data.Role.role
+        console.log(this.role)
+      })
+    },
     check(router, swal){
       var stat = false;
         axios.get('/api/user')

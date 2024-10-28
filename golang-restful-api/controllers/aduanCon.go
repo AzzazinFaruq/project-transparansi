@@ -299,19 +299,12 @@ func CountAduanPerTahun(c *gin.Context) {
                     "enabled": false,
                 },
             },
-            "dataLabels": gin.H{
-                "enabled": true,
-            },
             "stroke": gin.H{
                 "curve": "straight",
             },
-            "title": gin.H{
-                "text": fmt.Sprintf("Statistik Aduan Per Tahun (%d-%d)", currentYear-4, currentYear),
-                "align": "left",
-            },
             "grid": gin.H{
                 "row": gin.H{
-                    "colors": []string{"#f3f3f3", "transparent"},
+                    "colors": []string{"#FFE3E3", "transparent"},
                     "opacity": 0.5,
                 },
             },

@@ -7,8 +7,8 @@
             <div class="d-flex justify-space-between">
               <h3 class="pr-5">Statistik Keluhan</h3>
               <div class="d-flex">
-                <v-btn class="mr-1" color="#BF3232">Bulanan</v-btn>
-                <v-btn class="" variant="outlined" style="color: black; border-color: #BF3232 ;">Tahunan</v-btn>
+                <v-btn class="mr-1" color="#BF3232" @click="getAduanStatsBulan()">Bulanan</v-btn>
+                <v-btn class="" variant="outlined" style="color: black; border-color: #BF3232 ;" @click="getAduanStatsTahun()">Tahunan</v-btn>
               </div>
             </div>
             <v-divider class="mt-3"></v-divider>
@@ -93,8 +93,8 @@
               <td>{{ item.username }}</td>
               <td>{{ item.aktivitas }}</td>
               <td>
-                <v-badge v-if="item.status=='Menunggu'" dot inline color="#FFE642"></v-badge>
-                <v-badge v-else-if="item.status=='Disetujui'" dot inline color="#4A975B"></v-badge>
+                <v-badge v-if="item.status=='Menunggu' || item.status=='Belum Ditanggapi'" dot inline color="#FFE642"></v-badge>
+                <v-badge v-else-if="item.status=='Disetujui' || item.status=='Sudah Ditanggapi'" dot inline color="#4A975B"></v-badge>
                 <v-badge v-else-if="item.status=='Ditolak'" dot inline color="#FF4242"></v-badge>{{ item.status }}
               </td>
               </tr>
@@ -123,7 +123,7 @@ export default{
   mounted(){
     this.historyLog();
     this.aduanCount();
-    this.getAduanStats()
+    this.getAduanStatsTahun()
   },
   methods: {
     todayDate(){
@@ -160,8 +160,21 @@ export default{
         }
       })
     },
-    getAduanStats() {
+    getAduanStatsBulan() {
       axios.get("/api/count-aduan-perbulan")
+        .then(res => {
+          this.series = res.data.series
+          this.options = {
+            ...this.options,
+            ...res.data.options
+          }
+        })
+        .catch(err => {
+          console.error("Error fetching stats:", err)
+        })
+    },
+    getAduanStatsTahun() {
+      axios.get("/api/count-aduan-pertahun")
         .then(res => {
           this.series = res.data.series
           this.options = {

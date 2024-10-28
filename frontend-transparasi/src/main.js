@@ -26,9 +26,6 @@ axios.defaults.headers.common['Content-Type'] = 'application/json';
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
-
-//sweetAlert
-
 const pinia = createPinia()
 const app = createApp(App)
 

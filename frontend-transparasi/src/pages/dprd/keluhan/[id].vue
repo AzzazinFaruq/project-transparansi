@@ -1,8 +1,6 @@
 <template>
   <v-container>
-    <v-row v-if="status == 'Sudah Ditanggapi' || status=='Belum Ditanggapi'">
-      <v-col cols="9">
-        <div class="">
+    <div class="">
       <div class="mb-3">
         <label class="label-form ">Nama</label>
       <p class="mt-1">{{ username}}</p>
@@ -66,14 +64,6 @@
       </div>
       </div>
     </div>
-      </v-col>
-      <v-col col="3">
-        <div class="d-flex justify-center" style="width: 100%;">
-          <img src="./logo-dprd-1.png" alt="" style="width: 80%;">
-        </div>
-
-      </v-col>
-    </v-row>
   </v-container>
 </template>
 <script>

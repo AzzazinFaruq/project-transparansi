@@ -86,6 +86,7 @@ export default{
         var role =res.data.role;
         const item = navitemstore();
         item.reload=true;
+        localStorage.setItem('Role', role)
         if (res.data.authenticated == true) {
             switch (role) {
               case "admin":
