@@ -254,28 +254,10 @@ func CountAduanPerTahun(c *gin.Context) {
 			return
 		}
 
-		// Format data aduan
-		formattedAduan := make([]gin.H, len(aduanList))
-		for j, aduan := range aduanList {
-			formattedAduan[j] = gin.H{
-				"id":         aduan.Id,
-				"program_id": aduan.ProgramId,
-				"program":    aduan.Program,
-				"user_id":    aduan.UserId,
-				"user":       aduan.User,
-				"keluhan":    aduan.Keluhan,
-				"status":     aduan.Status,
-				"tanggapan":  aduan.Tanggapan,
-				"created_at": aduan.CreatedAt.Format("02-01-2006"),
-				"updated_at": aduan.UpdatedAt.Format("02-01-2006"),
-			}
-		}
-
 		// Simpan data tahunan
 		yearlyData[i] = gin.H{
 			"tahun":      tahun,
 			"total":      totalCount,
-			"data_aduan": formattedAduan,
 		}
 	}
 
