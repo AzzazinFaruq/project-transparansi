@@ -115,43 +115,15 @@ export default{
     return {
       log:[],
       counterAduan:[],
-      options: {
-        chart: {
-          id: 'vuechart-example',
-          zoom: {
-                enabled: false
-              }
-        },
-        grid: {
-              row: {
-                colors: ['#FFE3E3', 'transparent'], // takes an array which will be repeated on columns
-                opacity: 0.5
-              },
-            },
-        xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
-        },
-        yaxis: {
-          min: 0, // Nilai minimum di sumbu Y
-          max: 200, // Nilai maksimum di sumbu Y
-          tickAmount: 4, // Membagi skala dengan kelipatan 50
-          labels: {
-            formatter: function (value) {
-              return value.toFixed(0); // Tampilkan angka bulat
-            }
-          },
-        },
-      },
-      series: [{
-        name: 'series-1',
-        data: [30, 35, 45, 50, 49, 80, 70, 150]
-      }],
+      series: [],
+      options: {},
       today : this.todayDate()
     }
   },
   mounted(){
     this.historyLog();
     this.aduanCount();
+    this.getAduanStats()
   },
   methods: {
     todayDate(){
@@ -187,6 +159,19 @@ export default{
           this.counterAduan.total = "0"+res.data.total
         }
       })
+    },
+    getAduanStats() {
+      axios.get("/api/count-aduan-perbulan")
+        .then(res => {
+          this.series = res.data.series
+          this.options = {
+            ...this.options,
+            ...res.data.options
+          }
+        })
+        .catch(err => {
+          console.error("Error fetching stats:", err)
+        })
     }
   },
 
@@ -196,3 +181,4 @@ export default{
 <style scooped>
 
 </style>
+

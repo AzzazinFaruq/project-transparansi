@@ -176,108 +176,157 @@ func CountAduan(c *gin.Context) {
 func CountAduanPerBulan(c *gin.Context) {
 	tahun := c.Query("tahun")
 	if tahun == "" {
-		tahun = time.Now().Format("2006") // Jika tahun tidak diisi, gunakan tahun sekarang
+		tahun = time.Now().Format("2006") // Default tahun sekarang
 	}
 
-	// Slice untuk menyimpan data bulanan
-	monthlyData := make([]gin.H, 12)
-
-	// Nama-nama bulan dalam bahasa Indonesia
+	// Slice untuk menyimpan jumlah aduan per bulan
+	var monthlyCount []int64
+	
+	// Nama-nama bulan
 	bulan := []string{
-		"Januari", "Februari", "Maret", "April", "Mei", "Juni",
-		"Juli", "Agustus", "September", "Oktober", "November", "Desember",
+		"Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
+		"Jul", "Agu", "Sep", "Okt", "Nov", "Des",
 	}
 
-	// Hitung untuk setiap bulan
-	for i := 0; i < 12; i++ {
-		bulanNum := fmt.Sprintf("%02d", i+1) // Format bulan menjadi "01", "02", dst
-
-		// Hitung total aduan
-		var totalCount int64
+	// Hitung aduan untuk setiap bulan
+	for i := 1; i <= 12; i++ {
+		bulanNum := fmt.Sprintf("%02d", i)
+		var count int64
+		
 		setup.DB.Model(&models.Aduan{}).
 			Where("YEAR(created_at) = ? AND MONTH(created_at) = ?", tahun, bulanNum).
-			Count(&totalCount)
-
-		// Simpan data bulanan
-		monthlyData[i] = gin.H{
-			"bulan":       bulan[i],
-			"bulan_angka": bulanNum,
-			"total":       totalCount,
-		}
+			Count(&count)
+		
+		monthlyCount = append(monthlyCount, count)
 	}
 
-	var totalKeseluruhan int64
-
-	setup.DB.Model(&models.Aduan{}).
-		Where("YEAR(created_at) = ?", tahun).
-		Count(&totalKeseluruhan)
-
-	c.JSON(http.StatusOK, gin.H{
-		"tahun": tahun,
-		"total_keseluruhan": gin.H{
-			"total": totalKeseluruhan,
+	// Format response untuk ApexChart
+	chartData := gin.H{
+		"series": []gin.H{
+			{
+				"name": "Jumlah Aduan",
+				"data": monthlyCount,
+			},
 		},
-		"data_bulanan": monthlyData,
-	})
+		"options": gin.H{
+			"chart": gin.H{
+				"height": 350,
+				"type": "line",
+				"zoom": gin.H{
+					"enabled": false,
+				},
+			},
+			"stroke": gin.H{
+				"curve": "straight",
+			},
+			"title": gin.H{
+				"align": "left",
+			},
+			"grid": gin.H{
+				"row": gin.H{
+					"colors": []string{"#FFE3E3", "transparent"},
+					"opacity": 0.5,
+				},
+			},
+			"xaxis": gin.H{
+				"categories": bulan,
+			},
+			"yaxis": gin.H{
+				"min": 0,
+				"max": getMaxValue(monthlyCount) + 5,
+				"tickAmount": 4,
+			},
+		},
+	}
+
+	c.JSON(http.StatusOK, chartData)
+}
+
+// Fungsi helper untuk mendapatkan nilai maksimum
+func getMaxValue(numbers []int64) int64 {
+	if len(numbers) == 0 {
+		return 0
+	}
+	
+	max := numbers[0]
+	for _, num := range numbers {
+		if num > max {
+			max = num
+		}
+	}
+	return max
 }
 
 func CountAduanPerTahun(c *gin.Context) {
-	// Mendapatkan tahun sekarang
-	currentYear := time.Now().Year()
+    // Mendapatkan tahun sekarang
+    currentYear := time.Now().Year()
 
-	// Slice untuk menyimpan data tahunan
-	yearlyData := make([]gin.H, 5)
+    // Slice untuk menyimpan data tahunan
+    var yearlyCount []int64
+    var years []string
 
-	// Loop untuk 5 tahun terakhir
-	for i := 0; i < 5; i++ {
-		tahun := currentYear - i
+    // Loop untuk 5 tahun terakhir
+    for i := 4; i >= 0; i-- {  // Dibalik agar urutan dari tahun terlama ke terbaru
+        tahun := currentYear - i
+        years = append(years, fmt.Sprintf("%d", tahun))
 
-		// Format tanggal awal dan akhir tahun
-		startDate := fmt.Sprintf("%d-01-01", tahun)
-		endDate := fmt.Sprintf("%d-12-31", tahun)
+        // Format tanggal awal dan akhir tahun
+        startDate := fmt.Sprintf("%d-01-01", tahun)
+        endDate := fmt.Sprintf("%d-12-31", tahun)
 
-		// Hitung total aduan
-		var totalCount int64
-		setup.DB.Model(&models.Aduan{}).
-			Where("created_at BETWEEN ? AND ?", startDate, endDate).
-			Count(&totalCount)
+        // Hitung total aduan
+        var totalCount int64
+        setup.DB.Model(&models.Aduan{}).
+            Where("created_at BETWEEN ? AND ?", startDate, endDate).
+            Count(&totalCount)
 
-		// Ambil detail aduan untuk tahun ini
-		var aduanList []models.Aduan
-		if err := setup.DB.
-			Preload("Program").
-			Preload("User.Jabatan").
-			Preload("User.Role").
-			Where("created_at BETWEEN ? AND ?", startDate, endDate).
-			Find(&aduanList).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
+        yearlyCount = append(yearlyCount, totalCount)
+    }
 
-		// Simpan data tahunan
-		yearlyData[i] = gin.H{
-			"tahun":      tahun,
-			"total":      totalCount,
-		}
-	}
+    // Format response untuk ApexChart
+    chartData := gin.H{
+        "series": []gin.H{
+            {
+                "name": "Jumlah Aduan",
+                "data": yearlyCount,
+            },
+        },
+        "options": gin.H{
+            "chart": gin.H{
+                "height": 350,
+                "type": "line",
+                "zoom": gin.H{
+                    "enabled": false,
+                },
+            },
+            "dataLabels": gin.H{
+                "enabled": true,
+            },
+            "stroke": gin.H{
+                "curve": "straight",
+            },
+            "title": gin.H{
+                "text": fmt.Sprintf("Statistik Aduan Per Tahun (%d-%d)", currentYear-4, currentYear),
+                "align": "left",
+            },
+            "grid": gin.H{
+                "row": gin.H{
+                    "colors": []string{"#f3f3f3", "transparent"},
+                    "opacity": 0.5,
+                },
+            },
+            "xaxis": gin.H{
+                "categories": years,
+            },
+            "yaxis": gin.H{
+                "min": 0,
+                "max": getMaxValue(yearlyCount) + 5,
+                "tickAmount": 4,
+            },
+        },
+    }
 
-	// Hitung total keseluruhan untuk 5 tahun terakhir
-	var totalKeseluruhan int64
-
-	startDate := fmt.Sprintf("%d-01-01", currentYear-4)
-	endDate := fmt.Sprintf("%d-12-31", currentYear)
-
-	setup.DB.Model(&models.Aduan{}).
-		Where("created_at BETWEEN ? AND ?", startDate, endDate).
-		Count(&totalKeseluruhan)
-
-	c.JSON(http.StatusOK, gin.H{
-		"periode": fmt.Sprintf("%d-%d", currentYear-4, currentYear),
-		"total_keseluruhan": gin.H{
-			"total": totalKeseluruhan,
-		},
-		"data_tahunan": yearlyData,
-	})
+    c.JSON(http.StatusOK, chartData)
 }
 
 func DetailAduan(c *gin.Context) {
