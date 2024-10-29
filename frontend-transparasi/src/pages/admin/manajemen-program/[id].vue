@@ -1,7 +1,9 @@
 <template>
   <v-container>
-    <div class="" v-if="user.status == 'Menunggu' || user.status == 'Disetujui'">
-      <v-form>
+    <div class="" v-if="user.status == 'Menunggu' || user.status == 'Dalam Proses'">
+      <v-row>
+        <v-col cols="9">
+          <v-form>
         <label class="label-form">Nama Program</label>
         <v-text-field v-model="user.nama_program" variant="outlined"></v-text-field>
         <label class="label-form">Institusi</label>
@@ -41,13 +43,33 @@
         <label class="label-form">Dusun</label>
         <v-text-field v-model="user.dusun" variant="outlined"></v-text-field>
         <label class="label-form">Desa</label>
-        <v-text-field v-model="user.desa_id" variant="outlined"></v-text-field>
+        <v-autocomplete
+          v-model="user.desa_id"
+          :items="deslist"
+          item-title="nama_desa"
+          item-value="Id"
+          variant="outlined"
+        ></v-autocomplete>
         <label class="label-form">Kecamatan</label>
-        <v-text-field v-model="user.kecamatan_id" variant="outlined"></v-text-field>
-        <label class="label-form">Kabupaten / Kota</label>
-        <v-text-field v-model="user.kabupaten_id" variant="outlined"></v-text-field>
+        <v-autocomplete
+          v-model="user.kecamatan_id"
+          variant="outlined"
+          :items="keclist"
+          item-title="nama_kecamatan"
+          item-value="Id"
 
-        <div class="" v-if="user.status == 'Disetujui'">
+        ></v-autocomplete>
+        <label class="label-form">Kabupaten / Kota</label>
+        <v-autocomplete
+          v-model="user.kabupaten_id"
+          variant="outlined"
+          :items="kablist"
+          item-title="nama_kabupaten"
+          item-value="Id"
+
+        ></v-autocomplete>
+
+        <div class="" v-if="user.status == 'Dalam Proses'">
           <h2 class="my-3">Detail Dokumentasi</h2>
 
           <label class="label-form">Before</label>
@@ -66,8 +88,8 @@
               Tolak
             </v-btn>
         </div>
-        <div class="d-flex justify-start" v-if="user.status=='Disetujui'">
-          <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="update()">
+        <div class="d-flex justify-start" v-if="user.status=='Dalam Proses'">
+          <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="simpan()">
               Simpan
             </v-btn>
             <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="back()">
@@ -75,7 +97,7 @@
             </v-btn>
         </div>
       </v-form>
-    </div>
+
     <div class="" v-if="user.status=='Ditolak'">
       <label class="label-form">Nama Program</label>
       <p>{{ user.nama_program }}</p>
@@ -108,6 +130,14 @@
       <label class="label-form">Kabupaten</label>
       <p>{{ user.kabupaten_id  }}</p>
 
+      </div>
+        </v-col>
+        <v-col cols="3">
+          <div class="d-flex justify-center" style="width: 100%;">
+          <img src="./logo-dprd-1.png" alt="" style="width: 80%;">
+        </div>
+        </v-col>
+      </v-row>
 
     </div>
   </v-container>
@@ -118,6 +148,9 @@ export default{
   data() {
     return {
       institusi:[],
+      kablist:[],
+      keclist:[],
+      deslist:[],
       JenisAnggaran:[],
       KategoriPenggunaan:[],
       user:{
@@ -144,8 +177,25 @@ export default{
     this.listJenisAnggaran();
     this.listKategoriPenggunaan();
     this.listinstitusi();
+    this.listdaerah()
   },
   methods: {
+    listdaerah(){
+      axios.all([
+    axios.get('/api/index-kabupaten'),  // Endpoint untuk kabupaten
+    axios.get('/api/index-kecamatan'),  // Endpoint untuk kecamatan
+    axios.get('/api/index-desa')        // Endpoint untuk desa
+  ])
+  .then(axios.spread((kabupatenRes, kecamatanRes, desaRes) => {
+    this.kablist = kabupatenRes.data.data;
+    this.keclist = kecamatanRes.data.data;
+    this.deslist = desaRes.data.data;
+
+  }))
+  .catch(error => {
+    console.error("Error fetching data:", error);
+  });
+    },
     listinstitusi(){
       axios.get("/api/index-institusi")
       .then(res=>{
@@ -183,6 +233,13 @@ export default{
   },
   back(){
     this.$router.go(-1)
+  },
+  simpan(){
+    axios.put(`/api/program/edit/${this.$route.params.id}`,this.user)
+    .then(res=>{
+      this.$router.go(-1)
+    })
+    // console.log(this.user)
   }
   },
 
