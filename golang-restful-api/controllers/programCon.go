@@ -286,6 +286,9 @@ func DetailProgram(c *gin.Context) {
 	var program models.Program
 
 	if err := setup.DB.
+		Preload("Desa").
+		Preload("Kecamatan").
+		Preload("Kabupaten").
 		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").

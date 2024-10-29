@@ -135,6 +135,7 @@ export default {
         })
       }
     },
+
     user(){
       axios.get("/api/index-aduan")
       .then(res=>{
