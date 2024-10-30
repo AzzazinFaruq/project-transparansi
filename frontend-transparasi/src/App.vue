@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <navbar v-if="!isLoginPage && !isUserPage  && !is401 "  :key="$route.fullPath"></navbar>
+    <navbar v-if="!isLoginPage && !isUserPage  && !is401 && !ishome && !isprogram"   :key="$route.fullPath"></navbar>
     <v-main>
       <v-container fluid>
         <router-view/>
@@ -20,7 +20,9 @@ export default{
     const isLoginPage = computed(() => route.path === '/login');
     const isUserPage = computed(() => route.path === '/user/dashboard');
     const is401 = computed(() => route.path === '/401');
-    return { isLoginPage,isUserPage, is401};
+    const ishome = computed(() => route.path === '/home');
+    const isprogram = computed(() => route.path === '/program');
+    return { isLoginPage,isUserPage, is401, ishome, isprogram};
     }
 
 }

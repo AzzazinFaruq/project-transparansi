@@ -36,16 +36,37 @@
             variant="outlined"
           ></v-select>
 
-        <h2 class="my-3">Detail Alamat</h2>
+          <h2 class="my-3">Detail Alamat</h2>
 
-        <label class="label-form">Dusun</label>
-        <v-text-field v-model="user.dusun" variant="outlined"></v-text-field>
-        <label class="label-form">Desa</label>
-        <v-text-field v-model="user.desa_id" variant="outlined"></v-text-field>
-        <label class="label-form">Kecamatan</label>
-        <v-text-field v-model="user.kecamatan_id" variant="outlined"></v-text-field>
-        <label class="label-form">Kabupaten / Kota</label>
-        <v-text-field v-model="user.kabupaten_id" variant="outlined"></v-text-field>
+<label class="label-form">Dusun</label>
+<v-text-field v-model="user.dusun" variant="outlined"></v-text-field>
+<label class="label-form">Desa</label>
+<v-autocomplete
+  v-model="user.desa_id"
+  :items="deslist"
+  item-title="nama_desa"
+  item-value="Id"
+  variant="outlined"
+></v-autocomplete>
+<label class="label-form">Kecamatan</label>
+<v-autocomplete
+  v-model="user.kecamatan_id"
+  variant="outlined"
+  :items="keclist"
+  item-title="nama_kecamatan"
+  item-value="Id"
+
+></v-autocomplete>
+<label class="label-form">Kabupaten / Kota</label>
+<v-autocomplete
+  v-model="user.kabupaten_id"
+  variant="outlined"
+  :items="kablist"
+  item-title="nama_kabupaten"
+  item-value="Id"
+
+></v-autocomplete>
+
 
         <div class="" v-if="user.status == 'Disetujui'">
           <h2 class="my-3">Detail Dokumentasi</h2>
@@ -75,6 +96,10 @@ export default{
   data() {
     return {
       institusi:[],
+      kablist:[],
+      keclist:[],
+      deslist:[],
+      institusi:[],
       JenisAnggaran:[],
       KategoriPenggunaan:[],
       user:{
@@ -85,10 +110,10 @@ export default{
         jumlah_anggaran:'',
         kategori_penggunaan_id:'',
         dusun:'',
-        desa_id:0,
-        user_id:0,
-        kecamatan_id:0,
-        kabupaten_id:0,
+        desa_id:'',
+        user_id:'',
+        kecamatan_id:'',
+        kabupaten_id:'',
         foto_before:'',
         foto_progress:'',
         foto_after:''
@@ -102,8 +127,25 @@ export default{
     this.listinstitusi();
     this.listJenisAnggaran();
     this.listKategoriPenggunaan();
+    this.listdaerah();
   },
   methods: {
+    listdaerah(){
+      axios.all([
+    axios.get('/api/index-kabupaten'),  // Endpoint untuk kabupaten
+    axios.get('/api/index-kecamatan'),  // Endpoint untuk kecamatan
+    axios.get('/api/index-desa')        // Endpoint untuk desa
+  ])
+  .then(axios.spread((kabupatenRes, kecamatanRes, desaRes) => {
+    this.kablist = kabupatenRes.data.data;
+    this.keclist = kecamatanRes.data.data;
+    this.deslist = desaRes.data.data;
+
+  }))
+  .catch(error => {
+    console.error("Error fetching data:", error);
+  });
+    },
     userId(){
       axios.get("api/user")
       .then(res=>{

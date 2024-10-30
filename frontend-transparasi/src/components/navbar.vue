@@ -98,18 +98,20 @@ export default {
 
   }),
   mounted(){
-    const auth = authStore();
-    const item = navitemstore();
-    this.items = item.navitemlist;
-    auth.check(router, this.$swal);
-    item.check();
     this.handleManajemenUser();
+
 
   },
   methods:{
     handleManajemenUser(){
       var auth = navitemstore();
       this.auth = auth.stat;
+      const authen = authStore();
+      const item = navitemstore();
+      this.items = item.navitemlist;
+      authen.check(router, this.$swal);
+      item.check();
+
     },
     handleLogout(){
       try{
