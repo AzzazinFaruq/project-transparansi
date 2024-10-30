@@ -181,7 +181,7 @@ func CountAduanPerBulan(c *gin.Context) {
 
 	// Slice untuk menyimpan jumlah aduan per bulan
 	var monthlyCount []int64
-	
+
 	// Nama-nama bulan
 	bulan := []string{
 		"Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
@@ -192,11 +192,11 @@ func CountAduanPerBulan(c *gin.Context) {
 	for i := 1; i <= 12; i++ {
 		bulanNum := fmt.Sprintf("%02d", i)
 		var count int64
-		
+
 		setup.DB.Model(&models.Aduan{}).
 			Where("YEAR(created_at) = ? AND MONTH(created_at) = ?", tahun, bulanNum).
 			Count(&count)
-		
+
 		monthlyCount = append(monthlyCount, count)
 	}
 
@@ -211,7 +211,7 @@ func CountAduanPerBulan(c *gin.Context) {
 		"options": gin.H{
 			"chart": gin.H{
 				"height": 350,
-				"type": "line",
+				"type":   "line",
 				"zoom": gin.H{
 					"enabled": false,
 				},
@@ -224,7 +224,7 @@ func CountAduanPerBulan(c *gin.Context) {
 			},
 			"grid": gin.H{
 				"row": gin.H{
-					"colors": []string{"#FFE3E3", "transparent"},
+					"colors":  []string{"#FFE3E3", "transparent"},
 					"opacity": 0.5,
 				},
 			},
@@ -232,8 +232,8 @@ func CountAduanPerBulan(c *gin.Context) {
 				"categories": bulan,
 			},
 			"yaxis": gin.H{
-				"min": 0,
-				"max": getMaxValue(monthlyCount) + 5,
+				"min":        0,
+				"max":        getMaxValue(monthlyCount) + 5,
 				"tickAmount": 4,
 			},
 		},
@@ -247,7 +247,7 @@ func getMaxValue(numbers []int64) int64 {
 	if len(numbers) == 0 {
 		return 0
 	}
-	
+
 	max := numbers[0]
 	for _, num := range numbers {
 		if num > max {
@@ -258,68 +258,68 @@ func getMaxValue(numbers []int64) int64 {
 }
 
 func CountAduanPerTahun(c *gin.Context) {
-    // Mendapatkan tahun sekarang
-    currentYear := time.Now().Year()
+	// Mendapatkan tahun sekarang
+	currentYear := time.Now().Year()
 
-    // Slice untuk menyimpan data tahunan
-    var yearlyCount []int64
-    var years []string
+	// Slice untuk menyimpan data tahunan
+	var yearlyCount []int64
+	var years []string
 
-    // Loop untuk 5 tahun terakhir
-    for i := 4; i >= 0; i-- {  // Dibalik agar urutan dari tahun terlama ke terbaru
-        tahun := currentYear - i
-        years = append(years, fmt.Sprintf("%d", tahun))
+	// Loop untuk 5 tahun terakhir
+	for i := 4; i >= 0; i-- { // Dibalik agar urutan dari tahun terlama ke terbaru
+		tahun := currentYear - i
+		years = append(years, fmt.Sprintf("%d", tahun))
 
-        // Format tanggal awal dan akhir tahun
-        startDate := fmt.Sprintf("%d-01-01", tahun)
-        endDate := fmt.Sprintf("%d-12-31", tahun)
+		// Format tanggal awal dan akhir tahun
+		startDate := fmt.Sprintf("%d-01-01", tahun)
+		endDate := fmt.Sprintf("%d-12-31", tahun)
 
-        // Hitung total aduan
-        var totalCount int64
-        setup.DB.Model(&models.Aduan{}).
-            Where("created_at BETWEEN ? AND ?", startDate, endDate).
-            Count(&totalCount)
+		// Hitung total aduan
+		var totalCount int64
+		setup.DB.Model(&models.Aduan{}).
+			Where("created_at BETWEEN ? AND ?", startDate, endDate).
+			Count(&totalCount)
 
-        yearlyCount = append(yearlyCount, totalCount)
-    }
+		yearlyCount = append(yearlyCount, totalCount)
+	}
 
-    // Format response untuk ApexChart
-    chartData := gin.H{
-        "series": []gin.H{
-            {
-                "name": "Jumlah Aduan",
-                "data": yearlyCount,
-            },
-        },
-        "options": gin.H{
-            "chart": gin.H{
-                "height": 350,
-                "type": "line",
-                "zoom": gin.H{
-                    "enabled": false,
-                },
-            },
-            "stroke": gin.H{
-                "curve": "straight",
-            },
-            "grid": gin.H{
-                "row": gin.H{
-                    "colors": []string{"#FFE3E3", "transparent"},
-                    "opacity": 0.5,
-                },
-            },
-            "xaxis": gin.H{
-                "categories": years,
-            },
-            "yaxis": gin.H{
-                "min": 0,
-                "max": getMaxValue(yearlyCount) + 5,
-                "tickAmount": 4,
-            },
-        },
-    }
+	// Format response untuk ApexChart
+	chartData := gin.H{
+		"series": []gin.H{
+			{
+				"name": "Jumlah Aduan",
+				"data": yearlyCount,
+			},
+		},
+		"options": gin.H{
+			"chart": gin.H{
+				"height": 350,
+				"type":   "line",
+				"zoom": gin.H{
+					"enabled": false,
+				},
+			},
+			"stroke": gin.H{
+				"curve": "straight",
+			},
+			"grid": gin.H{
+				"row": gin.H{
+					"colors":  []string{"#FFE3E3", "transparent"},
+					"opacity": 0.5,
+				},
+			},
+			"xaxis": gin.H{
+				"categories": years,
+			},
+			"yaxis": gin.H{
+				"min":        0,
+				"max":        getMaxValue(yearlyCount) + 5,
+				"tickAmount": 4,
+			},
+		},
+	}
 
-    c.JSON(http.StatusOK, chartData)
+	c.JSON(http.StatusOK, chartData)
 }
 
 func DetailAduan(c *gin.Context) {
@@ -385,4 +385,38 @@ func GetAduanByStatus(c *gin.Context) {
 		"status": status,
 		"data":   formattedAduan,
 	})
+}
+
+func GetAduanByProgramId(c *gin.Context) {
+	programId := c.Param("program_id")
+
+	var aduan []models.Aduan
+
+	if err := setup.DB.
+		Preload("Program").
+		Preload("User.Jabatan").
+		Preload("User.Role").
+		Where("program_id = ?", programId).Find(&aduan).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	formattedAduan := make([]gin.H, len(aduan))
+
+	for i, aduan := range aduan {
+		formattedAduan[i] = gin.H{
+			"id":         aduan.Id,
+			"program_id": aduan.ProgramId,
+			"program":    aduan.Program,
+			"user_id":    aduan.UserId,
+			"user":       aduan.User,
+			"keluhan":    aduan.Keluhan,
+			"status":     aduan.Status,
+			"tanggapan":  aduan.Tanggapan,
+			"created_at": aduan.CreatedAt.Format("02-01-2006"),
+			"updated_at": aduan.UpdatedAt.Format("02-01-2006"),
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": formattedAduan})
 }
