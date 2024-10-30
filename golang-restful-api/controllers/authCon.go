@@ -18,7 +18,7 @@ func Register(c *gin.Context) {
 		Username string `json:"username" binding:"required"`
 		Email    string `json:"email" binding:"required"`
 		Password string `json:"password" binding:"required,min=8"`
-		NoHp     string `json:"no_hp" binding:"required"`
+		NoHp     string `json:"no_hp"`
 		Alamat   string `json:"alamat"`
 	}
 
@@ -31,12 +31,10 @@ func Register(c *gin.Context) {
 	input.Password = string(hashedPassword)
 
 	user := models.User{
-		Username: input.Username, 
-		Email: input.Email, 
-		Password: string(hashedPassword), 
-		NoHp: input.NoHp, 
-		Alamat: input.Alamat, 
-		RoleId: 3, 
+		Username:  input.Username,
+		Email:     input.Email,
+		Password:  string(hashedPassword),
+		RoleId:    3,
 		JabatanId: 7,
 	}
 
@@ -95,7 +93,7 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message":       "Login successful",
 		"username":      user.Username,
-		"role": user.Role.Role,
+		"role":          user.Role.Role,
 		"authenticated": true,
 	})
 }
@@ -130,4 +128,3 @@ func Logout(c *gin.Context) {
 	// Kirim respon logout sukses
 	c.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
 }
-

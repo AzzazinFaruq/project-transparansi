@@ -474,3 +474,31 @@ func SearchProgram(c *gin.Context) {
         "data":    formattedPrograms,
     })
 }
+
+func GetProgramLandingPage(c *gin.Context) {
+	var program []models.Program
+
+	if err := setup.DB.
+		Preload("Institusi").
+		Preload("KategoriPenggunaan").
+		Preload("JenisAnggaran").
+		Preload("User.Jabatan").
+		Preload("User.Role").
+		Find(&program).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	formattedPrograms := make([]gin.H, len(program))
+
+	for i, program := range program {
+		formattedPrograms[i] = gin.H{
+			"id":                  program.Id,
+			"nama_program":        program.NamaProgram,
+			"deskripsi":           program.Deskripsi,
+			"foto_before":         program.FotoBefore,
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": formattedPrograms})
+}
+
