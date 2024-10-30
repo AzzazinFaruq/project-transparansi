@@ -24,9 +24,10 @@ router.beforeEach((to, from, next) => {
     next('/401');
   } else if (to.path.startsWith('/dprd') && userRole !== 'anggota') {
     next('/401');
-  }else if (to.path.startsWith('/user') && userRole !== 'masyarakat') {
-  next('/401');
-  }
+  }else if (to.path.startsWith('/program') && !userRole) {
+    next('/login');
+    }
+
   else{
     next();
   }
