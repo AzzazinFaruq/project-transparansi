@@ -1,9 +1,11 @@
 <template>
   <v-container>
-    <div class="" v-if="user.status == 'Menunggu' || user.status == 'Dalam Proses'">
+    
       <v-row>
         <v-col cols="9">
-          <v-form>
+          
+      <v-form>
+      <div class="" v-if="user.status == 'Menunggu' || user.status == 'Dalam Proses'">
         <label class="label-form">Nama Program</label>
         <v-text-field v-model="user.nama_program" variant="outlined"></v-text-field>
         <label class="label-form">Institusi</label>
@@ -96,7 +98,10 @@
               Kembali
             </v-btn>
         </div>
+      </div>
       </v-form>
+    
+    
 
     <div class="" v-if="user.status=='Ditolak'">
       <label class="label-form">Nama Program</label>
@@ -122,13 +127,13 @@
       <VDivider/>
 
       <label class="label-form">Dusun</label>
-      <p>{{ user.nama_program }}</p>
+      <p>{{ user.dusun }}</p>
       <label class="label-form">Desa</label>
-      <p>{{ user.desa_id }}</p>
+      <p>{{ user.Desa.nama_desa }}</p>
       <label class="label-form">Kecamatan</label>
-      <p>{{ user.kecamatan_id }}</p>
+      <p>{{ user.Kecamatan.nama_kecamatan }}</p>
       <label class="label-form">Kabupaten</label>
-      <p>{{ user.kabupaten_id  }}</p>
+      <p>{{ user.Kabupaten.nama_kabupaten  }}</p>
 
       </div>
         </v-col>
@@ -139,7 +144,7 @@
         </v-col>
       </v-row>
 
-    </div>
+    
   </v-container>
 </template>
 <script>
