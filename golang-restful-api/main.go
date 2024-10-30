@@ -48,6 +48,7 @@ func main() {
 	protected.GET("/program/status/:status", controllers.GetProgramByStatus)
 	protected.GET("/index-jenis-anggaran", controllers.GetAllJenisAnggaran)
 	protected.GET("/index-kategori-penggunaan", controllers.GetAllKategoriPenggunaan)
+	protected.GET("/program/search", controllers.SearchProgram)
 
 	// Route Aduan
 	protected.GET("/index-aduan", controllers.GetAllAduan)

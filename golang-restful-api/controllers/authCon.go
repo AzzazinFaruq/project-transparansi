@@ -15,13 +15,11 @@ import (
 func Register(c *gin.Context) {
 
 	var input struct {
-		Username  string `json:"username" binding:"required"`
-		Email     string `json:"email" binding:"required"`
-		Password  string `json:"password" binding:"required,min=8"`
-		NoHp      string `json:"no_hp" binding:"required"`
-		Alamat    string `json:"alamat" binding:"required"`
-		RoleId    int64  `json:"role_id" binding:"required"`
-		JabatanId int64  `json:"jabatan_id" binding:"required"`
+		Username string `json:"username" binding:"required"`
+		Email    string `json:"email" binding:"required"`
+		Password string `json:"password" binding:"required,min=8"`
+		NoHp     string `json:"no_hp" binding:"required"`
+		Alamat   string `json:"alamat"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -32,7 +30,15 @@ func Register(c *gin.Context) {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	input.Password = string(hashedPassword)
 
-	user := models.User{Username: input.Username, Email: input.Email, Password: string(hashedPassword), NoHp: input.NoHp, Alamat: input.Alamat, RoleId: input.RoleId, JabatanId: input.JabatanId}
+	user := models.User{
+		Username: input.Username, 
+		Email: input.Email, 
+		Password: string(hashedPassword), 
+		NoHp: input.NoHp, 
+		Alamat: input.Alamat, 
+		RoleId: 3, 
+		JabatanId: 7,
+	}
 
 	if err := setup.DB.Create(&user).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})

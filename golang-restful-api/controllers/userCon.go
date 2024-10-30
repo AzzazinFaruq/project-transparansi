@@ -4,6 +4,7 @@ import (
 	"Azzazin/backend/models"
 	"Azzazin/backend/setup"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -128,12 +129,12 @@ func DeleteUser(c *gin.Context) {
 
 func CreateDPRD(c *gin.Context) {
 	var input struct {
-		Username   string `json:"username" binding:"required"`
-		Email      string `json:"email" binding:"required,email"`
-		Password   string `json:"password" binding:"required,min=8"`
-		NoHp       string `json:"no_hp" binding:"required"`
-		Alamat     string `json:"alamat" binding:"required"`
-		JabatanId  int64  `json:"jabatan_id" binding:"required"`
+		Username  string `json:"username" binding:"required"`
+		Email     string `json:"email" binding:"required,email"`
+		Password  string `json:"password" binding:"required,min=8"`
+		NoHp      string `json:"no_hp" binding:"required"`
+		Alamat    string `json:"alamat" binding:"required"`
+		JabatanId int64  `json:"jabatan_id" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -154,13 +155,13 @@ func CreateDPRD(c *gin.Context) {
 	}
 
 	newUser := models.User{
-		Username:   input.Username,
-		Email:      input.Email,
-		Password:   string(hashedPassword),
-		NoHp:       input.NoHp,
-		Alamat:     input.Alamat,
-		RoleId:     2,
-		JabatanId:  input.JabatanId,
+		Username:  input.Username,
+		Email:     input.Email,
+		Password:  string(hashedPassword),
+		NoHp:      input.NoHp,
+		Alamat:    input.Alamat,
+		RoleId:    2,
+		JabatanId: input.JabatanId,
 	}
 
 	if err := setup.DB.Create(&newUser).Error; err != nil {
