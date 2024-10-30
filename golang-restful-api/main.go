@@ -18,6 +18,7 @@ func main() {
 	//For route that doesnt need a middleware like login, register, etc.
 	router.POST("/register", controllers.Register)
 	router.POST("/login", controllers.Login)
+	router.GET("/program", controllers.GetAllProgram)
 
 	//for route that need auth with middleware
 	protected := router.Group("/api")
