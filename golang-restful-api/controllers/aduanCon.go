@@ -98,7 +98,8 @@ func TanggapiAduan(c *gin.Context) {
 	id := c.Param("id")
 
 	var input struct {
-		Tanggapan string `json:"tanggapan" binding:"required"`
+		Tanggapan     string `json:"tanggapan" binding:"required"`
+		UserTanggapan int64  `json:"user_tanggapan" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -115,7 +116,7 @@ func TanggapiAduan(c *gin.Context) {
 
 	aduan.Status = "Sudah Ditanggapi"
 	aduan.Tanggapan = input.Tanggapan
-
+	aduan.UserTanggapan = input.UserTanggapan
 	tx := setup.DB.Begin()
 
 	if err := tx.Save(&aduan).Error; err != nil {

@@ -50,6 +50,7 @@ func main() {
 	protected.GET("/index-jenis-anggaran", controllers.GetAllJenisAnggaran)
 	protected.GET("/index-kategori-penggunaan", controllers.GetAllKategoriPenggunaan)
 	protected.GET("/program/search", controllers.SearchProgram)
+	protected.GET("/program/selesai/:id", controllers.SelesaikanProgram)
 
 	// Route Aduan
 	protected.GET("/index-aduan", controllers.GetAllAduan)
