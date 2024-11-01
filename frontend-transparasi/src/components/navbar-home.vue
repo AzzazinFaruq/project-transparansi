@@ -105,9 +105,10 @@ export default {
       this.isScrolled = window.scrollY > 50
       },
     logout() {
-      axios.post('/api/logout')
-      localStorage.removeItem('Role')
-      this.$router.push('/home')
+      axios.post('/api/logout').then((res)=>{
+        localStorage.removeItem('Role')
+        this.$router.push('/home')
+      })
     }
   }
 }
