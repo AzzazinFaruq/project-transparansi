@@ -171,6 +171,7 @@ export default{
       })
     },
     create(){
+      console.log(this.user);
     axios.post(`/api/program/pengajuan`, this.user)
     .then(res=>{
       this.$router.go(-1)

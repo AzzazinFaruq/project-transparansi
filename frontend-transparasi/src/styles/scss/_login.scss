@@ -25,4 +25,8 @@
         height: 50px !important;
         background-color: #BF3232 !important;
     }
+    .v-field__prepend-inner > .v-icon, .v-field__append-inner > .v-icon, .v-field__clearable > .v-icon {
+        opacity: var(--v-medium-emphasis-opacity);
+        margin-right: 8px;
+    }
 }

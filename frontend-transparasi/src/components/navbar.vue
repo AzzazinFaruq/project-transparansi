@@ -1,5 +1,6 @@
 <template>
-  <v-navigation-drawer
+  <div class="">
+    <v-navigation-drawer
     app
     v-model="drawer"
     class="custom-drawer"
@@ -72,15 +73,20 @@
       </v-app-bar-nav-icon>
     </div>
     <v-spacer></v-spacer>
-    <div class="mx-4">
-      <v-icon class="mx-2" @click="handleLogout()">mdi-logout</v-icon>
-      <v-icon class="mx-2">mdi-bell-outline</v-icon>
-      <v-btn append-icon="mdi-chevron-down" class="mx-2" rounded="lg" color="black" variant="outlined" style="border-color: #BF3232;  text-transform: none; font-weight: 600;letter-spacing: 0.5px;">Admin</v-btn>
+    <div class="mx-2">
+      <v-icon class="" @click="handleLogout()">mdi-logout</v-icon>
     </div>
+   <div class="profile-container mr-5"><a href="profile">
+    <img v-if="userPhoto == ''" src="../assets/profile.png"  alt="" class="profile-pictures" >
+    <img v-else :src="`${getImageUrl(userPhoto)}`"  alt="" class="profile-pictures" >
+   </a>
+   </div>
   </v-app-bar>
+  </div>
 </template>
 
 <script>
+import { getImageUrl } from '@/config/foto';
 import router from '@/router';
 import { authStore } from '@/store/auth';
 import { navitemstore } from '@/store/navitem';
@@ -91,18 +97,25 @@ export default {
 
   },
   data: () => ({
+    getImageUrl,
     drawer: true,
     items: [],
     auth:'',
-
+    userPhoto: '',
 
   }),
   mounted(){
     this.handleManajemenUser();
-
+    this.getUserPhoto();
 
   },
   methods:{
+    getUserPhoto(){
+      axios.get('/api/user')
+      .then((res)=>{
+        this.userPhoto = res.data.data.foto_profil
+      })
+    },
     handleManajemenUser(){
       var auth = navitemstore();
       this.auth = auth.stat;
@@ -131,5 +144,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
+.profile-container{
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  .profile-pictures{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+}
 </style>

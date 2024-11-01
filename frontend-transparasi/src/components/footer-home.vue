@@ -39,6 +39,7 @@
 
 <style lang="scss">
 .container-footer{
+ 
   color:white;
   padding-top: 128px;
   padding-bottom: 128px;

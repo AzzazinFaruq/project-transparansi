@@ -22,7 +22,7 @@ router.beforeEach((to, from, next) => {
 
   if (to.path.startsWith('/admin') && userRole !== 'admin') {
     next('/401');
-  } else if (to.path.startsWith('/dprd') && userRole !== 'anggota') {
+  } else if (to.path.startsWith('/dprd') && userRole !== 'dprd') {
     next('/401');
   }else if (to.path.startsWith('/program') && !userRole) {
     next('/login');

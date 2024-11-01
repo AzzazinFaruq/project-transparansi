@@ -1,7 +1,6 @@
 <template>
   <v-container >
-
-    <div class=" ">
+    <div class="mt-5">
         <div class="d-flex">
           <div class="chart-line-dashboard" style="">
             <div class="d-flex justify-space-between">

@@ -1,4 +1,5 @@
 <template>
+  <v-container>
   <div class="mt-3">
         <div class="d-flex align-center justify-space-between mr-3 mt-2">
           <v-card-title><b>Daftar Program</b></v-card-title>
@@ -93,6 +94,7 @@
           </v-pagination>
         </div>
     </div>
+  </v-container>
 </template>
 <script>
 import axios from 'axios';

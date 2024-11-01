@@ -26,16 +26,7 @@ export const authStore = defineStore('auth', {
         })
         .catch(err=>{
           if (err.response.data.status ==  false) {
-            router.push("/login")
-            swal({
-              toast: "true",
-              timer:4000,
-              position:"top-end",
-              icon: "error",
-              title: "Error ",
-              text:"Anda Belum Login",
-              showConfirmButton :false
-              });
+            router.push("/home")
           }
         })
 

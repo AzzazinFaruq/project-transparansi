@@ -1,7 +1,9 @@
 <template>
-  <h1 class="">401 Forbidden Access</h1>
+  <div class="form-login text-center">
+    <h1 class="">401 Forbidden Access</h1>
   <p class="mb-6">You Cannot Access This Page</p>
   <v-btn class="" @click="back()" color="red">Kembali ke halaman sebelumnya</v-btn>
+  </div>
 </template>
 <script>
 export default{
