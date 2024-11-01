@@ -7,13 +7,6 @@
     height="80"
   >
     <v-img
-    v-if="!isScrolled"
-      src="../assets/logo-dprd.png"
-      max-width="150"
-      contain
-    ></v-img>
-    <v-img
-    v-else-if="isScrolled"
       src="../assets/logo-dprd-hitam.png"
       max-width="150"
       contain
@@ -27,7 +20,7 @@
         style="text-transform: none;"
         class=""
         href="/home"
-        :class="{ 'text-white': !isScrolled, 'text-black': isScrolled }"
+        :class="{ 'text-black': !isScrolled, 'text-black': isScrolled }"
       >
         Beranda
       </v-btn>
@@ -36,18 +29,18 @@
         style="text-transform: none;"
         class=""
         href="/program"
-        :class="{ 'text-white': !isScrolled, 'text-black': isScrolled }"
+        :class="{ 'text-black': !isScrolled, 'text-black': isScrolled }"
       >
         Program
       </v-btn>
-    <div class="" v-if="login ===false">
-      <v-btn
-        variant="outlined"
+      <div class="" v-if="login ===false">
+        <v-btn
+          variant="outlined"
         style="text-transform: none;"
-        :style="{'border-color': isScrolled ? '#BF3232' : 'white'}"
+        :style="{'border-color': isScrolled ? '#BF3232' : '#BF3232'}"
         class="ml-6 mr-2"
         href="/register"
-        :class="{ 'text-white': !isScrolled, 'text-black': isScrolled }"
+        :class="{ 'text-black': !isScrolled, 'text-black': isScrolled }"
       >
         Daftar
       </v-btn>
@@ -55,20 +48,19 @@
         variant="tonal"
         style="background-color: #BF3232; text-transform: none;"
         href="/login"
-        class=" text-white "
-      >
-        Masuk
-      </v-btn>
+          class=" text-white "
+          >
+          Masuk
+        </v-btn>
       </div>
-      <div class="" v-else>
+      <div class="" v-if="login ===true">
         <v-btn
-          text
-          :class="{ 'text-white': !isScrolled, 'text-black': isScrolled }"
+          variant="text"
           style="text-transform: none;"
-          class=""
+          class="ml-6 mr-2"
           @click="logout"
         >
-        <v-icon>mdi-logout</v-icon>
+          <v-icon>mdi-logout</v-icon>
         </v-btn>
       </div>
     </div>
@@ -123,4 +115,3 @@ export default {
   transition: none;
 }
 </style>
-y

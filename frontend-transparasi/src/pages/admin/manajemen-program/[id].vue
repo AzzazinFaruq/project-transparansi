@@ -1,9 +1,9 @@
 <template>
   <v-container>
-    
+
       <v-row>
         <v-col cols="9">
-          
+
       <v-form>
       <div class="" v-if="user.status == 'Menunggu' || user.status == 'Dalam Proses'">
         <label class="label-form">Nama Program</label>
@@ -74,12 +74,55 @@
         <div class="" v-if="user.status == 'Dalam Proses'">
           <h2 class="my-3">Detail Dokumentasi</h2>
 
-          <label class="label-form">Before</label>
-          <v-text-field v-model="user.foto_before" variant="outlined"></v-text-field>
-          <label class="label-form">Proses</label>
-          <v-text-field v-model="user.foto_progress" variant="outlined"></v-text-field>
-          <label class="label-form">After</label>
-          <v-text-field v-model="user.foto_after" variant="outlined"></v-text-field>
+          <div class="foto-section">
+    <!-- Foto Before -->
+    <div class="mb-4">
+      <label class="label-form ml-10">Foto Before</label>
+      <div class="preview-container ml-10 mb-2" v-if="previewBefore || user.foto_before">
+        <img :src="previewBefore || `${getImageUrl(user.foto_before)}`" alt="Preview Before" class="preview-image">
+      </div>
+      <v-file-input
+        prepend-icon="false"
+        prepend-inner-icon="mdi-image"
+        v-model="fotoBeforeFile"
+        @change="handleFileUpload($event, 'before')"
+        accept="image/*"
+        variant="outlined"
+      ></v-file-input>
+    </div>
+
+    <!-- Foto Progress -->
+    <div class="mb-4">
+      <label class="label-form ml-10">Foto Progress</label>
+      <div class="preview-container ml-10 mb-2" v-if="previewProgress || user.foto_progress">
+        <img :src="previewProgress || `${getImageUrl(user.foto_before)}`" alt="Preview Progress" class="preview-image">
+      </div>
+      <v-file-input
+        prepend-icon="false"
+        prepend-inner-icon="mdi-image"
+        v-model="fotoProgressFile"
+        @change="handleFileUpload($event, 'progress')"
+        accept="image/*"
+        variant="outlined"
+      ></v-file-input>
+    </div>
+
+    <!-- Foto After -->
+    <div class="mb-4">
+      <label class="label-form ml-10">Foto After</label>
+      <div class="preview-container ml-10 mb-2" v-if="previewAfter || user.foto_after">
+        <img :src="previewAfter || `${getImageUrl(user.foto_after)}`" alt="Preview After" class="preview-image">
+      </div>
+      <v-file-input
+        prepend-icon="false"
+        prepend-inner-icon="mdi-image"
+        v-model="fotoAfterFile"
+        @change="handleFileUpload($event, 'after')"
+        accept="image/*"
+        variant="outlined"
+      ></v-file-input>
+    </div>
+  </div>
         </div>
 
         <div class="d-flex justify-start" v-if="user.status=='Menunggu'">
@@ -100,8 +143,8 @@
         </div>
       </div>
       </v-form>
-    
-    
+
+
 
     <div class="" v-if="user.status=='Ditolak'">
       <label class="label-form">Nama Program</label>
@@ -144,14 +187,16 @@
         </v-col>
       </v-row>
 
-    
+
   </v-container>
 </template>
 <script>
 import axios from 'axios';
+import { getImageUrl } from '@/config/foto';
 export default{
   data() {
     return {
+      getImageUrl,
       institusi:[],
       kablist:[],
       keclist:[],
@@ -172,9 +217,13 @@ export default{
         foto_before:'',
         foto_progress:'',
         foto_after:''
-
-
-      }
+      },
+      fotoBeforeFile: null,
+      fotoProgressFile: null,
+      fotoAfterFile: null,
+      previewBefore: null,
+      previewProgress: null,
+      previewAfter: null
     }
   },
   mounted() {
@@ -239,15 +288,93 @@ export default{
   back(){
     this.$router.go(-1)
   },
+  handleFileUpload(event, type) {
+      const file = event.target.files[0]
+      if (file) {
+        // Update file untuk upload
+        this[`foto${type.charAt(0).toUpperCase() + type.slice(1)}File`] = file
+
+        // Buat preview untuk file baru
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          this[`preview${type.charAt(0).toUpperCase() + type.slice(1)}`] = e.target.result
+        }
+        reader.readAsDataURL(file)
+      } else {
+        // Reset preview jika file dihapus
+        this[`preview${type.charAt(0).toUpperCase() + type.slice(1)}`] = null
+      }
+    },
+
   simpan(){
-    axios.put(`/api/program/edit/${this.$route.params.id}`,this.user)
-    .then(res=>{
-      this.$router.go(-1)
-    })
-    // console.log(this.user)
-  }
+  // Buat objek FormData baru
+  const formData = new FormData()
+
+  // Append semua field dari user object ke FormData
+  formData.append('nama_program', this.user.nama_program)
+  formData.append('deskripsi', this.user.deskripsi)
+  formData.append('jenis_anggaran_id', this.user.jenis_anggaran_id)
+  formData.append('jumlah_anggaran', this.user.jumlah_anggaran)
+  formData.append('kategori_penggunaan_id', this.user.kategori_penggunaan_id)
+  formData.append('institusi_id', this.user.institusi_id)
+  formData.append('dusun', this.user.dusun)
+  formData.append('desa_id', this.user.desa_id)
+  formData.append('kecamatan_id', this.user.kecamatan_id)
+  formData.append('kabupaten_id', this.user.kabupaten_id)
+
+  Object.keys(this.user).forEach(key => {
+        if (key !== 'foto_before' && key !== 'foto_progress' && key !== 'foto_after') {
+          formData.append(key, this.user[key])
+        }
+      })
+
+      // Append file foto jika ada perubahan
+      if (this.fotoBeforeFile) {
+        formData.append('foto_before', this.fotoBeforeFile)
+      }
+      if (this.fotoProgressFile) {
+        formData.append('foto_progress', this.fotoProgressFile)
+      }
+      if (this.fotoAfterFile) {
+        formData.append('foto_after', this.fotoAfterFile)
+      }
+
+  // Kirim dengan axios menggunakan FormData
+  axios.put(`/api/program/edit/${this.$route.params.id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  .then(res => {
+    this.$router.go(-1)
+  })
+}
   },
 
 }
 </script>
+
+
+<style scoped>
+.preview-container {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-section {
+  margin: 20px 0;
+  margin-left: -39px;
+}
+
+
+</style>
 

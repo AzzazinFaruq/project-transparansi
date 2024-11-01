@@ -31,6 +31,9 @@
     Masuk
   </v-btn>
   </v-form>
+  <div class="d-flex justify-center mt-5">
+    <p class="caption">Belum punya akun? Mari Kita<a href="/register"><b> Buat Akun</b></a> Anda</p>
+  </div>
       </v-card>
 </div>
   </div>
@@ -91,19 +94,12 @@ export default{
             switch (role) {
               case "admin":
                 this.$router.push("/admin/dashboard")
-
                 break;
-
-              case "anggota":
+              case "dprd":
               this.$router.push("/dprd/dashboard")
-
-                break;
-
-              case "user":
-              this.$router.push("/user/dashboard")
-
                 break;
               default:
+              this.$router.push("/home")
                 break;
             }
           this.$swal({

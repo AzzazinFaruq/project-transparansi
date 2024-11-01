@@ -59,7 +59,7 @@ export const navitemstore = defineStore('navItem', {
           switch (this.stat) {
             case 'user':
               break;
-            case 'anggota':
+            case 'dprd':
               this.navitemlist = this.itemAnggota;
               break;
             case 'admin':

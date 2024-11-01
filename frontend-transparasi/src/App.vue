@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <navbar v-if="!isLoginPage && !isUserPage  && !is401 && !ishome && !isprogram"   :key="$route.fullPath"></navbar>
+    <navbar v-if="isAdminOrDprdRoute"></navbar>
     <v-main>
       <v-container fluid>
         <router-view/>
@@ -10,29 +10,28 @@
 </template>
 
 <script>
-import axios from 'axios';
-import navbar from './components/navbar.vue';
 import { useRoute } from 'vue-router';
 import { computed } from 'vue';
-export default{
-    setup(){
+import Navbar from './components/navbar.vue';
+import { navitemstore } from './store/navitem';
+
+export default {
+  components: {
+    Navbar
+  },
+  setup() {
     const route = useRoute();
-    const isLoginPage = computed(() => route.path === '/login');
-    const isUserPage = computed(() => route.path === '/user/dashboard');
-    const is401 = computed(() => route.path === '/401');
-    const ishome = computed(() => route.path === '/home');
-    const isprogram = computed(() => route.path === '/program');
-    return { isLoginPage,isUserPage, is401, ishome, isprogram};
-    }
+    const auth = navitemstore();
 
+    auth.check();
+
+    const isAdminOrDprdRoute = computed(() => {
+      return route.path.startsWith('/admin') || route.path.startsWith('/dprd');
+    });
+
+    return {
+      isAdminOrDprdRoute
+    };
+  }
 }
-
 </script>
-
-<style>
-.contain{
-  bottom: 0;
-  position: absolute;
-}
-
-</style>
