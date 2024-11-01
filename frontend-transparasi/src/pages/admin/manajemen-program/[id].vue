@@ -125,18 +125,14 @@
   </div>
         </div>
 
-        <div class="d-flex justify-start" v-if="user.status=='Menunggu'">
-          <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="accept()">
-              Terima
-            </v-btn>
-            <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="rejectprogram()">
-              Tolak
-            </v-btn>
-        </div>
-        <div class="d-flex justify-start" v-if="user.status=='Dalam Proses'">
-          <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="simpan()">
-              Simpan
-            </v-btn>
+        <div class="d-flex justify-start" v-if="user.status=='Dalam Proses' || user.status=='Menunggu'">
+          <v-btn
+            variant="tonal"
+            style="background-color:#387144;color: white;text-transform: none;"
+            @click="isFormComplete ? selesai() : simpan()"
+          >
+            {{ isFormComplete ? 'Selesai' : 'Simpan' }}
+          </v-btn>
             <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="back()">
               Kembali
             </v-btn>
@@ -146,7 +142,7 @@
 
 
 
-    <div class="" v-if="user.status=='Ditolak'">
+    <div class="" v-if="user.status=='Ditolak' || user.status=='Selesai'">
       <label class="label-form">Nama Program</label>
       <p>{{ user.nama_program }}</p>
       <label class="label-form">Institusi</label>
@@ -177,6 +173,26 @@
       <p>{{ user.Kecamatan.nama_kecamatan }}</p>
       <label class="label-form">Kabupaten</label>
       <p>{{ user.Kabupaten.nama_kabupaten  }}</p>
+
+      <h2 class="my-3">Detail Dokumentasi</h2>
+      <VDivider/>
+      <label class="label-form">Foto Before</label>
+      <div class="preview-container ml-10 mb-2" v-if="previewBefore || user.foto_before">
+        <img :src="previewBefore || `${getImageUrl(user.foto_before)}`" alt="Preview Before" class="preview-image">
+      </div>
+      <label class="label-form">Foto Progress</label>
+      <div class="preview-container ml-10 mb-2" v-if="previewProgress || user.foto_progress">
+        <img :src="previewProgress || `${getImageUrl(user.foto_progress)}`" alt="Preview Progress" class="preview-image">
+      </div>
+      <label class="label-form">Foto After</label>
+      <div class="preview-container ml-10 mb-2" v-if="previewAfter || user.foto_after">
+        <img :src="previewAfter || `${getImageUrl(user.foto_after)}`" alt="Preview After" class="preview-image">
+      </div>
+      <div class="d-flex justify-start">
+        <v-btn variant="tonal" style="background-color:#BF3232;color: white;text-transform: none;" @click="back()">
+              Kembali
+            </v-btn>
+      </div>
 
       </div>
         </v-col>
@@ -288,6 +304,10 @@ export default{
   back(){
     this.$router.go(-1)
   },
+  selesai(){
+    axios.get(`/api/program/selesai/${this.$route.params.id}`)
+    this.$router.go(-1)
+  },
   handleFileUpload(event, type) {
       const file = event.target.files[0]
       if (file) {
@@ -350,6 +370,41 @@ export default{
   })
 }
   },
+
+  computed: {
+    isFormComplete() {
+      // Cek apakah semua field required sudah terisi
+      const requiredFields = {
+        nama_program: this.user.nama_program,
+        deskripsi: this.user.deskripsi,
+        jenis_anggaran_id: this.user.jenis_anggaran_id,
+        jumlah_anggaran: this.user.jumlah_anggaran,
+        kategori_penggunaan_id: this.user.kategori_penggunaan_id,
+        institusi_id: this.user.institusi_id,
+        dusun: this.user.dusun,
+        desa_id: this.user.desa_id,
+        kecamatan_id: this.user.kecamatan_id,
+        kabupaten_id: this.user.kabupaten_id
+      }
+
+      // Cek status dan tambahan field foto jika status "Dalam Proses"
+
+        const fotoFields = {
+          foto_before: this.user.foto_before || this.fotoBeforeFile,
+          foto_progress: this.user.foto_progress || this.fotoProgressFile,
+          foto_after: this.user.foto_after || this.fotoAfterFile
+        }
+        Object.assign(requiredFields, fotoFields)
+
+
+      // Cek apakah semua field terisi (tidak kosong)
+      return Object.values(requiredFields).every(field => {
+        if (typeof field === 'string') return field.trim() !== ''
+        return field !== null && field !== undefined;
+      })
+    }
+  },
+
 
 }
 </script>
