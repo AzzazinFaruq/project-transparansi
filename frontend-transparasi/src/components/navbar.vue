@@ -130,11 +130,12 @@ export default {
       try{
         axios.post("/api/logout")
         .then((res)=>{
+          localStorage.removeItem('Role')
           const auth = authStore();
           auth.check(router, this.$swal);
           const item = navitemstore();
           item.reset();
-          localStorage.removeItem('Role')
+          this.$router.push("/login")
         })
       }catch(error){
         console.error("Error during logout:", error);
