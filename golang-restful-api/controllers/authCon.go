@@ -88,7 +88,7 @@ func Login(c *gin.Context) {
 	}
 
 	// Set cookie dengan token JWT
-	c.SetCookie("Authorization", tokenString, int(tokenDuration.Seconds()), "/", "localhost", false, true)
+	c.SetCookie("Authorization", tokenString, int(tokenDuration.Seconds()), "/", "", false, true)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message":       "Login successful",
@@ -123,7 +123,7 @@ func GetCurrentUser(c *gin.Context) {
 // Fungsi untuk logout
 func Logout(c *gin.Context) {
 	// Hapus cookie Authorization dengan durasi negatif untuk menghilangkannya
-	c.SetCookie("Authorization", "", -1, "/", "localhost", false, true)
+	c.SetCookie("Authorization", "", -1, "/", "", false, true)
 
 	// Kirim respon logout sukses
 	c.JSON(http.StatusOK, gin.H{"message": "Logout successful"})

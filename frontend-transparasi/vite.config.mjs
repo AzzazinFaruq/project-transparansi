@@ -49,6 +49,16 @@ export default defineConfig({
     ],
   },
   server: {
-    port: 3000,
+    host: '0.0.0.0',       // Bind to all network interfaces
+    port: 3000,             // Specify the port
+    strictPort: true,       // Exit if the port is already in use
+    // Uncomment and configure HTTPS if needed
+    // https: {
+    //   key: '/path/to/your/server.key',
+    //   cert: '/path/to/your/server.crt',
+    // },
+    // Automatically open the browser (optional)
+    // open: true,
   },
 })
+
