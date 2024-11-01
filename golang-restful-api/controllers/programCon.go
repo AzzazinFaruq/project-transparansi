@@ -502,3 +502,38 @@ func GetProgramLandingPage(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": formattedPrograms})
 }
 
+func SelesaikanProgram(c *gin.Context) {
+	id := c.Param("id")
+	var program models.Program
+
+	if err := setup.DB.First(&program, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
+		return
+	}
+
+	program.Status = "Selesai"
+
+	tx := setup.DB.Begin()
+
+	if err := tx.Save(&program).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyelesaikan program"})
+		return
+	}
+
+	newLog := models.Log{
+		UserId:    program.UserId,
+		Aktivitas: "Penyelesaian Program",
+		Status:    "Selesai",
+	}
+
+	if err := tx.Create(&newLog).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
+		return
+	}
+
+	tx.Commit()
+
+	c.JSON(http.StatusOK, gin.H{"message": "Program berhasil diselesaikan", "data": program})
+}
