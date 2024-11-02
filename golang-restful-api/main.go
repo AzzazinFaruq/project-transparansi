@@ -37,7 +37,10 @@ func main() {
 	protected.GET("/user/username", controllers.GetUserByUsername)
 	
 	// Route Institusi
-	protected.GET("/index-institusi", controllers.GetAllInstitusi)
+  protected.GET("/institusi", controllers.GetInstitusi)
+	protected.GET("/institusi/:id", controllers.GetInstitusiById)
+	protected.PUT("/institusi/:id", controllers.UpdateInstitusi)
+	protected.DELETE("institusi/:id", controllers.DeleteInstitusi)
 	protected.POST("/create-institusi", controllers.CreateInstitusi)
 	protected.GET("/institusi/search", controllers.GetInstitusiByNamaInstitusi)
 	
@@ -45,6 +48,7 @@ func main() {
 	protected.GET("/index-jabatan", controllers.GetAllJabatan)
 	protected.POST("/create-jabatan", controllers.CreateJabatan)
 	protected.GET("/jabatan/search", controllers.GetJabatanByNamaJabatan)
+	protected.DELETE("/jabatan/:id", controllers.DeleteJabatan)
 
 	// Route Program
 	protected.GET("/index-program", controllers.GetAllProgram)

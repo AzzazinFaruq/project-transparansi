@@ -15,8 +15,8 @@ type User struct {
 	JabatanId  int64     `json:"jabatan_id"`
 	CreatedAt  time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`                             // Menggunakan TIMESTAMP dengan default nilai CURRENT_TIMESTAMP
 	UpdatedAt  time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"` // Menggunakan TIMESTAMP dengan auto-update
-	Role       Role
-	Jabatan    Jabatan
+	Role       Role      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Jabatan    Jabatan   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 type Role struct {

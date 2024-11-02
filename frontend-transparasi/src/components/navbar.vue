@@ -7,7 +7,9 @@
   >
     <v-list>
       <v-list-item-title class="logo-wrap">
-        <img src="../assets/Logo-dprd.png" alt="" class="sidebar-logo mb-3">
+        <a href="/home">
+          <img src="../assets/Logo-dprd.png" alt="" class="sidebar-logo mb-3">
+        </a>
       </v-list-item-title>
 
       <!-- Loop untuk item utama lainnya -->
@@ -73,7 +75,7 @@
       </v-app-bar-nav-icon>
     </div>
     <v-spacer></v-spacer>
-    <div class="mx-2">
+    <div class="mr-5">
       <v-icon class="" @click="handleLogout()">mdi-logout</v-icon>
     </div>
    <div class="profile-container mr-5"><a href="/profile">
@@ -91,6 +93,7 @@ import router from '@/router';
 import { authStore } from '@/store/auth';
 import { navitemstore } from '@/store/navitem';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   setup() {
@@ -126,19 +129,61 @@ export default {
       item.check();
 
     },
-    handleLogout(){
-      try{
-        axios.post("/api/logout")
-        .then((res)=>{
-          localStorage.removeItem('Role')
+    async handleLogout() {
+      try {
+        // Konfirmasi logout
+        const result = await Swal.fire({
+          title: 'Apakah anda yakin?',
+          text: "Anda akan keluar dari aplikasi",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, Keluar!',
+          cancelButtonText: 'Batal'
+        });
+
+        // Jika user mengkonfirmasi
+        if (result.isConfirmed) {
+          // Tampilkan loading
+          Swal.fire({
+            title: 'Sedang memproses...',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+
+          // Proses logout
+          await axios.post("/api/logout");
+          localStorage.removeItem('Role');
           const auth = authStore();
           auth.check(router, this.$swal);
           const item = navitemstore();
           item.reset();
-          this.$router.push("/login")
-        })
-      }catch(error){
+
+          // Tampilkan sukses
+          await Swal.fire({
+            icon: 'success',
+            title: 'Berhasil Keluar',
+            text: 'Anda telah berhasil logout',
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+          // Redirect ke login
+          this.$router.push("/home");
+        }
+      } catch (error) {
         console.error("Error during logout:", error);
+        
+        // Tampilkan error
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Terjadi kesalahan saat logout',
+          confirmButtonText: 'Tutup'
+        });
       }
     },
   }

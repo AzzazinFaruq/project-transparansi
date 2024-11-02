@@ -1,81 +1,106 @@
 <template>
-  <v-container>
-    <v-row v-if="status == 'Sudah Ditanggapi' || status=='Belum Ditanggapi'">
-      <v-col cols="9">
-        <div class="">
-      <div class="mb-3">
-        <label class="label-form ">Nama</label>
-      <p class="mt-1">{{ username}}</p>
-      </div>
-      <div class="mb-3">
-        <label class="label-form">Program</label>
-      <p class="mt-1">{{ program }}</p>
-      </div>
-      <div class="mb-3">
-      <label class="label-form ">Keluhan</label>
-      <p class="mt-1">{{ keluhan }}</p>
-      </div>
-      <div class="d-flex justify-start" v-if="tanggapi == false && status =='Belum Ditanggapi'">
-        <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="tanggapi = true">
-          Tanggapi
-        </v-btn>
-        <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="back()">
-          Tutup
-        </v-btn>
-      </div>
-      <div class="" v-if="status == 'Belum Ditanggapi' && tanggapi == true">
-        <div class="">
-        <v-form>
-          <label class="label-form ">Tanggapan</label>
-          <v-textarea
-          class="mt-3"
-          variant="outlined"
-          v-model="input.tanggapan"
-          >
-        </v-textarea>
-        <div class="d-flex justify-start">
-            <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="update()">
-              Simpan
-            </v-btn>
-            <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="back()">
-              Tutup
-            </v-btn>
-          </div>
-        </v-form>
-      </div>
-      </div>
-      <div class="" v-else-if="status == 'Sudah Ditanggapi'">
-        <div class="">
-        <v-form>
-          <label class="label-form ">Tanggapan</label>
-          <v-textarea
-           v-model="input.tanggapan"
-          class="mt-3"
-          variant="outlined"
-          >
-        </v-textarea>
-        <div class="d-flex justify-start">
-            <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="update()">
-              Simpan
-            </v-btn>
-            <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="back()">
-              Tutup
-            </v-btn>
-          </div>
-        </v-form>
-      </div>
-      </div>
-    </div>
-      </v-col>
-      <v-col col="3">
-        <div class="d-flex justify-center" style="width: 100%;">
-          <img src="./logo-dprd-1.png" alt="" style="width: 80%;">
+  <div>
+    <v-card class="pa-5" v-if="status == 'Sudah Ditanggapi' || status=='Belum Ditanggapi'">
+      <div class="d-flex justify-space-between align-center mb-5">
+        <div>
+          <p class="text-h5 font-weight-bold">Detail Keluhan</p>
+          <p class="text-subtitle-1 text-grey">Informasi lengkap keluhan</p>
         </div>
+        <v-btn 
+          color="error" 
+          @click="back()"
+          prepend-icon="mdi-arrow-left"
+        >
+          Kembali
+        </v-btn>
+      </div>
 
-      </v-col>
-    </v-row>
-  </v-container>
+      <v-divider class="mb-5"></v-divider>
+
+      <v-row>
+        <v-col cols="12" md="8">
+          <div class="mb-5">
+            <label class="label-form mb-2 d-block">Nama</label>
+            <p class="text-body-1">{{ username }}</p>
+          </div>
+
+          <div class="mb-5">
+            <label class="label-form mb-2 d-block">Program</label>
+            <p class="text-body-1">{{ program }}</p>
+          </div>
+
+          <div class="mb-5">
+            <label class="label-form mb-2 d-block">Keluhan</label>
+            <p class="text-body-1">{{ keluhan }}</p>
+          </div>
+
+          <!-- Tombol Tanggapi -->
+          <div class="d-flex gap-2 mb-5" v-if="tanggapi == false && status =='Belum Ditanggapi'">
+            <v-btn
+              color="#387144"
+              style="color: white"
+              prepend-icon="mdi-reply"
+              @click="tanggapi = true"
+            >
+              Tanggapi
+            </v-btn>
+            <v-btn
+              color="#BF3232"
+              style="color: white"
+              @click="back()"
+            >
+              Tutup
+            </v-btn>
+          </div>
+
+          <!-- Form Tanggapan -->
+          <v-form v-if="(status == 'Belum Ditanggapi' && tanggapi == true) || status == 'Sudah Ditanggapi'">
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Tanggapan</label>
+              <v-textarea
+                v-model="input.tanggapan"
+                placeholder="Masukkan tanggapan"
+                variant="outlined"
+                density="comfortable"
+                rows="4"
+              ></v-textarea>
+            </div>
+
+            <div class="d-flex gap-2">
+              <v-btn
+                color="#387144"
+                style="color: white"
+                prepend-icon="mdi-content-save"
+                @click="update()"
+              >
+                Simpan
+              </v-btn>
+              <v-btn
+                color="#BF3232"
+                style="color: white"
+                @click="back()"
+              >
+                Batal
+              </v-btn>
+            </div>
+          </v-form>
+        </v-col>
+
+        <v-col cols="12" md="4">
+          <div class="d-flex justify-center">
+            <v-img
+              src="./logo-dprd-1.png"
+              max-width="250"
+              contain
+              class="mt-5"
+            ></v-img>
+          </div>
+        </v-col>
+      </v-row>
+    </v-card>
+  </div>
 </template>
+
 <script>
 import axios from 'axios';
 export default{
@@ -86,15 +111,23 @@ export default{
       keluhan:'',
       status:'',
       input:{
-      tanggapan:''
+      tanggapan:'',
+      user_tanggapan:''
       },
       tanggapi:false
     }
   },
   mounted() {
     this.getKeluhan()
+    this.getUser()
   },
   methods: {
+    getUser(){
+      axios.get(`/api/user`)
+      .then(res=>{
+        this.input.user_tanggapan = res.data.data.Id
+      })
+    },  
     getKeluhan(){
       axios.get(`/api/aduan/${this.$route.params.id}`)
       .then(res=>{
@@ -118,3 +151,14 @@ export default{
   },
 }
 </script>
+
+<style scoped>
+.label-form {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.v-btn {
+  text-transform: none !important;
+}
+</style>

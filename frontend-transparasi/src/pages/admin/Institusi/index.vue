@@ -3,9 +3,10 @@
   <div class="mt-3">
     <div class="d-flex align-center justify-space-between mr-3 mt-2">
       <v-card-title><b>Daftar Institusi</b></v-card-title>
-      <v-btn color="#BF3232" prepend-icon="mdi-plus" href="/admin/institusi/tambah">Institusi</v-btn>
+      <v-btn color="#387144" prepend-icon="mdi-plus" style="text-transform: none;" href="/admin/institusi/tambah">Institusi</v-btn>
     </div>
   </div>
+  <VDivider/>
   <div class="">
           <v-table class="no-divider ">
             <thead style="">
@@ -25,11 +26,14 @@
                 <tr
                 v-for="(item, index) in paginatedItems" :key="index"
                 >
-              <td>{{ item.CreatedAt}}</td>
+              <td>{{ item.created_at}}</td>
               <td>{{ item.nama_institusi }}</td>
               <td>
-                <v-btn class="rounded-lg" style="background-color:#3884B0;color: white;text-transform: none;" @click="detail(item.id)">
-                  Lihat Detail
+                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #3884B0;color: white;" icon @click="edit(item.id)">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" icon @click="deleteConfirmation(item.id)">
+                  <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </td>
 
@@ -64,6 +68,7 @@
 </template>
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 export default {
   data(){
     return{
@@ -81,13 +86,63 @@ export default {
       this.currentPage = page;
     },
     getInstitusi(){
-      axios.get('/api/index-institusi')
+      axios.get('/api/institusi')
       .then((res)=>{
         this.institusi = res.data.data;
       })
       .catch((err)=>{
         console.log(err);
       })
+    },
+    deleteConfirmation(id) {
+      Swal.fire({
+        title: 'Hapus Data?',
+        text: "Data yang dihapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#BF3232',
+        cancelButtonColor: '#808080',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Tampilkan loading
+          Swal.fire({
+            title: 'Menghapus Data...',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading()
+            }
+          })
+
+          // Proses delete
+          axios.delete(`/api/institusi/${id}`)
+            .then(() => {
+              Swal.fire({
+                icon: 'success',
+                title: 'Terhapus!',
+                text: 'Data berhasil dihapus',
+                showConfirmButton: false,
+                timer: 1500
+              }).then(() => {
+                // Refresh data
+                this.$router.go(0)
+              })
+            })
+            .catch((error) => {
+              console.error('Error:', error)
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Gagal menghapus data',
+              })
+            })
+        }
+      })
+    },
+    edit(id){
+      this.$router.push(`/admin/institusi/edit/${id}`)
     }
   },
   computed: {

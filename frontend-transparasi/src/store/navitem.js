@@ -25,6 +25,17 @@ export const navitemstore = defineStore('navItem', {
           icon: 'mdi-email',
           route:'/admin/keluhan'
         },
+        {
+          text: 'Manajemen Institusi',
+          icon: 'mdi-account-group',
+          route:'/admin/institusi'
+        },
+        {
+          text: 'Manajemen Jabatan',
+          icon: 'mdi-account-group',
+          route:'/admin/jabatan'
+        },
+        
 
       ],
       itemAnggota: [
