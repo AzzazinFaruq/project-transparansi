@@ -4,8 +4,13 @@
     <navbar-home />
     <img src="./img/dprd.png" alt="" style="width: 100%; display: block; margin-top: -80px; filter: brightness(50%);">
     <div class="wrapper-title text-center">
-      <h1 class="title">Selamat Datang</h1>
-      <h1>Website Transparansi oleh POKIR/JASMAS DPRD Jawa Timur</h1>
+      <p class="title">Selamat Datang</p>
+      <h1 class="caption">Website Transparansi oleh POKIR/JASMAS DPRD Jawa Timur</h1>
+      <h3>Selamat Datang</h3>
+      <h4 class="">Website Transparansi oleh POKIR/JASMAS DPRD Jawa Timur</h4>
+    </div>
+    <div class="text-center">
+      
     </div>
 </div>
 <v-container class="" style="padding:16px !important;">
@@ -58,7 +63,7 @@
   <div class="" style="margin-bottom: 128px;">
     <v-container>
       <v-row>
-          <v-col  v-for="(item,index) in program.slice(0,4)" :key="item.id" cols="3">
+          <v-col  v-for="(item,index) in program.slice(0,4)" :key="item.id" cols="12" md="3">
           <div v-if="index <3 " class="border-lg card-program pa-4">
             <div class="image-container">
               <img :src="`${getImageUrl(item.foto_before)}`" alt="" class="program-image">
@@ -115,6 +120,13 @@ export default{
 }
 </script>
 <style scooped lang="scss">
+
+$breakpoint-mobile: 1000px;
+@mixin mobile {
+    @media (max-width: $breakpoint-mobile) {
+      @content;
+    }
+  }
 .section-about{
   margin-top: 64px;
 }
@@ -160,7 +172,9 @@ export default{
 
 .home-wrapper {
   position: relative;
+  
   .wrapper-title{
+    
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   color: white;
     position: absolute;
@@ -168,7 +182,15 @@ export default{
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
+    .caption{
+      @include mobile{
+    display: none;
+    }
+    }
     .title{
+      @include mobile{
+    display: none;
+    }
       font-size: 96px;
       font-weight: bold;
     }

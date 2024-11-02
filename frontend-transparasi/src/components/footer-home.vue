@@ -31,7 +31,7 @@
       </div>
       </v-col>
     </v-row>
-    <div class="d-flex justify-center " >
+    <div class="text-center" >
     <p>Copyright @ 2024 Dewan Perwakilan Rakyat Daerah Jawa Timur</p>
   </div>
   </div>

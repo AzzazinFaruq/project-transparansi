@@ -6,14 +6,14 @@
   <div class="mt-10">
     <v-row>
       <v-col cols="12" md="3">
-        <div class="">
+        <div class="d-flex justify-center">
           <v-img v-if="user.foto_profil == ''" src="@/assets/profile.png" width="80%" height="auto"></v-img>
           <v-img :src="`${getImageUrl(user.foto_profil)}`" width="80%" height="auto"></v-img>
         </div>
       </v-col>
       <v-col cols="12" md="9">
         <v-row>
-          <v-col cols="6">
+          <v-col cols="12" sm="6">
           <div class="mb-10">
           <label for="" class="label-form">Nama</label>
             <p>{{ user.username }}</p>
@@ -27,7 +27,7 @@
             <p>{{ user.no_hp }}</p>
         </div>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="12" sm="6">
             <div class="mb-10">
           <label for="" class="label-form">Email</label>
           <p>{{ user.email }}</p>

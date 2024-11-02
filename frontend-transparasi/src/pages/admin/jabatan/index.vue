@@ -1,9 +1,9 @@
 <template>
-  <v-container>
-  <div class="mt-5">
-    <div class="d-flex justify-space-between align-center mb-5">
+  <v-container fluid class="">
+    <div class="d-flex justify-space-between align-center mb-5 px-4">
       <div>
         <p class="text-h5 font-weight-bold">Manajemen Jabatan</p>
+        <p class="text-subtitle-1 text-grey">Kelola data jabatan</p>
       </div>
       <v-dialog v-model="dialog" max-width="500px" persistent>
         <template v-slot:activator="{ props }">
@@ -65,55 +65,52 @@
       </v-dialog>
     </div>
 
-    <v-divider class="mb-5"></v-divider>
-    <!-- Table -->
-    <v-table class="no-divider">
-      <thead>
-        <tr>
-          <th class="text-center" style="width: 80px">No</th>
-          <th class="text-left">Nama Jabatan</th>
-          <th class="text-center" style="width: 100px">Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(item, index) in displayedItems" :key="item.Id">
-          <td class="text-center">{{ startNumber + index }}</td>
-          <td>{{ item.jabatan }}</td>
-          <td class="text-center">
-            <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" icon @click="deleteItem(item.Id)">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-          </td>
-        </tr>
-      </tbody>
-    </v-table>
+    <div class="table-responsive">
+      <v-table class="no-divider">
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 80px">No</th>
+            <th class="text-left">Nama Jabatan</th>
+            <th class="text-center" style="width: 100px">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in paginatedItems" :key="item.Id">
+            <td class="text-center">{{ startNumber + index }}</td>
+            <td>{{ item.jabatan }}</td>
+            <td class="text-center">
+              <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" icon @click="deleteItem(item.Id)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+            </td>
+          </tr>
+        </tbody>
+      </v-table>
+    </div>
 
-    <!-- Pagination -->
-  </div>
-        <v-divider class="my-3"></v-divider>
-        <div class="d-flex justify-end align-center">
-          <p class="mr-3">Data/Halaman :</p>
-          <div class="mr-5" style="width: 100px;height: 40px;">
-            <v-select
-            density="compact"
-            class="custom-outline"
-            v-model="itemsPerPage"
-            :items="[5, 10, 25, 50, 100]"
-            variant="outlined"
-          ></v-select>
-          </div>
-          <p class="mr-5">{{ currentPage }} dari {{ totalPages }} Halaman</p>
-          <v-pagination
-            class="custom-pagination"
-            :total-visible="0"
-            border
-            v-model="currentPage"
-            :length="totalPages"
-            @input="changePage"
-          >
-          </v-pagination>
-
-  </div>
+    <v-divider class="my-3"></v-divider>
+    <div class="d-flex flex-wrap justify-end align-center">
+      <p class="mr-3">Data/Halaman :</p>
+      <div class="mr-5" style="width: 100px;height: 40px;">
+        <v-select
+          density="compact"
+          class="custom-outline"
+          v-model="itemsPerPage"
+          :items="[5, 10, 25, 50, 100]"
+          variant="outlined"
+        ></v-select>
+      </div>
+      <p class="mr-5">{{ currentPage }} dari {{ totalPages }} Halaman</p>
+      <v-pagination
+        class="custom-pagination"
+        :total-visible="$vuetify.display.mdAndUp ? 7 : 3"
+        border
+        v-model="currentPage"
+        :length="totalPages"
+        @input="handlePageChange"
+      >
+      </v-pagination>
+    </div>
   </v-container>
 </template>
 
@@ -134,24 +131,20 @@ export default {
         required: v => !!v || 'Field ini harus diisi'
       },
       // Pagination
-      page: 1,
+      currentPage: 1,
       itemsPerPage: 10,
-      totalItems: 0
     }
   },
 
   computed: {
     totalPages() {
-      return Math.ceil(this.jabatan.length / this.itemsPerPage)
+      return Math.ceil(this.jabatan.length / this.itemsPerPage);
     },
-    displayedItems() {
-      const start = (this.page - 1) * this.itemsPerPage
-      const end = start + this.itemsPerPage
-      return this.jabatan.slice(start, end)
+    paginatedItems() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.jabatan.slice(start, end);
     },
-    startNumber() {
-      return (this.page - 1) * this.itemsPerPage + 1
-    }
   },
 
   mounted() {
@@ -269,5 +262,51 @@ export default {
   text-transform: none !important;
 }
 
+/* Responsive styles */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
+@media (max-width: 600px) {
+  .d-flex.justify-space-between {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .d-flex.justify-end {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .mr-3, .mr-5 {
+    margin-right: 0 !important;
+    margin-bottom: 0.5rem;
+  }
+
+  .custom-pagination {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Custom scrollbar for better UX */
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 </style>

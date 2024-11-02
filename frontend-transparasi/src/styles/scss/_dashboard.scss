@@ -5,8 +5,16 @@ $breakpoint-mobile: 768px;
     }
   }
 .dashboard-card{
+
+  @include mobile{
+    text-align: center;
+  }
   color: white;
 .title{
+  @include mobile{
+    text-align: center;
+    width: 100%;
+  }
   padding: 15px;
   width: 35%;
 }

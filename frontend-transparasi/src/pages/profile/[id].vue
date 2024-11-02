@@ -42,7 +42,7 @@
        <v-col cols="12" md="9">
         <v-form @submit.prevent="saveProfile">
          <v-row>
-           <v-col cols="6">
+           <v-col cols="12" sm="6">
            <div class="mb-10">
            <label for="" class="label-form">Nama</label>
              <v-text-field v-model="user.username" variant="outlined"></v-text-field>
@@ -56,7 +56,7 @@
              <v-text-field v-model="user.no_hp" variant="outlined"></v-text-field>
          </div>
            </v-col>
-           <v-col cols="6">
+           <v-col cols="12" sm="6">
              <div class="mb-10">
            <label for="" class="label-form">Email</label>
            <v-text-field v-model="user.email" variant="outlined"></v-text-field>
