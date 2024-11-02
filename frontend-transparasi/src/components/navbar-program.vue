@@ -84,7 +84,7 @@
           >
             <v-icon>mdi-logout</v-icon>
           </v-btn>
-          <div class="profile-container" style="margin-top:1.8px;">
+          <div class="profile-container mr-4" style="margin-top:1.8px;">
             <a href="/profile">
               <img v-if="userPhoto == ''" src="../assets/profile.png" alt="" class="profile-pictures">
               <img v-else :src="`${getImageUrl(userPhoto)}`" alt="" class="profile-pictures">
@@ -111,7 +111,7 @@
         <v-list-item class="px-4 py-4 mb-2">
           <div v-if="login">
             <div class="d-flex align-center mb-2">
-              <div class="profile-container mr-4">
+              <div class="profile-container mr-4" style="margin-top:1.8px;">
                 <img v-if="userPhoto == ''" src="../assets/profile.png" alt="" class="profile-pictures">
                 <img v-else :src="`${getImageUrl(userPhoto)}`" alt="" class="profile-pictures">
               </div>

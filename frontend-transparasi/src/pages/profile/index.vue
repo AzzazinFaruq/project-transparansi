@@ -6,7 +6,7 @@
   <div class="mt-10">
     <v-row>
       <v-col cols="12" md="3">
-        <div class="d-flex justify-center">
+        <div class="text-center">
           <v-img v-if="user.foto_profil == ''" src="@/assets/profile.png" width="80%" height="auto"></v-img>
           <v-img :src="`${getImageUrl(user.foto_profil)}`" width="80%" height="auto"></v-img>
         </div>

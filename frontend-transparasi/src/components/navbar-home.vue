@@ -94,7 +94,7 @@
           >
             <v-icon>mdi-logout</v-icon>
           </v-btn>
-          <div class="profile-container" style="margin-top:1.8px;">
+          <div class="profile-container mr-4" style="margin-top:1.8px;">
             <a href="/profile">
               <img v-if="userPhoto == ''" src="../assets/profile.png" alt="" class="profile-pictures">
               <img v-else :src="`${getImageUrl(userPhoto)}`" alt="" class="profile-pictures">
