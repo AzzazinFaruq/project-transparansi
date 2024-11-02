@@ -8,7 +8,7 @@
     <v-list>
       <v-list-item-title class="logo-wrap">
         <a href="/home">
-          <img src="../assets/Logo-dprd.png" alt="" class="sidebar-logo mb-3">
+          <img src="./logo-dprd.png" alt="" class="sidebar-logo mb-3">
         </a>
       </v-list-item-title>
 
