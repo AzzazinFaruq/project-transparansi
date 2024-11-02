@@ -33,13 +33,18 @@ func main() {
 	protected.DELETE("/user/deleteuser/:id", controllers.DeleteUser) // delete user (admin only)
 	protected.POST("/logout", controllers.Logout)
 	protected.POST("/create-dprd", controllers.CreateDPRD)
-	protected.GET("/index-jabatan", controllers.GetAllJabatan)
 	protected.GET("/index-role", controllers.GetAllRole)
 	protected.GET("/user/username", controllers.GetUserByUsername)
-
+	
 	// Route Institusi
 	protected.GET("/index-institusi", controllers.GetAllInstitusi)
 	protected.POST("/create-institusi", controllers.CreateInstitusi)
+	protected.GET("/institusi/search", controllers.GetInstitusiByNamaInstitusi)
+	
+	// Route Jabatan
+	protected.GET("/index-jabatan", controllers.GetAllJabatan)
+	protected.POST("/create-jabatan", controllers.CreateJabatan)
+	protected.GET("/jabatan/search", controllers.GetJabatanByNamaJabatan)
 
 	// Route Program
 	protected.GET("/index-program", controllers.GetAllProgram)
