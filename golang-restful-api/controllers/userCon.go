@@ -4,6 +4,7 @@ import (
 	"Azzazin/backend/models"
 	"Azzazin/backend/setup"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -90,24 +91,84 @@ func AddUser(c *gin.Context) {
 func EditUser(c *gin.Context) {
 	userId := c.Param("id")
 	var user models.User
-	var input models.User
 
+	// Cek user yang akan diedit
 	if err := setup.DB.First(&user, userId).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Pengguna tidak ditemukan"})
 		return
 	}
 
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+	// Ambil data form
+	username := c.PostForm("username")
+	email := c.PostForm("email")
+	noHp := c.PostForm("no_hp")
+	alamat := c.PostForm("alamat")
+	roleId := c.PostForm("role_id")
+	jabatanId := c.PostForm("jabatan_id")
+
+	// Update data user
+	updates := map[string]interface{}{}
+
+	if username != "" {
+		updates["username"] = username
+	}
+	if email != "" {
+		updates["email"] = email
+	}
+	if noHp != "" {
+		updates["no_hp"] = noHp
+	}
+	if alamat != "" {
+		updates["alamat"] = alamat
+	}
+	if roleId != "" {
+		updates["role_id"] = roleId
+	}
+	if jabatanId != "" {
+		updates["jabatan_id"] = jabatanId
 	}
 
-	if err := setup.DB.Model(&user).Updates(input).Error; err != nil {
+	// Handle foto profil jika ada
+	file, err := c.FormFile("foto_profil")
+	if err == nil {
+		// Validasi tipe file
+		if !strings.HasSuffix(strings.ToLower(file.Filename), ".jpg") &&
+			!strings.HasSuffix(strings.ToLower(file.Filename), ".jpeg") &&
+			!strings.HasSuffix(strings.ToLower(file.Filename), ".png") {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Format file tidak didukung"})
+			return
+		}
+
+		// Validasi ukuran file (max 2MB)
+		if file.Size > 2*1024*1024 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Ukuran file terlalu besar"})
+			return
+		}
+		
+		// Gunakan nama file asli
+		uploadPath := "uploads/profile_pictures/" + file.Filename
+		
+		// Simpan file
+		if err := c.SaveUploadedFile(file, uploadPath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan foto profil"})
+			return
+		}
+
+		// Simpan path lengkap ke database
+		updates["foto_profil"] = uploadPath
+	}
+
+	if err := setup.DB.Model(&user).Updates(updates).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal memperbarui pengguna"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": user})
+	// Reload user data dengan relasi
+	setup.DB.Preload("Role").
+		Preload("Jabatan").
+		First(&user, userId)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Data berhasil diperbarui", "data": user})
 }
 
 func DeleteUser(c *gin.Context) {
@@ -175,4 +236,20 @@ func CreateDPRD(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "DPRD berhasil dibuat", "data": newUser})
+}
+
+func GetUserByUsername(c *gin.Context) {
+	username := c.Query("username")
+	role := c.Query("role")
+
+	var user []models.User
+
+	if err := setup.DB.Where("username LIKE ?", "%"+username+"%").
+		Where("role_id = ?", role).
+		Find(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": user})
 }

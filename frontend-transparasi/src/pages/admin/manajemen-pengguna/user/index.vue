@@ -1,14 +1,15 @@
 <template>
   <v-container>
   <div class="mt-5">
-        <div class="d-flex align-center justify-space-between mr-3 mt-2">
-          <v-card-title><b>Daftar Program</b></v-card-title>
-          <a href="">
-            <v-icon class="">mdi-dots-vertical</v-icon>
-          </a>
+        <div class="d-flex align-center justify-start mr-3 mt-2">
+          <h2>Daftar User</h2>
         </div>
-        <v-divider class="mx-2"></v-divider>
-        <div class="">
+        <div class="d-flex justify-space-between">
+          <div class=""> 
+            <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Cari User" variant="outlined" style="width: 300px;" @keyup.enter="searchUser"></v-text-field>
+          </div>
+          </div>
+          <div class="">
           <v-table class="no-divider ">
             <thead style="">
               <tr class="">
@@ -91,12 +92,19 @@ export default {
       Userlist:[],
       currentPage: 1,
       itemsPerPage: 10,
+      search:'',
     }
   },
   mounted() {
     this.user();
   },
   methods: {
+    searchUser(){
+      axios.get(`/api/user/username?username=${this.search}&role=3`)
+      .then(res=>{
+        this.Userlist = res.data.data
+      })
+    },
     deleteUser(id){
       axios.delete(`api/user/deleteuser/${id}`)
       .then(res=>{
@@ -130,5 +138,13 @@ export default {
       return this.Userlist.slice(start, end);
     },
   },
+  watch: {
+    search(newVal) {
+      if (!newVal || newVal.trim() === '') {
+        this.user();
+        this.currentPage = 1; // Reset ke halaman pertama
+      }
+    }
+  }
 }
 </script>

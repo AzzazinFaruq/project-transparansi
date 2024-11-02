@@ -26,16 +26,17 @@ func GetAllAduan(c *gin.Context) {
 
 	for i, aduan := range Aduan {
 		formattedAduans[i] = gin.H{
-			"id":         aduan.Id,
-			"program_id": aduan.ProgramId,
-			"program":    aduan.Program,
-			"user_id":    aduan.UserId,
-			"user":       aduan.User,
-			"keluhan":    aduan.Keluhan,
-			"status":     aduan.Status,
-			"tanggapan":  aduan.Tanggapan,
-			"created_at": aduan.CreatedAt.Format("02-01-2006"), // Format d-m-y
-			"updated_at": aduan.UpdatedAt.Format("02-01-2006"), // Format d-m-y
+			"id":             aduan.Id,
+			"program_id":     aduan.ProgramId,
+			"program":        aduan.Program,
+			"user_id":        aduan.UserId,
+			"user":           aduan.User,
+			"keluhan":        aduan.Keluhan,
+			"status":         aduan.Status,
+			"tanggapan":      aduan.Tanggapan,
+			"user_tanggapan": aduan.UserTanggapan,
+			"created_at":     aduan.CreatedAt.Format("02-01-2006"), // Format d-m-y
+			"updated_at":     aduan.UpdatedAt.Format("02-01-2006"), // Format d-m-y
 		}
 	}
 

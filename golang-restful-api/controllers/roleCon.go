@@ -18,3 +18,4 @@ func GetAllRole(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": role})
 }
+

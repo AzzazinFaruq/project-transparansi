@@ -1,14 +1,27 @@
 <template>
   <v-container>
   <div class="mt-3">
-        <div class="d-flex align-center justify-space-between mr-3 mt-2">
-          <v-card-title><b>Daftar Program</b></v-card-title>
-          <div class="d-flex align-center">
-           <p class="mr-3">Filter : </p>
+        <div class="d-flex align-center justify-start mt-2 mb-3">
+          <h2>Daftar Program</h2>
+          </div>
+          <div class="d-flex justify-space-between mb-3">
+            <div class="" style="width: 300px; margin-bottom: -20px;">
+              <v-text-field
+              class=""
+              density="compact"
+              prepend-inner-icon="mdi-magnify"
+              variant="outlined"
+              v-model="search"
+              label="Cari Program"
+              @keyup.enter="searchProgram"
+              ></v-text-field>
+            </div>
+            <div class="d-flex align-self-center">
+              <p class="mr-3">Filter : </p>
            <div style=" min-width: 120px;">
             <v-btn
                 variant="text"
-                style="border-color: #BF3232;  text-transform: none; letter-spacing: 0.5px; margin-top: 3px; padding: 0;"
+                style="border-color: #BF3232;  text-transform: none; letter-spacing: 0.5px; margin-top: -5px; padding: 0;"
                 append-icon="mdi-chevron-down"
               >
                 {{ filter }}
@@ -25,8 +38,7 @@
                 </v-menu>
               </v-btn>
            </div>
-          </div>
-
+            </div>
         </div>
         <v-divider class="mx-2"></v-divider>
         <div class="">
@@ -103,17 +115,24 @@ export default {
   data() {
     return {
       filter:'All Status',
-      filterList:["All Status","Menunggu","Disetujui","Ditolak"],
+      filterList:["All Status","Menunggu","Dalam Proses","Selesai","Ditolak"],
       detailProgram:[],
       Userlist:[],
       currentPage: 1,
       itemsPerPage: 10,
+      search:'',
     }
   },
   mounted() {
     this.user();
   },
   methods: {
+    searchProgram(){
+      axios.get(`/api/program/search?nama=${this.search}`)
+      .then(res=>{
+        this.Userlist = res.data.data
+      })
+    },
     selectedFilter(item){
       this.filter = item
       if (this.filter == "All Status") {
@@ -155,6 +174,14 @@ export default {
         console.log(res.data.data)
         this.user();
       })
+    }
+  },
+  watch: {
+    search(newVal) {
+      if (!newVal || newVal.trim() === '') {
+        this.user();
+        this.currentPage = 1; // Reset ke halaman pertama
+      }
     }
   },
   computed: {
