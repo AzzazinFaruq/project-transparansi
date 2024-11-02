@@ -79,3 +79,14 @@ func GetJabatanByNamaJabatan(c *gin.Context) {
 	})
 }
 
+func DeleteJabatan(c *gin.Context) {
+	id := c.Param("id")
+
+	if err := setup.DB.Delete(&models.Jabatan{}, id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Jabatan berhasil dihapus"})
+}
+

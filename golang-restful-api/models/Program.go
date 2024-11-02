@@ -7,12 +7,12 @@ type Program struct {
 	NamaProgram          string `json:"nama_program"`
 	Deskripsi            string `json:"deskripsi"`
 	InstitusiId          int64  `json:"institusi_id"`
-	Institusi            Institusi
+	Institusi            Institusi `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	JenisAnggaranId      int64 `json:"jenis_anggaran_id"`
-	JenisAnggaran        JenisAnggaran
+	JenisAnggaran        JenisAnggaran `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	JumlahAnggaran       string `json:"jumlah_anggaran"`
 	KategoriPenggunaanId int64  `json:"kategori_penggunaan_id"`
-	KategoriPenggunaan   KategoriPenggunaan
+	KategoriPenggunaan   KategoriPenggunaan `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	FotoBefore           string    `json:"foto_before"`
 	FotoProgress         string    `json:"foto_progress"`
 	FotoAfter            string    `json:"foto_after"`
@@ -24,7 +24,7 @@ type Program struct {
 	KabupatenId          int64     `json:"kabupaten_id"`
 	Kabupaten            Kabupaten `gorm:"foreignKey:KabupatenId;references:Id"`
 	UserId               int64     `json:"user_id"`
-	User                 User      `gorm:"foreignKey:UserId;references:Id"`
+	User                 User      `gorm:"foreignKey:UserId;references:Id;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Status               string    `json:"status"`
 	CreatedAt            time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`                             // Menggunakan TIMESTAMP dengan default nilai CURRENT_TIMESTAMP
 	UpdatedAt            time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"` // Menggunakan TIMESTAMP dengan auto-update

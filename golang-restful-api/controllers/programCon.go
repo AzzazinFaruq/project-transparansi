@@ -370,6 +370,7 @@ func GetProgramByStatus(c *gin.Context) {
 		formattedPrograms[i] = gin.H{
 			"id":                  program.Id,
 			"nama_program":        program.NamaProgram,
+			"deskripsi":           program.Deskripsi,
 			"institusi":           program.Institusi,
 			"jenis_anggaran":      program.JenisAnggaran,
 			"jumlah_anggaran":     program.JumlahAnggaran,

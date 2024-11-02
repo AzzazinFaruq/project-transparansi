@@ -104,16 +104,23 @@ export default {
         console.log(err);
       })
     },
-    getProgram() {
-      axios.get('/api/index-program')
-      .then(res => {
-        this.program = res.data.data;
-        console.log(this.program);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-    },
+    async getProgram() {
+    try {
+      // Mengambil program dengan status "diproses"
+      const diprosesRes = await axios.get('/api/program/status/Dalam Proses');
+      const diprosesData = diprosesRes.data.data || [];
+
+      // Mengambil program dengan status "selesai"
+      const selesaiRes = await axios.get('/api/program/status/Selesai');
+      const selesaiData = selesaiRes.data.data || [];
+
+      // Menggabungkan kedua array
+      this.program = [ ...selesaiData,...diprosesData];
+      console.log(this.program);
+    } catch (err) {
+      console.log(err);
+    }
+  },
     tanggapi(id) {
       this.$router.push(`/program/detail/${id}`);
     }

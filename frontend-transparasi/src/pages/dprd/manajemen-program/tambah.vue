@@ -1,94 +1,164 @@
 <template>
-  <v-container>
-    <div class="">
-      <v-form>
-        <label class="label-form">Nama Program</label>
-        <v-text-field v-model="user.nama_program" variant="outlined"></v-text-field>
-        <label class="label-form">Institusi</label>
-        <v-select
-            v-model="user.institusi_id"
-            :items="institusi"
-            item-title="nama_institusi"
-            item-value="Id"
-            variant="outlined"
-          ></v-select>
-        <label  class="label-form">Deskripsi</label>
-        <v-textarea v-model="user.deskripsi" variant="outlined"></v-textarea>
-
-        <h2 class="my-3">Detail Anggaran</h2>
-
-        <label class="label-form">Jenis Anggaran</label>
-        <v-select
-            v-model="user.jenis_anggaran_id"
-            :items="JenisAnggaran"
-            item-title="jenis"
-            item-value="Id"
-            variant="outlined"
-          ></v-select>
-        <label class="label-form">Jumlah Anggaran</label>
-        <v-text-field v-model="user.jumlah_anggaran" variant="outlined"></v-text-field>
-        <label class="label-form">kategori Penggunaan</label>
-        <v-select
-            v-model="user.kategori_penggunaan_id"
-            :items="KategoriPenggunaan"
-            item-title="kategori"
-            item-value="Id"
-            variant="outlined"
-          ></v-select>
-
-          <h2 class="my-3">Detail Alamat</h2>
-
-<label class="label-form">Dusun</label>
-<v-text-field v-model="user.dusun" variant="outlined"></v-text-field>
-<label class="label-form">Desa</label>
-<v-autocomplete
-  v-model="user.desa_id"
-  :items="deslist"
-  item-title="nama_desa"
-  item-value="Id"
-  variant="outlined"
-></v-autocomplete>
-<label class="label-form">Kecamatan</label>
-<v-autocomplete
-  v-model="user.kecamatan_id"
-  variant="outlined"
-  :items="keclist"
-  item-title="nama_kecamatan"
-  item-value="Id"
-
-></v-autocomplete>
-<label class="label-form">Kabupaten / Kota</label>
-<v-autocomplete
-  v-model="user.kabupaten_id"
-  variant="outlined"
-  :items="kablist"
-  item-title="nama_kabupaten"
-  item-value="Id"
-
-></v-autocomplete>
-
-
-        <div class="" v-if="user.status == 'Disetujui'">
-          <h2 class="my-3">Detail Dokumentasi</h2>
-
-          <label class="label-form">Before</label>
-          <v-text-field v-model="user.foto_before" variant="outlined"></v-text-field>
-          <label class="label-form">Proses</label>
-          <v-text-field v-model="user.foto_progress" variant="outlined"></v-text-field>
-          <label class="label-form">After</label>
-          <v-text-field v-model="user.foto_after" variant="outlined"></v-text-field>
+  <div>
+    <v-card class="pa-5">
+      <div class="d-flex justify-space-between align-center mb-5">
+        <div>
+          <p class="text-h5 font-weight-bold">Tambah Program</p>
+          <p class="text-subtitle-1 text-grey">Tambah program baru</p>
         </div>
-        <div class="d-flex justify-start">
-            <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="create()">
-              Simpan
-            </v-btn>
-            <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="back()">
-              Tutup
-            </v-btn>
-          </div>
-      </v-form>
-    </div>
-  </v-container>
+        <v-btn 
+          color="error" 
+          @click="back()"
+          prepend-icon="mdi-arrow-left"
+        >
+          Kembali
+        </v-btn>
+      </div>
+
+      <v-divider class="mb-5"></v-divider>
+
+      <v-row>
+        <v-col cols="12" md="8">
+          <v-form>
+            <!-- Informasi Dasar -->
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Nama Program</label>
+              <v-text-field
+                v-model="user.nama_program"
+                placeholder="Masukkan nama program"
+                variant="outlined"
+                density="compact"
+              ></v-text-field>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Institusi</label>
+              <v-select
+                v-model="user.institusi_id"
+                :items="institusi"
+                item-title="nama_institusi"
+                item-value="id"
+                placeholder="Pilih institusi"
+                variant="outlined"
+                density="compact"
+              ></v-select>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Deskripsi</label>
+              <v-textarea
+                v-model="user.deskripsi"
+                placeholder="Masukkan deskripsi program"
+                variant="outlined"
+                density="compact"
+                rows="3"
+              ></v-textarea>
+            </div>
+
+            <!-- Detail Anggaran -->
+            <h2 class="text-h6 font-weight-bold mb-3">Detail Anggaran</h2>
+            <v-divider class="mb-5"></v-divider>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Jenis Anggaran</label>
+              <v-select
+                v-model="user.jenis_anggaran_id"
+                :items="JenisAnggaran"
+                item-title="jenis"
+                item-value="Id"
+                placeholder="Pilih jenis anggaran"
+                variant="outlined"
+                density="compact"
+              ></v-select>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Jumlah Anggaran</label>
+              <v-text-field
+                v-model="user.jumlah_anggaran"
+                placeholder="Masukkan jumlah anggaran"
+                variant="outlined"
+                density="compact"
+                prefix="Rp"
+              ></v-text-field>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Kategori Penggunaan</label>
+              <v-select
+                v-model="user.kategori_penggunaan_id"
+                :items="KategoriPenggunaan"
+                item-title="kategori"
+                item-value="Id"
+                placeholder="Pilih kategori penggunaan"
+                variant="outlined"
+                density="compact"
+              ></v-select>
+            </div>
+
+            <!-- Detail Alamat -->
+            <h2 class="text-h6 font-weight-bold mb-3">Detail Alamat</h2>
+            <v-divider class="mb-5"></v-divider>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Dusun</label>
+              <v-text-field
+                v-model="user.dusun"
+                placeholder="Masukkan nama dusun"
+                variant="outlined"
+                density="compact"
+              ></v-text-field>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Desa</label>
+              <v-autocomplete
+                v-model="user.desa_id"
+                :items="deslist"
+                item-title="nama_desa"
+                item-value="Id"
+                placeholder="Pilih desa"
+                variant="outlined"
+                density="compact"
+              ></v-autocomplete>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Kecamatan</label>
+              <v-autocomplete
+                v-model="user.kecamatan_id"
+                :items="keclist"
+                item-title="nama_kecamatan"
+                item-value="Id"
+                placeholder="Pilih kecamatan"
+                variant="outlined"
+                density="compact"
+              ></v-autocomplete>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Kabupaten / Kota</label>
+              <v-autocomplete
+                v-model="user.kabupaten_id"
+                :items="kablist"
+                item-title="nama_kabupaten"
+                item-value="Id"
+                placeholder="Pilih kabupaten"
+                variant="outlined"
+                density="compact"
+              ></v-autocomplete>
+            </div>
+
+            <div class="d-flex justify-start">
+              <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="create()">
+                Simpan
+              </v-btn>
+            </div>
+          </v-form>
+        </v-col>
+      </v-row>
+    </v-card>
+  </div>
 </template>
 <script>
 import axios from 'axios';
@@ -105,7 +175,7 @@ export default{
       user:{
         nama_program:'',
         deskripsi: '',
-        institusi_id:1,
+        institusi_id:'',
         jenis_anggaran_id:'',
         jumlah_anggaran:'',
         kategori_penggunaan_id:'',
@@ -153,7 +223,7 @@ export default{
       })
     },
     listinstitusi(){
-      axios.get("/api/index-institusi")
+      axios.get("/api/institusi")
       .then(res=>{
         this.institusi = res.data.data
       })

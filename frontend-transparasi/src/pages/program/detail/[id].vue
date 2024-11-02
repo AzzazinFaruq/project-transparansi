@@ -27,7 +27,8 @@
     <div class="container-home" v-for="item in aduanList" :key="item.id">
       <div class="d-flex">
         <div class="mr-3" style="width: 50px;">
-          <img :src="`${getImageUrl('uploads/profile_pictures/avatar.png')}`" alt="" width="100%">
+          <img v-if="item.user.foto_profil == ''" src="@/assets/profile.png" alt="" width="100%">
+          <img v-else :src="`${getImageUrl(item.user.foto_profil)}`" alt="" width="100%">
         </div>
         <div class="" style="width: 100%;">
         <h3 class="mb-1">{{ item.user.username }}</h3>
@@ -39,10 +40,12 @@
           <v-col cols="11">
             <div class="d-flex">
               <div class="mr-3" style="width: 50px;">
-                <img :src="`${getImageUrl('uploads/profile_pictures/avatar.png')}`" alt="" width="100%">
+                <img v-if="item.user_tanggapan.foto_profil == ''" src="@/assets/profile.png" alt="" width="100%">
+                <img v-else :src="`${getImageUrl(item.user_tanggapan.foto_profil)}`" alt="" width="100%">
               </div>
               <div class="" style="width: 100%;">
-              <h3 class="mb-1">DPRD (Admin)</h3>
+              <h3 v-if="item.user_tanggapan.username == ''" class="mb-1">Anonim (DPRD)</h3> 
+              <h3 v-else class="mb-1">{{ item.user_tanggapan.username }} (DPRD)</h3>
               <p class="mb-1">{{ item.tanggapan }}</p>
               <p class="mb-1">{{ item.updated_at }}</p>
               </div>

@@ -6,7 +6,7 @@
         </div>
         <div class="d-flex justify-space-between">
           <div class=""> 
-            <v-text-field v-model="search" prepend-inner-icon="mdi-magnify" label="Cari User" variant="outlined" style="width: 300px;" @keyup.enter="searchUser"></v-text-field>
+            <v-text-field density="compact" v-model="search" prepend-inner-icon="mdi-magnify" label="Cari User" variant="outlined" style="width: 300px;" @keyup.enter="searchUser"></v-text-field>
           </div>
           </div>
           <div class="">
@@ -37,7 +37,7 @@
                 <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #3884B0;color: white;" icon @click="edit(item.Id)">
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
-                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" icon @click="deleteUser(item.Id)">
+                <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" icon @click="deleteConfirmation(item.Id)">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </td>
@@ -77,6 +77,7 @@
 </template>
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 export default {
   data() {
@@ -105,10 +106,51 @@ export default {
         this.Userlist = res.data.data
       })
     },
-    deleteUser(id){
-      axios.delete(`api/user/deleteuser/${id}`)
-      .then(res=>{
-        this.$router.go(0)
+    deleteConfirmation(id) {
+      Swal.fire({
+        title: 'Hapus Data?',
+        text: "Data yang dihapus tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#BF3232',
+        cancelButtonColor: '#808080',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Tampilkan loading
+          Swal.fire({
+            title: 'Menghapus Data...',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading()
+            }
+          })
+
+          // Proses delete
+          axios.delete(`/api/user/deleteuser/${id}`)
+            .then(() => {
+              Swal.fire({
+                icon: 'success',
+                title: 'Terhapus!',
+                text: 'Data berhasil dihapus',
+                showConfirmButton: false,
+                timer: 1500
+              }).then(() => {
+                // Refresh data
+                this.$router.go(0)
+              })
+            })
+            .catch((error) => {
+              console.error('Error:', error)
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Gagal menghapus data',
+              })
+            })
+        }
       })
     },
     user(){

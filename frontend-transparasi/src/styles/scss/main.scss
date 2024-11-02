@@ -51,3 +51,105 @@ a:hover{
     padding-right: 20px; padding-left: 20px
   }
 }
+
+/* Base styles */
+.custom-outline {
+
+}
+
+.no-divider {
+
+}
+
+.v-btn {
+  text-transform: none !important;
+}
+
+/* Responsive styles */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 600px) {
+  .d-flex.justify-space-between,
+  .d-flex.align-center.justify-space-between {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .d-flex.justify-end {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .mr-3, .mr-5 {
+    margin-right: 0 !important;
+    margin-bottom: 0.5rem;
+  }
+
+  .custom-pagination {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Adjust table for mobile */
+  .v-table {
+    font-size: 0.875rem;
+  }
+
+  .v-table th,
+  .v-table td {
+    padding: 8px !important;
+  }
+
+  /* Make filter dropdown full width on mobile */
+  div[style*="min-width: 120px"] {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  .v-btn[variant="text"] {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* Adjust action buttons */
+  .v-btn.rounded-lg {
+    font-size: 0.875rem;
+    height: 32px !important;
+  }
+}
+
+/* Custom scrollbar */
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Table wrapper */
+.v-table-wrapper {
+  overflow-x: auto;
+  margin: 0 -16px;
+  padding: 0 16px;
+}
+
+@media (max-width: 960px) {
+  .v-container {
+    padding: 16px !important;
+  }
+}

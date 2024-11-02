@@ -17,10 +17,12 @@ func GetAllAduan(c *gin.Context) {
 		Preload("Program").
 		Preload("User.Jabatan").
 		Preload("User.Role").
+		Preload("TanggapanUser").
 		Find(&Aduan).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 
 	formattedAduans := make([]gin.H, len(Aduan))
 
@@ -34,7 +36,7 @@ func GetAllAduan(c *gin.Context) {
 			"keluhan":        aduan.Keluhan,
 			"status":         aduan.Status,
 			"tanggapan":      aduan.Tanggapan,
-			"user_tanggapan": aduan.UserTanggapan,
+			"user_tanggapan": aduan.TanggapanUser,
 			"created_at":     aduan.CreatedAt.Format("02-01-2006"), // Format d-m-y
 			"updated_at":     aduan.UpdatedAt.Format("02-01-2006"), // Format d-m-y
 		}
@@ -406,17 +408,28 @@ func GetAduanByProgramId(c *gin.Context) {
 	formattedAduan := make([]gin.H, len(aduan))
 
 	for i, aduan := range aduan {
+		var userTanggapan models.User
+		// Mengambil data lengkap user tanggapan termasuk relasi
+		if aduan.UserTanggapan != 0 {
+			setup.DB.
+				Preload("Jabatan").
+				Preload("Role").
+				Where("id = ?", aduan.UserTanggapan).
+				First(&userTanggapan)
+		}
+
 		formattedAduan[i] = gin.H{
-			"id":         aduan.Id,
-			"program_id": aduan.ProgramId,
-			"program":    aduan.Program,
-			"user_id":    aduan.UserId,
-			"user":       aduan.User,
-			"keluhan":    aduan.Keluhan,
-			"status":     aduan.Status,
-			"tanggapan":  aduan.Tanggapan,
-			"created_at": aduan.CreatedAt.Format("02-01-2006"),
-			"updated_at": aduan.UpdatedAt.Format("02-01-2006"),
+			"id":             aduan.Id,
+			"program_id":     aduan.ProgramId,
+			"program":        aduan.Program,
+			"user_id":        aduan.UserId,
+			"user":           aduan.User,
+			"keluhan":        aduan.Keluhan,
+			"status":         aduan.Status,
+			"tanggapan":      aduan.Tanggapan,
+			"user_tanggapan": userTanggapan,
+			"created_at":     aduan.CreatedAt.Format("02-01-2006"),
+			"updated_at":     aduan.UpdatedAt.Format("02-01-2006"),
 		}
 	}
 
