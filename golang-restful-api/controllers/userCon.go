@@ -176,3 +176,19 @@ func CreateDPRD(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{"message": "DPRD berhasil dibuat", "data": newUser})
 }
+
+func GetUserByUsername(c *gin.Context) {
+	username := c.Query("username")
+	role := c.Query("role")
+
+	var user []models.User
+
+	if err := setup.DB.Where("username LIKE ?", "%"+username+"%").
+		Where("role_id = ?", role).
+		Find(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": user})
+}

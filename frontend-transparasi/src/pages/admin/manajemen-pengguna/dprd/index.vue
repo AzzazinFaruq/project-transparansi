@@ -2,7 +2,20 @@
   <v-container>
   <div class="mt-5">
         <div class="d-flex align-center justify-space-between mr-3 mt-2">
-          <v-card-title><b>Daftar Program</b></v-card-title>
+          <h2>Daftar DPRD</h2>
+        </div>
+        <div class="d-flex justify-space-between mb-3">
+          <div class="" style="width: 300px; margin-bottom: -20px;">
+            <v-text-field
+            class=""
+            density="compact"
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            v-model="search"
+            label="Cari User"
+            @keyup.enter="searchUser"
+            ></v-text-field>
+          </div>
           <v-btn
           style="text-transform: none;"
           color="#BF3232"
@@ -102,12 +115,19 @@ export default {
       Userlist:[],
       currentPage: 1,
       itemsPerPage: 10,
+      search:'',
     }
   },
   mounted() {
     this.user();
   },
   methods: {
+    searchUser(){
+      axios.get(`/api/user/username?username=${this.search}&role=2`)
+      .then(res=>{
+        this.Userlist = res.data.data
+      })
+    },
     user(){
       axios.get("/api/user/byrole/2")
       .then(res=>{
@@ -129,6 +149,14 @@ export default {
       .then(res=>{
         this.$router.go(0)
       })
+    }
+  },
+  watch: {
+    search(newVal) {
+      if (!newVal || newVal.trim() === '') {
+        this.user();
+        this.currentPage = 1; // Reset ke halaman pertama
+      }
     }
   },
   computed: {

@@ -76,7 +76,7 @@
     <div class="mx-2">
       <v-icon class="" @click="handleLogout()">mdi-logout</v-icon>
     </div>
-   <div class="profile-container mr-5"><a href="profile">
+   <div class="profile-container mr-5"><a href="/profile">
     <img v-if="userPhoto == ''" src="../assets/profile.png"  alt="" class="profile-pictures" >
     <img v-else :src="`${getImageUrl(userPhoto)}`"  alt="" class="profile-pictures" >
    </a>

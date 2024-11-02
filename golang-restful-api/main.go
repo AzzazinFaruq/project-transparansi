@@ -35,9 +35,11 @@ func main() {
 	protected.POST("/create-dprd", controllers.CreateDPRD)
 	protected.GET("/index-jabatan", controllers.GetAllJabatan)
 	protected.GET("/index-role", controllers.GetAllRole)
+	protected.GET("/user/username", controllers.GetUserByUsername)
 
 	// Route Institusi
 	protected.GET("/index-institusi", controllers.GetAllInstitusi)
+	protected.POST("/create-institusi", controllers.CreateInstitusi)
 
 	// Route Program
 	protected.GET("/index-program", controllers.GetAllProgram)
@@ -46,11 +48,12 @@ func main() {
 	protected.PUT("/program/edit/:id", controllers.EditProgram)
 	protected.GET("/program/accept/:id", controllers.AcceptProgram)
 	protected.GET("/program/reject/:id", controllers.RejectProgram)
+	protected.GET("/program/selesai/:id", controllers.SelesaikanProgram)
 	protected.GET("/program/status/:status", controllers.GetProgramByStatus)
 	protected.GET("/index-jenis-anggaran", controllers.GetAllJenisAnggaran)
 	protected.GET("/index-kategori-penggunaan", controllers.GetAllKategoriPenggunaan)
 	protected.GET("/program/search", controllers.SearchProgram)
-	protected.GET("/program/selesai/:id", controllers.SelesaikanProgram)
+	protected.GET("/program/daerah", controllers.GetProgramByDaerah)
 
 	// Route Aduan
 	protected.GET("/index-aduan", controllers.GetAllAduan)
@@ -67,6 +70,8 @@ func main() {
 	protected.GET("/index-kabupaten", controllers.GetAllKabupaten)
 	protected.GET("/index-kecamatan", controllers.GetAllKecamatan)
 	protected.GET("/index-desa", controllers.GetAllDesa)
+	protected.GET("/kecamatan/:id", controllers.GetKecamatanByKabupatenId)
+	protected.GET("/desa/:id", controllers.GetDesaByKecamatanId)
 
 	//Route Log
 	protected.GET("/index-log", controllers.GetAllLog)

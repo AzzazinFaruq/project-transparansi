@@ -339,9 +339,10 @@ func GetProgramByStatus(c *gin.Context) {
 	status := c.Param("status")
 
 	validStatus := map[string]bool{
-		"Menunggu":  true,
-		"Disetujui": true,
-		"Ditolak":   true,
+		"Menunggu":     true,
+		"Dalam Proses": true,
+		"Selesai":      true,
+		"Ditolak":      true,
 	}
 
 	if !validStatus[status] {
@@ -413,66 +414,66 @@ func DetailProgram(c *gin.Context) {
 }
 
 func SearchProgram(c *gin.Context) {
-    // Ambil parameter pencarian dari query string
-    query := c.Query("nama")
-    
-    // Jika query kosong
+	// Ambil parameter pencarian dari query string
+	query := c.Query("nama")
+
+	// Jika query kosong
 	if query == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Pencarian tidak boleh kosong"})
 		return
 	}
 
-    var programs []models.Program
+	var programs []models.Program
 
-    // Gunakan LIKE untuk pencarian partial match
-    if err := setup.DB.
-        Preload("Institusi").
-        Preload("KategoriPenggunaan").
-        Preload("JenisAnggaran").
-        Preload("User.Jabatan").
-        Preload("User.Role").
-        Where("nama_program LIKE ?", "%"+query+"%").
-        Find(&programs).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
+	// Gunakan LIKE untuk pencarian partial match
+	if err := setup.DB.
+		Preload("Institusi").
+		Preload("KategoriPenggunaan").
+		Preload("JenisAnggaran").
+		Preload("User.Jabatan").
+		Preload("User.Role").
+		Where("nama_program LIKE ?", "%"+query+"%").
+		Find(&programs).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
-    // Jika tidak ada hasil
-    if len(programs) == 0 {
-        c.JSON(http.StatusOK, gin.H{
-            "message": "Tidak ada program yang ditemukan",
-            "data": []interface{}{},
-        })
-        return
-    }
+	// Jika tidak ada hasil
+	if len(programs) == 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Tidak ada program yang ditemukan",
+			"data":    []interface{}{},
+		})
+		return
+	}
 
-    // Format hasil pencarian
-    formattedPrograms := make([]gin.H, len(programs))
-    for i, program := range programs {
-        formattedPrograms[i] = gin.H{
-            "id":                  program.Id,
-            "nama_program":        program.NamaProgram,
-            "deskripsi":           program.Deskripsi,
-            "institusi":           program.Institusi,
-            "jenis_anggaran":      program.JenisAnggaran,
-            "jumlah_anggaran":     program.JumlahAnggaran,
-            "kategori_penggunaan": program.KategoriPenggunaan,
+	// Format hasil pencarian
+	formattedPrograms := make([]gin.H, len(programs))
+	for i, program := range programs {
+		formattedPrograms[i] = gin.H{
+			"id":                  program.Id,
+			"nama_program":        program.NamaProgram,
+			"deskripsi":           program.Deskripsi,
+			"institusi":           program.Institusi,
+			"jenis_anggaran":      program.JenisAnggaran,
+			"jumlah_anggaran":     program.JumlahAnggaran,
+			"kategori_penggunaan": program.KategoriPenggunaan,
 			"dusun":               program.Dusun,
-            "user":                program.User,
-            "status":              program.Status,
-            "foto_before":         program.FotoBefore,
-            "foto_progress":       program.FotoProgress,
-            "foto_after":          program.FotoAfter,
-            "created_at":          program.CreatedAt.Format("02-01-2006"),
-            "updated_at":          program.UpdatedAt.Format("02-01-2006"),
-        }
-    }
+			"user":                program.User,
+			"status":              program.Status,
+			"foto_before":         program.FotoBefore,
+			"foto_progress":       program.FotoProgress,
+			"foto_after":          program.FotoAfter,
+			"created_at":          program.CreatedAt.Format("02-01-2006"),
+			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
+		}
+	}
 
-    c.JSON(http.StatusOK, gin.H{
-        "message": "Program ditemukan",
-        "total":   len(programs),
-        "data":    formattedPrograms,
-    })
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Program ditemukan",
+		"total":   len(programs),
+		"data":    formattedPrograms,
+	})
 }
 
 func GetProgramLandingPage(c *gin.Context) {
@@ -492,10 +493,10 @@ func GetProgramLandingPage(c *gin.Context) {
 
 	for i, program := range program {
 		formattedPrograms[i] = gin.H{
-			"id":                  program.Id,
-			"nama_program":        program.NamaProgram,
-			"deskripsi":           program.Deskripsi,
-			"foto_before":         program.FotoBefore,
+			"id":           program.Id,
+			"nama_program": program.NamaProgram,
+			"deskripsi":    program.Deskripsi,
+			"foto_before":  program.FotoBefore,
 		}
 	}
 
@@ -536,4 +537,71 @@ func SelesaikanProgram(c *gin.Context) {
 	tx.Commit()
 
 	c.JSON(http.StatusOK, gin.H{"message": "Program berhasil diselesaikan", "data": program})
+}
+
+func GetProgramByDaerah(c *gin.Context) {
+	// Ambil parameter pencarian dari query string
+	queryDesa := c.Query("desa")
+	queryKecamatan := c.Query("kecamatan")
+	queryKabupaten := c.Query("kabupaten")
+
+	// Jika query kosong
+	if queryDesa == "" && queryKecamatan == "" && queryKabupaten == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Pencarian tidak boleh kosong"})
+		return
+	}
+
+	var programs []models.Program
+
+	// Gunakan LIKE untuk pencarian partial match
+	if err := setup.DB.
+		Preload("Institusi").
+		Preload("KategoriPenggunaan").
+		Preload("JenisAnggaran").
+		Preload("User.Jabatan").
+		Preload("User.Role").
+		Where("desa_id = ?", queryDesa).
+		Where("kecamatan_id = ?", queryKecamatan).
+		Where("kabupaten_id = ?", queryKabupaten).
+		Find(&programs).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Jika tidak ada hasil
+	if len(programs) == 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Tidak ada program yang ditemukan",
+			"data":    []interface{}{},
+		})
+		return
+	}
+
+	// Format hasil pencarian
+	formattedPrograms := make([]gin.H, len(programs))
+	for i, program := range programs {
+		formattedPrograms[i] = gin.H{
+			"id":                  program.Id,
+			"nama_program":        program.NamaProgram,
+			"deskripsi":           program.Deskripsi,
+			"institusi":           program.Institusi,
+			"jenis_anggaran":      program.JenisAnggaran,
+			"jumlah_anggaran":     program.JumlahAnggaran,
+			"kategori_penggunaan": program.KategoriPenggunaan,
+			"dusun":               program.Dusun,
+			"user":                program.User,
+			"status":              program.Status,
+			"foto_before":         program.FotoBefore,
+			"foto_progress":       program.FotoProgress,
+			"foto_after":          program.FotoAfter,
+			"created_at":          program.CreatedAt.Format("02-01-2006"),
+			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Program ditemukan",
+		"total":   len(programs),
+		"data":    formattedPrograms,
+	})
 }

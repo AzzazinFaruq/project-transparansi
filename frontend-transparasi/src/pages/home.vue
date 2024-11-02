@@ -1,4 +1,5 @@
 <template>
+  <div class="">
 <div class="home-wrapper">
     <navbar-home />
     <img src="./img/dprd.png" alt="" style="width: 100%; display: block; margin-top: -80px; filter: brightness(50%);">
@@ -78,7 +79,7 @@
 
 
 <footerHomeVue></footerHomeVue>
-
+</div>
 </template>
 
 <script>

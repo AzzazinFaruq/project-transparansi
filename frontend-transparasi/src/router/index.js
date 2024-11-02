@@ -26,6 +26,8 @@ router.beforeEach((to, from, next) => {
     next('/401');
   }else if (to.path.startsWith('/program') && !userRole) {
     next('/login');
+    }else if (to.path.startsWith('/profile') && !userRole) {
+      next('/login');
     }
 
   else{
