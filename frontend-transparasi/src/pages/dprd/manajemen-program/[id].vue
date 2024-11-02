@@ -1,215 +1,360 @@
 <template>
-  <v-container>
+  <div>
+    <v-card class="pa-5">
+      <div class="d-flex justify-space-between align-center mb-5">
+        <div>
+          <p class="text-h5 font-weight-bold">Detail Program</p>
+          <p class="text-subtitle-1 text-grey">Informasi lengkap program</p>
+        </div>
+        <v-btn 
+          color="error" 
+          @click="back()"
+          prepend-icon="mdi-arrow-left"
+        >
+          Kembali
+        </v-btn>
+      </div>
+
+      <v-divider class="mb-5"></v-divider>
 
       <v-row>
-        <v-col cols="9">
+        <v-col cols="12" md="8">
+          <v-form v-if="user.status == 'Menunggu' || user.status == 'Dalam Proses'">
+            <!-- Informasi Dasar -->
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Nama Program</label>
+              <v-text-field
+                v-model="user.nama_program"
+                variant="outlined"
+                density="compact"
+              ></v-text-field>
+            </div>
 
-      <v-form>
-      <div class="" v-if="user.status == 'Menunggu' || user.status == 'Dalam Proses'">
-        <label class="label-form">Nama Program</label>
-        <v-text-field v-model="user.nama_program" variant="outlined"></v-text-field>
-        <label class="label-form">Institusi</label>
-        <v-select
-            v-model="user.institusi_id"
-            :items="institusi"
-            item-title="nama_institusi"
-            item-value="Id"
-            variant="outlined"
-          ></v-select>
-        <label  class="label-form">Deskripsi</label>
-        <v-textarea v-model="user.deskripsi" variant="outlined"></v-textarea>
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Institusi</label>
+              <v-select
+                v-model="user.institusi_id"
+                :items="institusi"
+                item-title="nama_institusi"
+                item-value="id"
+                variant="outlined"
+                density="compact"
+              ></v-select>
+            </div>
 
-        <h2 class="my-3">Detail Anggaran</h2>
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Deskripsi</label>
+              <v-textarea
+                v-model="user.deskripsi"
+                variant="outlined"
+                density="compact"
+              ></v-textarea>
+            </div>
 
-        <label class="label-form">Jenis Anggaran</label>
-        <v-select
-            v-model="user.jenis_anggaran_id"
-            :items="JenisAnggaran"
-            item-title="jenis"
-            item-value="Id"
-            variant="outlined"
-          ></v-select>
-        <label class="label-form">Jumlah Anggaran</label>
-        <v-text-field v-model="user.jumlah_anggaran" variant="outlined"></v-text-field>
-        <label class="label-form">kategori Penggunaan</label>
-        <v-select
-            v-model="user.kategori_penggunaan_id"
-            :items="KategoriPenggunaan"
-            item-title="kategori"
-            item-value="Id"
-            variant="outlined"
-          ></v-select>
+            <!-- Detail Anggaran -->
+            <h2 class="text-h6 font-weight-bold mb-3">Detail Anggaran</h2>
+            <v-divider class="mb-5"></v-divider>
 
-        <h2 class="my-3">Detail Alamat</h2>
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Jenis Anggaran</label>
+              <v-select
+                v-model="user.jenis_anggaran_id"
+                :items="JenisAnggaran"
+                item-title="jenis"
+                item-value="Id"
+                variant="outlined"
+                density="compact"
+              ></v-select>
+            </div>
 
-        <label class="label-form">Dusun</label>
-        <v-text-field v-model="user.dusun" variant="outlined"></v-text-field>
-        <label class="label-form">Desa</label>
-        <v-autocomplete
-          v-model="user.desa_id"
-          :items="deslist"
-          item-title="nama_desa"
-          item-value="Id"
-          variant="outlined"
-        ></v-autocomplete>
-        <label class="label-form">Kecamatan</label>
-        <v-autocomplete
-          v-model="user.kecamatan_id"
-          variant="outlined"
-          :items="keclist"
-          item-title="nama_kecamatan"
-          item-value="Id"
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Jumlah Anggaran</label>
+              <v-text-field
+                v-model="user.jumlah_anggaran"
+                variant="outlined"
+                density="compact"
+              ></v-text-field>
+            </div>
 
-        ></v-autocomplete>
-        <label class="label-form">Kabupaten / Kota</label>
-        <v-autocomplete
-          v-model="user.kabupaten_id"
-          variant="outlined"
-          :items="kablist"
-          item-title="nama_kabupaten"
-          item-value="Id"
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Kategori Penggunaan</label>
+              <v-select
+                v-model="user.kategori_penggunaan_id"
+                :items="KategoriPenggunaan"
+                item-title="kategori"
+                item-value="Id"
+                variant="outlined"
+                density="compact"
+              ></v-select>
+            </div>
 
-        ></v-autocomplete>
+            <!-- Detail Alamat -->
+            <h2 class="text-h6 font-weight-bold mb-3">Detail Alamat</h2>
+            <v-divider class="mb-5"></v-divider>
 
-        <div class="" v-if="user.status == 'Dalam Proses'">
-          <h2 class="my-3">Detail Dokumentasi</h2>
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Dusun</label>
+              <v-text-field
+                v-model="user.dusun"
+                variant="outlined"
+                density="compact"
+              ></v-text-field>
+            </div>
 
-          <div class="foto-section">
-    <!-- Foto Before -->
-    <div class="mb-4">
-      <label class="label-form ml-10">Foto Before</label>
-      <div class="preview-container ml-10 mb-2" v-if="previewBefore || user.foto_before">
-        <img :src="previewBefore || `${getImageUrl(user.foto_before)}`" alt="Preview Before" class="preview-image">
-      </div>
-      <v-file-input
-        prepend-icon="false"
-        prepend-inner-icon="mdi-image"
-        v-model="fotoBeforeFile"
-        @change="handleFileUpload($event, 'before')"
-        accept="image/*"
-        variant="outlined"
-      ></v-file-input>
-    </div>
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Desa</label>
+              <v-autocomplete
+                v-model="user.desa_id"
+                :items="deslist"
+                item-title="nama_desa"
+                item-value="Id"
+                variant="outlined"
+                density="compact"
+              ></v-autocomplete>
+            </div>
 
-    <!-- Foto Progress -->
-    <div class="mb-4">
-      <label class="label-form ml-10">Foto Progress</label>
-      <div class="preview-container ml-10 mb-2" v-if="previewProgress || user.foto_progress">
-        <img :src="previewProgress || `${getImageUrl(user.foto_before)}`" alt="Preview Progress" class="preview-image">
-      </div>
-      <v-file-input
-        prepend-icon="false"
-        prepend-inner-icon="mdi-image"
-        v-model="fotoProgressFile"
-        @change="handleFileUpload($event, 'progress')"
-        accept="image/*"
-        variant="outlined"
-      ></v-file-input>
-    </div>
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Kecamatan</label>
+              <v-autocomplete
+                v-model="user.kecamatan_id"
+                :items="keclist"
+                item-title="nama_kecamatan"
+                item-value="Id"
+                variant="outlined"
+                density="compact"
+              ></v-autocomplete>
+            </div>
 
-    <!-- Foto After -->
-    <div class="mb-4">
-      <label class="label-form ml-10">Foto After</label>
-      <div class="preview-container ml-10 mb-2" v-if="previewAfter || user.foto_after">
-        <img :src="previewAfter || `${getImageUrl(user.foto_after)}`" alt="Preview After" class="preview-image">
-      </div>
-      <v-file-input
-        prepend-icon="false"
-        prepend-inner-icon="mdi-image"
-        v-model="fotoAfterFile"
-        @change="handleFileUpload($event, 'after')"
-        accept="image/*"
-        variant="outlined"
-      ></v-file-input>
-    </div>
-  </div>
-        </div>
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Kabupaten / Kota</label>
+              <v-autocomplete
+                v-model="user.kabupaten_id"
+                :items="kablist"
+                item-title="nama_kabupaten"
+                item-value="Id"
+                variant="outlined"
+                density="compact"
+              ></v-autocomplete>
+            </div>
 
-        <div class="d-flex justify-start" v-if="user.status=='Menunggu'">
-          <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="accept()">
-              Terima
-            </v-btn>
-            <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="rejectprogram()">
-              Tolak
-            </v-btn>
-        </div>
-        <div class="d-flex justify-start" v-if="user.status=='Dalam Proses'">
-          <v-btn variant="tonal" style="background-color:#387144;color: white;text-transform: none;" @click="simpan()">
-              Simpan
-            </v-btn>
-            <v-btn variant="tonal" class="ml-2" style="background-color:#BF3232;color: white;text-transform: none;" @click="back()">
-              Kembali
-            </v-btn>
-        </div>
-      </div>
-      </v-form>
+            <!-- Detail Dokumentasi -->
+            <div v-if="user.status == 'Dalam Proses'">
+              <h2 class="text-h6 font-weight-bold mb-3">Detail Dokumentasi</h2>
+              <v-divider class="mb-5"></v-divider>
 
+              <div class="foto-section">
+                <!-- Foto Before -->
+                <div class="mb-5">
+                  <label class="label-form mb-2 d-block">Foto Before</label>
+                  <div class="preview-container mb-2" v-if="previewBefore || user.foto_before">
+                    <img :src="previewBefore || `${getImageUrl(user.foto_before)}`" alt="Preview Before" class="preview-image">
+                  </div>
+                  <v-file-input
+                    v-model="fotoBeforeFile"
+                    @change="handleFileUpload($event, 'before')"
+                    accept="image/*"
+                    variant="outlined"
+                    density="compact"
+                    prepend-icon="false"
+                    prepend-inner-icon="mdi-image"
+                  ></v-file-input>
+                </div>
 
+                <!-- Foto Progress -->
+                <div class="mb-5">
+                  <label class="label-form mb-2 d-block">Foto Progress</label>
+                  <div class="preview-container mb-2" v-if="previewProgress || user.foto_progress">
+                    <img :src="previewProgress || `${getImageUrl(user.foto_progress)}`" alt="Preview Progress" class="preview-image">
+                  </div>
+                  <v-file-input
+                    v-model="fotoProgressFile"
+                    @change="handleFileUpload($event, 'progress')"
+                    accept="image/*"
+                    variant="outlined"
+                    density="compact"
+                    prepend-icon="false"
+                    prepend-inner-icon="mdi-image"
+                  ></v-file-input>
+                </div>
 
-    <div class="" v-if="user.status=='Ditolak' || user.status=='Selesai'">
-      <label class="label-form">Nama Program</label>
-      <p>{{ user.nama_program }}</p>
-      <label class="label-form">Institusi</label>
-      <p>{{ user.Institusi.nama_institusi }}</p>
-      <label class="label-form">Deskripsi</label>
-      <p>{{ user.deskripsi }}</p>
+                <!-- Foto After -->
+                <div class="mb-5">
+                  <label class="label-form mb-2 d-block">Foto After</label>
+                  <div class="preview-container mb-2" v-if="previewAfter || user.foto_after">
+                    <img :src="previewAfter || `${getImageUrl(user.foto_after)}`" alt="Preview After" class="preview-image">
+                  </div>
+                  <v-file-input
+                    v-model="fotoAfterFile"
+                    @change="handleFileUpload($event, 'after')"
+                    accept="image/*"
+                    variant="outlined"
+                    density="compact"
+                    prepend-icon="false"
+                    prepend-inner-icon="mdi-image"
+                  ></v-file-input>
+                </div>
+              </div>
+            </div>
 
-      <h2 class="my-3">Detail Anggaran</h2>
-      <VDivider/>
+            <!-- Tombol Aksi -->
+          
 
-      <label class="label-form">Jenis Anggaran</label>
-      <p>{{ user.JenisAnggaran.jenis }}</p>
-      <label class="label-form">Jumlah Anggaran</label>
-      <p>{{ user.jumlah_anggaran }}</p>
-      <label class="label-form">Kategori Penggunaan</label>
-      <p>{{ user.KategoriPenggunaan.kategori}}</p>
+            <div class="d-flex gap-2 mt-5" v-if="user.status=='Dalam Proses' || user.status == 'Menunggu'">
+              <v-btn
+                color="#387144"
+                style="color: white"
+                prepend-icon="mdi-content-save"
+                @click=" simpan()"
+              >
+                Simpan
+              </v-btn>
+              <v-btn
+                color="#BF3232"
+                style="color: white"
+                @click="back()"
+              >
+                Kembali
+              </v-btn>
+            </div>
+          </v-form>
 
-      <h2 class="my-3">Detail Alamat</h2>
-      <VDivider/>
+          <!-- View Mode untuk status Ditolak atau Selesai -->
+          <div v-if="user.status=='Ditolak' || user.status=='Selesai'">
+            <!-- Informasi Dasar -->
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Nama Program</label>
+              <p class="text-body-1">{{ user.nama_program }}</p>
+            </div>
 
-      <label class="label-form">Dusun</label>
-      <p>{{ user.dusun }}</p>
-      <label class="label-form">Desa</label>
-      <p>{{ user.Desa.nama_desa }}</p>
-      <label class="label-form">Kecamatan</label>
-      <p>{{ user.Kecamatan.nama_kecamatan }}</p>
-      <label class="label-form">Kabupaten</label>
-      <p>{{ user.Kabupaten.nama_kabupaten  }}</p>
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Institusi</label>
+              <p class="text-body-1">{{ getInstitusiName(user.institusi_id) }}</p>
+            </div>
 
-      <h2 class="my-3">Detail Dokumentasi</h2>
-      <VDivider/>
-      <label class="label-form">Foto Before</label>
-      <div class="preview-container ml-10 mb-2" v-if="previewBefore || user.foto_before">
-        <img :src="previewBefore || `${getImageUrl(user.foto_before)}`" alt="Preview Before" class="preview-image">
-      </div>
-      <label class="label-form">Foto Progress</label>
-      <div class="preview-container ml-10 mb-2" v-if="previewProgress || user.foto_progress">
-        <img :src="previewProgress || `${getImageUrl(user.foto_progress)}`" alt="Preview Progress" class="preview-image">
-      </div>
-      <label class="label-form">Foto After</label>
-      <div class="preview-container ml-10 mb-2" v-if="previewAfter || user.foto_after">
-        <img :src="previewAfter || `${getImageUrl(user.foto_after)}`" alt="Preview After" class="preview-image">
-      </div>
-      <div class="d-flex justify-start">
-        <v-btn variant="tonal" style="background-color:#BF3232;color: white;text-transform: none;" @click="back()">
-              Kembali
-            </v-btn>
-      </div>
-      </div>
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Deskripsi</label>
+              <p class="text-body-1">{{ user.deskripsi }}</p>
+            </div>
+
+            <!-- Detail Anggaran -->
+            <h2 class="text-h6 font-weight-bold mb-3">Detail Anggaran</h2>
+            <v-divider class="mb-5"></v-divider>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Jenis Anggaran</label>
+              <p class="text-body-1">{{ getJenisAnggaranName(user.jenis_anggaran_id) }}</p>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Jumlah Anggaran</label>
+              <p class="text-body-1">Rp {{ user.jumlah_anggaran }}</p>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Kategori Penggunaan</label>
+              <p class="text-body-1">{{ getKategoriName(user.kategori_penggunaan_id) }}</p>
+            </div>
+
+            <!-- Detail Alamat -->
+            <h2 class="text-h6 font-weight-bold mb-3">Detail Alamat</h2>
+            <v-divider class="mb-5"></v-divider>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Dusun</label>
+              <p class="text-body-1">{{ user.dusun }}</p>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Desa</label>
+              <p class="text-body-1">{{ getDesaName(user.desa_id) }}</p>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Kecamatan</label>
+              <p class="text-body-1">{{ getKecamatanName(user.kecamatan_id) }}</p>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Kabupaten / Kota</label>
+              <p class="text-body-1">{{ getKabupatenName(user.kabupaten_id) }}</p>
+            </div>
+
+            <!-- Detail Dokumentasi untuk status Selesai -->
+            <div v-if="user.status=='Selesai'">
+              <h2 class="text-h6 font-weight-bold mb-3">Detail Dokumentasi</h2>
+              <v-divider class="mb-5"></v-divider>
+
+              <div class="foto-section">
+                <!-- Foto Before -->
+                <div class="mb-5">
+                  <label class="label-form mb-2 d-block">Foto Before</label>
+                  <div class="preview-container" v-if="user.foto_before">
+                    <img :src="getImageUrl(user.foto_before)" alt="Foto Before" class="preview-image">
+                  </div>
+                </div>
+
+                <!-- Foto Progress -->
+                <div class="mb-5">
+                  <label class="label-form mb-2 d-block">Foto Progress</label>
+                  <div class="preview-container" v-if="user.foto_progress">
+                    <img :src="getImageUrl(user.foto_progress)" alt="Foto Progress" class="preview-image">
+                  </div>
+                </div>
+
+                <!-- Foto After -->
+                <div class="mb-5">
+                  <label class="label-form mb-2 d-block">Foto After</label>
+                  <div class="preview-container" v-if="user.foto_after">
+                    <img :src="getImageUrl(user.foto_after)" alt="Foto After" class="preview-image">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status Badge -->
+            <div class="mb-5">
+              <v-chip
+                :color="user.status === 'Selesai' ? '#387144' : '#BF3232'"
+                style="color: white"
+                class="mt-3"
+              >
+                {{ user.status }}
+              </v-chip>
+            </div>
+
+            <!-- Tombol Kembali -->
+            <div class="d-flex gap-2 mt-5">
+              <v-btn
+                color="#BF3232"
+                style="color: white"
+                @click="back()"
+              >
+                Kembali
+              </v-btn>
+            </div>
+          </div>
         </v-col>
-        <v-col cols="3">
-          <div class="d-flex justify-center" style="width: 100%;">
-          <img src="./logo-dprd-1.png" alt="" style="width: 80%;">
-        </div>
+
+        <v-col cols="12" md="4">
+          <div class="d-flex justify-center">
+            <v-img
+              src="./logo-dprd-1.png"
+              max-width="250"
+              contain
+              class="mt-5"
+            ></v-img>
+          </div>
         </v-col>
       </v-row>
-
-
-  </v-container>
+    </v-card>
+  </div>
 </template>
+
 <script>
 import axios from 'axios';
 import { getImageUrl } from '@/config/foto';
+import Swal from 'sweetalert2';
+
 export default{
   data() {
     return {
@@ -268,7 +413,7 @@ export default{
   });
     },
     listinstitusi(){
-      axios.get("/api/index-institusi")
+      axios.get("/api/institusi")
       .then(res=>{
         this.institusi = res.data.data
       })
@@ -292,20 +437,69 @@ export default{
         this.user = res.data.data
       })
     },
-    accept(){
-    axios.get(`/api/program/accept/${this.$route.params.id}`)
-    .then(res=>{
-      this.$router.go(0)
-    })
-  },
-  rejectprogram(){
-    axios.get(`/api/program/reject/${this.$route.params.id}`)
-    .then(this.$router.go(-1))
-  },
-  back(){
-    this.$router.go(-1)
-  },
-  handleFileUpload(event, type) {
+    back(){
+      this.$router.go(-1)
+    },
+    async selesai() {
+      try {
+        // Konfirmasi selesaikan program
+        const result = await Swal.fire({
+          title: 'Selesaikan Program?',
+          text: "Pastikan semua dokumentasi telah lengkap",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, Selesaikan!',
+          cancelButtonText: 'Batal'
+        });
+
+        if (result.isConfirmed) {
+          // Cek kelengkapan dokumentasi
+          if (!this.user.foto_before || !this.user.foto_progress || !this.user.foto_after) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Dokumentasi Belum Lengkap',
+              text: 'Harap lengkapi foto before, progress, dan after sebelum menyelesaikan program',
+              confirmButtonText: 'OK'
+            });
+            return;
+          }
+
+          // Tampilkan loading
+          Swal.fire({
+            title: 'Sedang memproses...',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+
+          // Proses selesaikan program
+          await axios.get(`/api/program/selesai/${this.$route.params.id}`);
+          
+          // Tampilkan sukses
+          await Swal.fire({
+            icon: 'success',
+            title: 'Program Selesai',
+            text: 'Program telah berhasil diselesaikan',
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+          this.$router.go(-1);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Terjadi kesalahan saat menyelesaikan program',
+          confirmButtonText: 'Tutup'
+        });
+      }
+    },
+    handleFileUpload(event, type) {
       const file = event.target.files[0]
       if (file) {
         // Update file untuk upload
@@ -323,23 +517,23 @@ export default{
       }
     },
 
-  simpan(){
-  // Buat objek FormData baru
-  const formData = new FormData()
+    simpan(){
+      // Buat objek FormData baru
+      const formData = new FormData()
 
-  // Append semua field dari user object ke FormData
-  formData.append('nama_program', this.user.nama_program)
-  formData.append('deskripsi', this.user.deskripsi)
-  formData.append('jenis_anggaran_id', this.user.jenis_anggaran_id)
-  formData.append('jumlah_anggaran', this.user.jumlah_anggaran)
-  formData.append('kategori_penggunaan_id', this.user.kategori_penggunaan_id)
-  formData.append('institusi_id', this.user.institusi_id)
-  formData.append('dusun', this.user.dusun)
-  formData.append('desa_id', this.user.desa_id)
-  formData.append('kecamatan_id', this.user.kecamatan_id)
-  formData.append('kabupaten_id', this.user.kabupaten_id)
+      // Append semua field dari user object ke FormData
+      formData.append('nama_program', this.user.nama_program)
+      formData.append('deskripsi', this.user.deskripsi)
+      formData.append('jenis_anggaran_id', this.user.jenis_anggaran_id)
+      formData.append('jumlah_anggaran', this.user.jumlah_anggaran)
+      formData.append('kategori_penggunaan_id', this.user.kategori_penggunaan_id)
+      formData.append('institusi_id', this.user.institusi_id)
+      formData.append('dusun', this.user.dusun)
+      formData.append('desa_id', this.user.desa_id)
+      formData.append('kecamatan_id', this.user.kecamatan_id)
+      formData.append('kabupaten_id', this.user.kabupaten_id)
 
-  Object.keys(this.user).forEach(key => {
+      Object.keys(this.user).forEach(key => {
         if (key !== 'foto_before' && key !== 'foto_progress' && key !== 'foto_after') {
           formData.append(key, this.user[key])
         }
@@ -356,23 +550,97 @@ export default{
         formData.append('foto_after', this.fotoAfterFile)
       }
 
-  // Kirim dengan axios menggunakan FormData
-  axios.put(`/api/program/edit/${this.$route.params.id}`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
+      // Kirim dengan axios menggunakan FormData
+      axios.put(`/api/program/edit/${this.$route.params.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then(res => {
+        this.$router.go(-1)
+      })
+    },
+
+    getInstitusiName(id) {
+      const institusi = this.institusi.find(item => item.id === id)
+      return institusi ? institusi.nama_institusi : '-'
+    },
+
+    getJenisAnggaranName(id) {
+      const jenis = this.JenisAnggaran.find(item => item.Id === id)
+      return jenis ? jenis.jenis : '-'
+    },
+
+    getKategoriName(id) {
+      const kategori = this.KategoriPenggunaan.find(item => item.Id === id)
+      return kategori ? kategori.kategori : '-'
+    },
+
+    getDesaName(id) {
+      const desa = this.deslist.find(item => item.Id === id)
+      return desa ? desa.nama_desa : '-'
+    },
+
+    getKecamatanName(id) {
+      const kecamatan = this.keclist.find(item => item.Id === id)
+      return kecamatan ? kecamatan.nama_kecamatan : '-'
+    },
+
+    getKabupatenName(id) {
+      const kabupaten = this.kablist.find(item => item.Id === id)
+      return kabupaten ? kabupaten.nama_kabupaten : '-'
+    },
+
+    formatRupiah(value) {
+      return new Intl.NumberFormat('id-ID').format(value)
     }
-  })
-  .then(res => {
-    this.$router.go(-1)
-  })
-}
   },
+
+  computed: {
+    isFormComplete() {
+      // Cek apakah semua field required sudah terisi
+      const requiredFields = {
+        nama_program: this.user.nama_program,
+        deskripsi: this.user.deskripsi,
+        jenis_anggaran_id: this.user.jenis_anggaran_id,
+        jumlah_anggaran: this.user.jumlah_anggaran,
+        kategori_penggunaan_id: this.user.kategori_penggunaan_id,
+        institusi_id: this.user.institusi_id,
+        dusun: this.user.dusun,
+        desa_id: this.user.desa_id,
+        kecamatan_id: this.user.kecamatan_id,
+        kabupaten_id: this.user.kabupaten_id
+      }
+
+      // Cek status dan tambahan field foto jika status "Dalam Proses"
+
+        const fotoFields = {
+          foto_before: this.user.foto_before || this.fotoBeforeFile,
+          foto_progress: this.user.foto_progress || this.fotoProgressFile,
+          foto_after: this.user.foto_after || this.fotoAfterFile
+        }
+        Object.assign(requiredFields, fotoFields)
+
+
+      // Cek apakah semua field terisi (tidak kosong)
+      return Object.values(requiredFields).every(field => {
+        if (typeof field === 'string') return field.trim() !== ''
+        return field !== null && field !== undefined;
+      })
+    }
+  },
+
 
 }
 </script>
 
 
 <style scoped>
+.label-form {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
 .preview-container {
   width: 200px;
   height: 200px;
@@ -389,9 +657,10 @@ export default{
 
 .foto-section {
   margin: 20px 0;
-  margin-left: -39px;
 }
 
-
+.v-btn {
+  text-transform: none !important;
+}
 </style>
 

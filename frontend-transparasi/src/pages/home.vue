@@ -2,12 +2,10 @@
   <div class="">
 <div class="home-wrapper">
     <navbar-home />
-    <img src="./img/dprd.png" alt="" style="width: 100%; display: block; margin-top: -80px; filter: brightness(50%);">
-    <div class="wrapper-title text-center">
+    <img src="./img/dprd.png" alt=""  class="" style="width: 100%; display: block; margin-top: -80px; filter: brightness(50%);">
+    <div class="wrapper-title text-center d-none d-md-block">
       <p class="title d-none d-md-block">Selamat Datang</p>
       <h1 class="caption d-none d-md-block">Website Transparansi oleh POKIR/JASMAS DPRD Jawa Timur</h1>
-      <h3 class="d-md-none">Selamat Datang</h3>
-      <h4 class="d-md-none">Website Transparansi oleh POKIR/JASMAS DPRD Jawa Timur</h4>
     </div>
     <div class="text-center">
       
@@ -60,8 +58,7 @@
       </div>
     </v-container>
   </div>
-  <div class="" style="margin-bottom: 128px;">
-    <v-container>
+  <div class="container-custom" style="margin-bottom: 128px;">
       <v-row>
           <v-col  v-for="(item,index) in program.slice(0,4)" :key="item.id" cols="12" md="3">
           <div v-if="index <3 " class="border-lg card-program pa-4">
@@ -79,10 +76,7 @@
           </div>
         </v-col>
       </v-row>
-    </v-container>
   </div>
-
-
 <footerHomeVue></footerHomeVue>
 </div>
 </template>
@@ -129,6 +123,9 @@ $breakpoint-mobile: 1000px;
   }
 .section-about{
   margin-top: 64px;
+  @include mobile{
+    margin-top: 32px;
+  }
 }
 .section-intro{
   background-color: #E8E8E8;
@@ -191,6 +188,13 @@ $breakpoint-mobile: 1000px;
   }
 }
 
+.v-container{
+  padding: 0 !important;
+}
+
+.container-custom{
+  padding: 16px !important;
+}
 
 
 .card-program{

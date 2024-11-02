@@ -1,7 +1,6 @@
 <template>
-<v-container fluid>
-  <div class="d-flex">
 
+  <div class="d-flex d-none d-sm-block">
     <div class="header-login form-login">
       <v-card class="pa-5" rounded="lg">
         <div class="d-flex align-center">
@@ -27,7 +26,10 @@
     v-model="input.password">
   </v-text-field>
   <v-checkbox v-model="input.remember_me" label="Keep me logged in"></v-checkbox>
-  <v-btn class="d-flex justify-space-between button-login" width="100%" append-icon="mdi-chevron-right" color="grey" type="submit">
+  <v-btn class="d-none d-md-flex  justify-space-between button-login" width="100%" append-icon="mdi-chevron-right" color="grey" type="submit">
+    Masuk
+  </v-btn>
+  <v-btn class="d-flex d-md-none button-login" width="100%" append-icon="mdi-chevron-right" color="grey" type="submit">
     Masuk
   </v-btn>
   </v-form>
@@ -37,7 +39,7 @@
       </v-card>
 </div>
   </div>
-</v-container>
+ 
 </template>
 <script>
 import axios from 'axios';
