@@ -4,10 +4,10 @@
     <navbar-home />
     <img src="./img/dprd.png" alt="" style="width: 100%; display: block; margin-top: -80px; filter: brightness(50%);">
     <div class="wrapper-title text-center">
-      <p class="title">Selamat Datang</p>
-      <h1 class="caption">Website Transparansi oleh POKIR/JASMAS DPRD Jawa Timur</h1>
-      <h3>Selamat Datang</h3>
-      <h4 class="">Website Transparansi oleh POKIR/JASMAS DPRD Jawa Timur</h4>
+      <p class="title d-none d-md-block">Selamat Datang</p>
+      <h1 class="caption d-none d-md-block">Website Transparansi oleh POKIR/JASMAS DPRD Jawa Timur</h1>
+      <h3 class="d-md-none">Selamat Datang</h3>
+      <h4 class="d-md-none">Website Transparansi oleh POKIR/JASMAS DPRD Jawa Timur</h4>
     </div>
     <div class="text-center">
       
@@ -182,15 +182,9 @@ $breakpoint-mobile: 1000px;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    .caption{
-      @include mobile{
-    display: none;
-    }
-    }
+
     .title{
-      @include mobile{
-    display: none;
-    }
+      
       font-size: 96px;
       font-weight: bold;
     }
