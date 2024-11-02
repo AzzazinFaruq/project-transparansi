@@ -41,7 +41,10 @@
       :rules="confirmPasswordRules"
       v-model="passwordRepeat">
     </v-text-field>
-    <v-btn class="d-flex justify-space-between button-login" width="100%" append-icon="mdi-chevron-right" color="grey" type="submit" :disabled="!isFormValid">
+    <v-btn class="d-none d-sm-flex justify-space-between button-login" width="100%" append-icon="mdi-chevron-right" color="grey" type="submit" :disabled="!isFormValid">
+      Buat Akun
+    </v-btn>
+    <v-btn class="d-flex d-sm-none button-login" width="100%" append-icon="mdi-chevron-right" color="grey" type="submit" :disabled="!isFormValid">
       Buat Akun
     </v-btn>
   </v-form>

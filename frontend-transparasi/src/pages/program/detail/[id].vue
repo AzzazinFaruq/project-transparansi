@@ -8,7 +8,8 @@
       <p class="mt-3">{{ detail.deskripsi }}</p>
       <p class="mt-5" style="text-transform: uppercase; "><v-icon>mdi-map-marker</v-icon> {{ detail.dusun }}, {{ desa }}, {{ kecamatan }}, {{ kabupaten }}</p>
     </div>
-    <div class="mt-5" style="width:500px">
+    <div class="mt-5" style="width:100%;max-width:500px" >
+      
       <label for="" class="label-form">Foto Before</label>
       <img :src="`${getImageUrl(detail.foto_before)}`" alt="" width="100%">
       <label for="" class="label-form">Foto Progress</label>
@@ -30,7 +31,7 @@
           <img v-if="item.user.foto_profil == ''" src="@/assets/profile.png" alt="" width="100%">
           <img v-else :src="`${getImageUrl(item.user.foto_profil)}`" alt="" width="100%">
         </div>
-        <div class="" style="width: 100%;">
+        <div class="ml-2" style="width: 100%;">
         <h3 class="mb-1">{{ item.user.username }}</h3>
         <p class="mb-1">{{ item.keluhan }}</p>
         <p class="mb-1">{{ item.created_at }}</p>
@@ -43,7 +44,7 @@
                 <img v-if="item.user_tanggapan.foto_profil == ''" src="@/assets/profile.png" alt="" width="100%">
                 <img v-else :src="`${getImageUrl(item.user_tanggapan.foto_profil)}`" alt="" width="100%">
               </div>
-              <div class="" style="width: 100%;">
+              <div class="ml-2" style="width: 100%;">
               <h3 v-if="item.user_tanggapan.username == ''" class="mb-1">Anonim (DPRD)</h3> 
               <h3 v-else class="mb-1">{{ item.user_tanggapan.username }} (DPRD)</h3>
               <p class="mb-1">{{ item.tanggapan }}</p>

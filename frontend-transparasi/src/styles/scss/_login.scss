@@ -1,4 +1,9 @@
-
+$breakpoint-mobile: 768px;
+@mixin mobile {
+    @media (max-width: $breakpoint-mobile) {
+      @content;
+    }
+  }
 .form-login{
     width: 500px;
     position: absolute;
@@ -6,7 +11,7 @@
     left: 50%;
     transform: translate(-50%,-50%);
     @media screen and (max-width:600px) {
-    width: 300px;
+    width: 100%;
     }
     .logo-login{
         width: auto;
@@ -24,6 +29,9 @@
         font-size: 17.5px;
         height: 50px !important;
         background-color: #BF3232 !important;
+        @include mobile{
+            
+        }
     }
     .v-field__prepend-inner > .v-icon, .v-field__append-inner > .v-icon, .v-field__clearable > .v-icon {
         opacity: var(--v-medium-emphasis-opacity);

@@ -209,9 +209,9 @@
               <v-btn
                 color="#BF3232"
                 style="color: white"
-                @click="back()"
+                @click="reject()"
               >
-                Kembali
+                Tolak
               </v-btn>
             </div>
 
@@ -501,9 +501,54 @@ export default{
         });
       }
     },
-    rejectprogram(){
-      axios.get(`/api/program/reject/${this.$route.params.id}`)
-      .then(this.$router.go(-1))
+    async reject() {
+      try {
+        // Konfirmasi tolak program
+        const result = await Swal.fire({
+          title: 'Tolak Program?',
+          text: "Program yang ditolak tidak dapat diproses",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Ya, Tolak!',
+          cancelButtonText: 'Batal'
+        });
+
+        if (result.isConfirmed) {
+          // Tampilkan loading
+          Swal.fire({
+            title: 'Sedang memproses...',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+
+          // Proses tolak program
+          await axios.get(`/api/program/reject/${this.$route.params.id}`);
+          
+          // Tampilkan sukses
+          await Swal.fire({
+            icon: 'success',
+            title: 'Program Ditolak',
+            text: 'Program telah berhasil ditolak',
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+          // Kembali ke halaman sebelumnya
+          this.$router.go(-1);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Terjadi kesalahan saat menolak program',
+          confirmButtonText: 'Tutup'
+        });
+      }
     },
     back(){
       this.$router.go(-1)
