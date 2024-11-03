@@ -37,7 +37,7 @@ func GetAllAduan(c *gin.Context) {
 			"keluhan":        aduan.Keluhan,
 			"status":         aduan.Status,
 			"tanggapan":      aduan.Tanggapan,
-			"user_tanggapan": aduan.TanggapanUser,
+			"user_tanggapan": aduan.UserTanggapan,
 			"created_at":     aduan.CreatedAt.Format("02-01-2006"), // Format d-m-y
 			"updated_at":     aduan.UpdatedAt.Format("02-01-2006"), // Format d-m-y
 		}
@@ -65,6 +65,8 @@ func CreateAduan(c *gin.Context) {
 		UserId:    input.UserId,
 		Keluhan:   input.Keluhan,
 		Status:    "Belum Ditanggapi",
+		Tanggapan: nil,
+		UserTanggapan: nil,
 	}
 
 	if err := tx.Create(&aduan).Error; err != nil {
@@ -117,10 +119,10 @@ func TanggapiAduan(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Aduan tidak ditemukan"})
 		return
 	}
-
+	
 	aduan.Status = "Sudah Ditanggapi"
-	aduan.Tanggapan = input.Tanggapan
-	aduan.UserTanggapan = input.UserTanggapan
+	aduan.Tanggapan = &input.Tanggapan
+	aduan.UserTanggapan = &input.UserTanggapan
 	tx := setup.DB.Begin()
 
 	if err := tx.Save(&aduan).Error; err != nil {
@@ -411,7 +413,7 @@ func GetAduanByProgramId(c *gin.Context) {
 	for i, aduan := range aduan {
 		var userTanggapan models.User
 		// Mengambil data lengkap user tanggapan termasuk relasi
-		if aduan.UserTanggapan != 0 {
+		if aduan.UserTanggapan != nil && *aduan.UserTanggapan != 0 {
 			setup.DB.
 				Preload("Jabatan").
 				Preload("Role").
