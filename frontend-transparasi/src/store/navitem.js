@@ -27,12 +27,12 @@ export const navitemstore = defineStore('navItem', {
         },
         {
           text: 'Manajemen Institusi',
-          icon: 'mdi-account-group',
+          icon: 'mdi-office-building',
           route:'/admin/institusi'
         },
         {
           text: 'Manajemen Jabatan',
-          icon: 'mdi-account-group',
+          icon: 'mdi-office-building',
           route:'/admin/jabatan'
         },
         

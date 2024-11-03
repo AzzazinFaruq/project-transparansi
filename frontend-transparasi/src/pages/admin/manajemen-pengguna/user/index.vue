@@ -9,6 +9,7 @@
             <v-text-field density="compact" v-model="search" prepend-inner-icon="mdi-magnify" label="Cari User" variant="outlined" style="width: 300px;" @keyup.enter="searchUser"></v-text-field>
           </div>
           </div>
+          <v-divider></v-divider>
           <div class="">
           <v-table class="no-divider ">
             <thead style="">

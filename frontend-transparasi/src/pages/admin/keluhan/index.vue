@@ -39,9 +39,6 @@
                   Nama
                 </th>
                 <th class=" font-weight-bold">
-                  Keluhan
-                </th>
-                <th class=" font-weight-bold">
                   Status
                 </th>
                 <th class=" font-weight-bold">
@@ -55,7 +52,6 @@
                 >
               <td>{{ item.created_at}}</td>
               <td>{{ item.program.nama_program }}</td>
-              <td>{{ item.keluhan }}</td>
               <td
               style="min-width: 150px;"
               >

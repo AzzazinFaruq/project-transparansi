@@ -102,11 +102,11 @@
             </div>
 
             <div class="mb-5">
-              <label class="label-form mb-2 d-block">Desa</label>
+              <label class="label-form mb-2 d-block">Kabupaten / Kota</label>
               <v-autocomplete
-                v-model="user.desa_id"
-                :items="deslist"
-                item-title="nama_desa"
+                v-model="user.kabupaten_id"
+                :items="kablist"
+                item-title="nama_kabupaten"
                 item-value="Id"
                 variant="outlined"
                 density="compact"
@@ -126,11 +126,11 @@
             </div>
 
             <div class="mb-5">
-              <label class="label-form mb-2 d-block">Kabupaten / Kota</label>
+              <label class="label-form mb-2 d-block">Desa</label>
               <v-autocomplete
-                v-model="user.kabupaten_id"
-                :items="kablist"
-                item-title="nama_kabupaten"
+                v-model="user.desa_id"
+                :items="deslist"
+                item-title="nama_desa"
                 item-value="Id"
                 variant="outlined"
                 density="compact"
@@ -411,6 +411,23 @@ export default{
     this.listinstitusi();
     this.listdaerah()
   },
+  watch: {
+    'user.kabupaten_id': {
+      handler(newVal) {
+        if (newVal) {
+          // Reset kecamatan dan desa ketika kabupaten berubah
+          this.getKecamatan(newVal)
+        }
+      }
+    },
+    'user.kecamatan_id': {
+      handler(newVal) {
+        if (newVal) {
+          this.getDesa(newVal)
+        }
+      }
+    }
+  },
   methods: {
     listdaerah(){
       axios.all([
@@ -663,6 +680,8 @@ export default{
         formData.append('foto_after', this.fotoAfterFile)
       }
 
+      console.log(formData)
+
       // Kirim dengan axios menggunakan FormData
       axios.put(`/api/program/edit/${this.$route.params.id}`, formData, {
         headers: {
@@ -706,7 +725,49 @@ export default{
 
     formatRupiah(value) {
       return new Intl.NumberFormat('id-ID').format(value)
-    }
+    },
+
+    async getKecamatan(kab_id) {
+      try {
+        const response = await axios.get(`/api/kecamatan/${kab_id}`)
+        this.keclist = response.data.data
+      } catch (error) {
+        console.error('Error fetching kecamatan:', error)
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Gagal mengambil data kecamatan'
+        })
+      }
+    },
+
+    async getDesa(kec_id) {
+      try {
+        const response = await axios.get(`/api/desa/${kec_id}`)
+        this.deslist = response.data.data
+      } catch (error) {
+        console.error('Error fetching desa:', error)
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Gagal mengambil data desa'
+        })
+      }
+    },
+
+    async listdaerah() {
+      try {
+        const response = await axios.get('/api/index-kabupaten')
+        this.kablist = response.data.data
+      } catch (error) {
+        console.error('Error fetching kabupaten:', error)
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Gagal mengambil data kabupaten'
+        })
+      }
+    },
   },
 
   computed: {

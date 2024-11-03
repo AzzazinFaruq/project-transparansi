@@ -5,7 +5,7 @@
     v-model="drawer"
     class="custom-drawer"
   >
-    <v-list>
+    <v-list >
       <v-list-item-title class="logo-wrap">
         <a href="/home">
           <img src="./logo-dprd.png" alt="" class="sidebar-logo mb-3">
@@ -26,41 +26,93 @@
         active-class="active-item"
       ></v-list-item>
 
-      <!-- Manajemen Pengguna with 2 Child items -->
-       <div class="" v-if="auth == 'admin'">
-      <v-list-group
-      append-icon="false"
-      prepend-icon="mdi-chevron-down"
-      >
-        <template v-slot:activator="{props: Props}">
-          <v-list-item
-          v-bind="Props"
-          value="true"
-          title="Manajemen Pengguna"
-          >
-        </v-list-item>
-        </template>
+      <div class="" v-if="auth == 'admin'">
+          <!-- Manajemen Anggaran -->
+          <div>
+            <v-list-item
+              @click="setActiveGroup('anggaran')"
+              title="Manajemen Anggaran"
+              class="group-header"
+            >
+              <template v-slot:prepend>
+                <v-icon
+                  :class="{ 'rotate-icon': activeGroup === 'anggaran' }"
+                >
+                  mdi-chevron-right
+                </v-icon>
+              </template>
+            </v-list-item>
+            
+            <!-- Konten group dengan transition -->
+            <transition name="expand">
+              <div 
+                v-show="activeGroup === 'anggaran'"
+                class="group-content"
+              >
+                <v-list-item
+                  to="/admin/kategori-penggunaan"
+                  title="Kategori Penggunaan"
+                  prepend-icon="mdi-currency-usd"
+                  active-class="active-item"
+                  class="ml-4"
+                >
+                </v-list-item>
 
-        <!-- Child item: DPRD -->
-        <v-list-item
-        to="/admin/manajemen-pengguna/dprd"
-        title="Anggota DPRD"
-        prepend-icon="mdi-account"
-        active-class="active-item"
-        >
+                <v-list-item
+                  to="/admin/jenis-anggaran"
+                  title="Jenis Anggaran"
+                  prepend-icon="mdi-currency-usd"
+                  active-class="active-item"
+                  class="ml-4"
+                >
+                </v-list-item>
+              </div>
+            </transition>
+          </div>
 
-        </v-list-item>
+          <!-- Manajemen Pengguna -->
+          <div>
+            <v-list-item
+              @click="setActiveGroup('pengguna')"
+              title="Manajemen Pengguna"
+              class="group-header"
+            >
+              <template v-slot:prepend>
+                <v-icon
+                  :class="{ 'rotate-icon': activeGroup === 'pengguna' }"
+                >
+                  mdi-chevron-right
+                </v-icon>
+              </template>
+            </v-list-item>
+            
+            <!-- Konten group dengan transition -->
+            <transition name="expand">
+              <div 
+                v-show="activeGroup === 'pengguna'"
+                class="group-content"
+              >
+                <v-list-item
+                  to="/admin/manajemen-pengguna/dprd"
+                  title="Anggota DPRD"
+                  prepend-icon="mdi-account"
+                  active-class="active-item"
+                  class="ml-4"
+                >
+                </v-list-item>
 
-        <!-- Child item: User -->
-        <v-list-item
-        to="/admin/manajemen-pengguna/user"
-        title="Masyarakat"
-        prepend-icon="mdi-account"
-        active-class="active-item"
-        >
-        </v-list-item>
-      </v-list-group>
-    </div>
+                <v-list-item
+                  to="/admin/manajemen-pengguna/user"
+                  title="Masyarakat"
+                  prepend-icon="mdi-account"
+                  active-class="active-item"
+                  class="ml-4"
+                >
+                </v-list-item>
+              </div>
+            </transition>
+          </div>
+        </div>
     </v-list>
   </v-navigation-drawer>
 
@@ -105,7 +157,7 @@ export default {
     items: [],
     auth:'',
     userPhoto: '',
-
+    activeGroup: null
   }),
   mounted(){
     this.handleManajemenUser();
@@ -186,6 +238,13 @@ export default {
         });
       }
     },
+    setActiveGroup(groupName) {
+      if (this.activeGroup === groupName) {
+        this.activeGroup = null;
+      } else {
+        this.activeGroup = groupName;
+      }
+    },
   }
 }
 </script>
@@ -199,6 +258,61 @@ export default {
     width: 100%;
     height: 100%;
     border-radius: 50%;
+  }
+}
+
+// Tambahkan style untuk animasi expand/collapse
+.expand-enter-active,
+.expand-leave-active {
+  transition: all 0.3s ease;
+  max-height: 300px; // Sesuaikan dengan kebutuhan
+  opacity: 1;
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.group-content {
+  overflow: hidden;
+}
+
+.rotate-icon {
+  transform: rotate(90deg);
+  transition: transform 0.3s ease;
+}
+
+// Style untuk header group
+.group-header {
+  .v-icon {
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Style untuk list items
+.v-list-item {
+  transition: all 0.3s ease;
+  
+  &.ml-4 {
+    margin-left: 16px;
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
   }
 }
 </style>

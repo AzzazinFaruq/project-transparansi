@@ -18,9 +18,6 @@
                   Nama
                 </th>
                 <th class=" font-weight-bold">
-                  Keluhan
-                </th>
-                <th class=" font-weight-bold">
                   Status
                 </th>
                 <th class=" font-weight-bold">
@@ -34,7 +31,6 @@
                 >
               <td>{{ item.created_at}}</td>
               <td>{{ item.program.nama_program }}</td>
-              <td>{{ item.keluhan }}</td>
               <td>
                 <v-badge v-if="item.status=='Belum Ditanggapi'" dot inline color="#FFE642"></v-badge>
                 <v-badge v-else-if="item.status=='Sudah Ditanggapi'" dot inline color="#4A975B"></v-badge>
