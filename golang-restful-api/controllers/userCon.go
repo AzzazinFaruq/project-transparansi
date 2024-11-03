@@ -16,6 +16,7 @@ func GetAllUser(c *gin.Context) {
 	if err := setup.DB.
 		Preload("Role").
 		Preload("Jabatan").
+		Order("username ASC").
 		Find(&user).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

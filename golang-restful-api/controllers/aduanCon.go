@@ -18,6 +18,7 @@ func GetAllAduan(c *gin.Context) {
 		Preload("User.Jabatan").
 		Preload("User.Role").
 		Preload("TanggapanUser").
+		Order("created_at DESC").
 		Find(&Aduan).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
