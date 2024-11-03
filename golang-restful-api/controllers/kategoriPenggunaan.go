@@ -11,7 +11,9 @@ import (
 func GetAllKategoriPenggunaan(c *gin.Context) {
 	var kategoriPenggunaan []models.KategoriPenggunaan
 
-	if err := setup.DB.Find(&kategoriPenggunaan).Error; err != nil {
+	if err := setup.DB.
+		Order("nama ASC").
+		Find(&kategoriPenggunaan).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

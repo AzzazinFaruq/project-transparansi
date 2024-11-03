@@ -18,6 +18,10 @@ func GetAllProgram(c *gin.Context) {
 		Preload("JenisAnggaran").
 		Preload("User.Jabatan").
 		Preload("User.Role").
+		Preload("Desa").
+		Preload("Kecamatan").
+		Preload("Kabupaten").
+		Order("created_at DESC").
 		Find(&program).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -33,6 +37,9 @@ func GetAllProgram(c *gin.Context) {
 			"jenis_anggaran":      program.JenisAnggaran,
 			"kategori_penggunaan": program.KategoriPenggunaan,
 			"dusun":               program.Dusun,
+			"desa":                program.Desa,
+			"kecamatan":           program.Kecamatan,
+			"kabupaten":           program.Kabupaten,
 			"user":                program.User,
 			"status":              program.Status,
 			"foto_before":         program.FotoBefore,
