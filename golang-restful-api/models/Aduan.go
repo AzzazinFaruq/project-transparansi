@@ -10,8 +10,8 @@ type Aduan struct {
 	User          User       `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Keluhan       string    `json:"keluhan"`
 	Status        string    `json:"status"`
-	Tanggapan     string    `json:"tanggapan"`
-	UserTanggapan int64     `json:"user_tanggapan"`
+	Tanggapan     *string   `json:"tanggapan"`
+	UserTanggapan *int64    `json:"user_tanggapan"`
 	TanggapanUser User      `gorm:"foreignKey:UserTanggapan;references:Id;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	CreatedAt     time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`                             // Menggunakan TIMESTAMP dengan default nilai CURRENT_TIMESTAMP
 	UpdatedAt     time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"` // Menggunakan TIMESTAMP dengan auto-update
