@@ -111,13 +111,13 @@
             </div>
 
             <div class="mb-5">
-              <label class="label-form mb-2 d-block">Desa</label>
+              <label class="label-form mb-2 d-block">Kabupaten / Kota</label>
               <v-autocomplete
-                v-model="user.desa_id"
-                :items="deslist"
-                item-title="nama_desa"
+                v-model="user.kabupaten_id"
+                :items="kablist"
+                item-title="nama_kabupaten"
                 item-value="Id"
-                placeholder="Pilih desa"
+                placeholder="Pilih kabupaten"
                 variant="outlined"
                 density="compact"
               ></v-autocomplete>
@@ -137,13 +137,13 @@
             </div>
 
             <div class="mb-5">
-              <label class="label-form mb-2 d-block">Kabupaten / Kota</label>
+              <label class="label-form mb-2 d-block">Desa</label>
               <v-autocomplete
-                v-model="user.kabupaten_id"
-                :items="kablist"
-                item-title="nama_kabupaten"
+                v-model="user.desa_id"
+                :items="deslist"
+                item-title="nama_desa"
                 item-value="Id"
-                placeholder="Pilih kabupaten"
+                placeholder="Pilih desa"
                 variant="outlined"
                 density="compact"
               ></v-autocomplete>
@@ -162,6 +162,7 @@
 </template>
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 export default{
   data() {
     return {
@@ -169,7 +170,6 @@ export default{
       kablist:[],
       keclist:[],
       deslist:[],
-      institusi:[],
       JenisAnggaran:[],
       KategoriPenggunaan:[],
       user:{
@@ -187,35 +187,89 @@ export default{
         foto_before:'',
         foto_progress:'',
         foto_after:''
-
-
       }
     }
   },
+
+  watch: {
+    'user.kabupaten_id': {
+      handler(newVal) {
+        if (newVal) {
+          // Reset kecamatan dan desa ketika kabupaten berubah
+          this.user.kecamatan_id = ''
+          this.user.desa_id = ''
+          this.keclist = []
+          this.deslist = []
+          this.indexKecamatan(newVal)
+        }
+      }
+    },
+    'user.kecamatan_id': {
+      handler(newVal) {
+        if (newVal) {
+          // Reset desa ketika kecamatan berubah
+          this.user.desa_id = ''
+          this.deslist = []
+          this.indexDesa(newVal)
+        }
+      }
+    }
+  },
+
   mounted() {
     this.userId();
     this.listinstitusi();
     this.listJenisAnggaran();
     this.listKategoriPenggunaan();
-    this.listdaerah();
+    this.indexKabupaten();
   },
-  methods: {
-    listdaerah(){
-      axios.all([
-    axios.get('/api/index-kabupaten'),  // Endpoint untuk kabupaten
-    axios.get('/api/index-kecamatan'),  // Endpoint untuk kecamatan
-    axios.get('/api/index-desa')        // Endpoint untuk desa
-  ])
-  .then(axios.spread((kabupatenRes, kecamatanRes, desaRes) => {
-    this.kablist = kabupatenRes.data.data;
-    this.keclist = kecamatanRes.data.data;
-    this.deslist = desaRes.data.data;
 
-  }))
-  .catch(error => {
-    console.error("Error fetching data:", error);
-  });
+  methods: {
+    async indexKecamatan(kab_id){
+      try {
+        const response = await axios.get(`/api/kecamatan/${kab_id}`)
+        this.keclist = response.data.data
+      } catch (error) {
+        console.error('Error fetching kecamatan:', error)
+      }
     },
+
+    async indexDesa(kec_id){
+      try {
+        const response = await axios.get(`/api/desa/${kec_id}`)
+        this.deslist = response.data.data
+      } catch (error) {
+        console.error('Error fetching desa:', error)
+      }
+    },
+
+    async create(){
+      try {
+        console.log(this.user)
+
+
+        await axios.post(`/api/program/pengajuan`, this.user)
+        
+
+        await Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: 'Program berhasil ditambahkan',
+          timer: 1500,
+          showConfirmButton: false
+        })
+
+        this.$router.go(-1)
+      } catch (error) {
+        console.error('Error creating program:', error)
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Terjadi kesalahan saat menyimpan program'
+        })
+      }
+    },
+
     userId(){
       axios.get("api/user")
       .then(res=>{
@@ -240,16 +294,15 @@ export default{
         this.KategoriPenggunaan = res.data.data
       })
     },
-    create(){
-      console.log(this.user);
-    axios.post(`/api/program/pengajuan`, this.user)
-    .then(res=>{
+    indexKabupaten(){
+      axios.get("/api/index-kabupaten")
+      .then(res=>{
+        this.kablist = res.data.data
+      })
+    },
+    back(){
       this.$router.go(-1)
-    })
-  },
-  back(){
-    this.$router.go(-1)
-  }
+    }
   },
 
 }

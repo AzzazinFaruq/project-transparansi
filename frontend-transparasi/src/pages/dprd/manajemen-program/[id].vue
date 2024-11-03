@@ -102,11 +102,11 @@
             </div>
 
             <div class="mb-5">
-              <label class="label-form mb-2 d-block">Desa</label>
+              <label class="label-form mb-2 d-block">Kabupaten / Kota</label>
               <v-autocomplete
-                v-model="user.desa_id"
-                :items="deslist"
-                item-title="nama_desa"
+                v-model="user.kabupaten_id"
+                :items="kablist"
+                item-title="nama_kabupaten"
                 item-value="Id"
                 variant="outlined"
                 density="compact"
@@ -126,17 +126,17 @@
             </div>
 
             <div class="mb-5">
-              <label class="label-form mb-2 d-block">Kabupaten / Kota</label>
+              <label class="label-form mb-2 d-block">Desa</label>
               <v-autocomplete
-                v-model="user.kabupaten_id"
-                :items="kablist"
-                item-title="nama_kabupaten"
+                v-model="user.desa_id"
+                :items="deslist"
+                item-title="nama_desa"
                 item-value="Id"
                 variant="outlined"
                 density="compact"
               ></v-autocomplete>
             </div>
-
+          
             <!-- Detail Dokumentasi -->
             <div v-if="user.status == 'Dalam Proses'">
               <h2 class="text-h6 font-weight-bold mb-3">Detail Dokumentasi</h2>
@@ -593,6 +593,118 @@ export default{
 
     formatRupiah(value) {
       return new Intl.NumberFormat('id-ID').format(value)
+    },
+
+    async getKecamatan(kab_id) {
+      try {
+        const response = await axios.get(`/api/kecamatan/${kab_id}`)
+        this.keclist = response.data.data
+      } catch (error) {
+        console.error('Error fetching kecamatan:', error)
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Gagal mengambil data kecamatan'
+        })
+      }
+    },
+
+    async getDesa(kec_id) {
+      try {
+        const response = await axios.get(`/api/desa/${kec_id}`)
+        this.deslist = response.data.data
+      } catch (error) {
+        console.error('Error fetching desa:', error)
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Gagal mengambil data desa'
+        })
+      }
+    },
+
+    async listdaerah() {
+      try {
+        const response = await axios.get('/api/index-kabupaten')
+        this.kablist = response.data.data
+        
+        // Jika ada data program yang dimuat, ambil data kecamatan dan desa
+        if (this.user.kabupaten_id) {
+          await this.getKecamatan(this.user.kabupaten_id)
+          if (this.user.kecamatan_id) {
+            await this.getDesa(this.user.kecamatan_id)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching kabupaten:', error)
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Gagal mengambil data kabupaten'
+        })
+      }
+    },
+
+    async simpan() {
+      try {
+        // Tampilkan loading
+        Swal.fire({
+          title: 'Sedang menyimpan...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading()
+          }
+        })
+
+        const formData = new FormData()
+        // ... kode formData tetap sama ...
+
+        await axios.put(`/api/program/edit/${this.$route.params.id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+
+        // Tampilkan sukses
+        await Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: 'Program berhasil disimpan',
+          timer: 1500,
+          showConfirmButton: false
+        })
+
+        this.$router.go(-1)
+      } catch (error) {
+        console.error('Error:', error)
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Terjadi kesalahan saat menyimpan program',
+          confirmButtonText: 'Tutup'
+        })
+      }
+    }
+  },
+
+  watch: {
+    'user.kabupaten_id': {
+      handler(newVal) {
+        if (newVal) {
+          // Reset kecamatan dan desa ketika kabupaten berubah
+
+          this.getKecamatan(newVal)
+        }
+      }
+    },
+    'user.kecamatan_id': {
+      handler(newVal) {
+        if (newVal) {
+          // Reset desa ketika kecamatan berubah
+
+          this.getDesa(newVal)
+        }
+      }
     }
   },
 

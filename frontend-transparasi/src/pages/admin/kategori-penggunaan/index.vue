@@ -2,8 +2,8 @@
   <v-container fluid class="">
     <div class="d-flex justify-space-between align-center mb-5 px-4">
       <div>
-        <p class="text-h5 font-weight-bold">Manajemen Jabatan</p>
-        <p class="text-subtitle-1 text-grey">Kelola data jabatan</p>
+        <p class="text-h5 font-weight-bold">Kategori Penggunaan</p>
+        <p class="text-subtitle-1 text-grey">Kelola Kategori Penggunaan</p>
       </div>
       <v-dialog v-model="dialog" max-width="500px" persistent>
         <template v-slot:activator="{ props }">
@@ -13,12 +13,12 @@
             v-bind="props"
             prepend-icon="mdi-plus"
           >
-            Tambah Jabatan
+            Tambah Kategori
           </v-btn>
         </template>
         <v-card>
           <div class="d-flex justify-space-between align-center pa-5">
-            <p class="text-h6 font-weight-bold mb-0">Tambah Jabatan Baru</p>
+            <p class="text-h6 font-weight-bold mb-0">Tambah Kategori Baru</p>
             <v-btn
               icon
               variant="text"
@@ -31,9 +31,9 @@
           <v-card-text class="pa-5">
             <v-form ref="form" @submit.prevent="saveJabatan">
               <div class="mb-5">
-                <label class="label-form mb-2 d-block">Nama Jabatan</label>
+                <label class="label-form mb-2 d-block">Nama Kategori</label>
                 <v-text-field
-                  v-model="formData.jabatan"
+                  v-model="formData.kategori  "
                   placeholder="Masukkan nama jabatan"
                   variant="outlined"
                   density="compact"
@@ -45,14 +45,14 @@
           <v-card-actions class="pa-5 pt-0">
             <v-spacer></v-spacer>
             <v-btn
-              color="#BF3232"
+              color="red"
               style="color: white"
               @click="closeDialog"
             >
               Batal
             </v-btn>
             <v-btn
-              color="#387144"
+              color="green"
               style="color: white"
               @click="saveJabatan"
               :loading="loading"
@@ -70,14 +70,14 @@
         <thead>
           <tr>
             <th class="text-center" style="width: 80px">No</th>
-            <th class="text-left">Nama Jabatan</th>
+            <th class="text-left">Kategori</th>
             <th class="text-center" style="width: 100px">Aksi</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(item, index) in paginatedItems" :key="item.Id">
             <td class="text-center">{{ index +1 }}</td>
-            <td>{{ item.jabatan }}</td>
+            <td>{{ item.kategori }}</td>
             <td class="text-center">
               <v-btn class="rounded-lg ml-2" style="width: 35px;height:35px;background-color: #BF3232;color: white;" icon @click="deleteItem(item.Id)">
                     <v-icon>mdi-delete</v-icon>
@@ -125,7 +125,7 @@ export default {
       loading: false,
       jabatan: [],
       formData: {
-        jabatan: ''
+        kategori: ''
       },
       rules: {
         required: v => !!v || 'Field ini harus diisi'
@@ -154,10 +154,9 @@ export default {
   methods: {
     getJabatan() {
       this.loading = true
-      axios.get('/api/index-jabatan')
+      axios.get('/api/index-kategori-penggunaan')
         .then(res => {
           this.jabatan = res.data.data
-          this.totalItems = this.jabatan.length
         })
         .catch(error => {
           console.error('Error:', error)
@@ -180,7 +179,7 @@ export default {
       if (!this.$refs.form.validate()) return
 
       this.loading = true
-      axios.post('/api/create-jabatan', this.formData)
+      axios.post('/api/kategori-penggunaan', this.formData)
         .then(() => {
           Swal.fire({
             icon: 'success',
@@ -218,7 +217,7 @@ export default {
         reverseButtons: true
       }).then((result) => {
         if (result.isConfirmed) {
-          axios.delete(`/api/jabatan/${id}`)
+          axios.delete(`/api/kategori-penggunaan/${id}`)
             .then(() => {
               Swal.fire({
                 icon: 'success',

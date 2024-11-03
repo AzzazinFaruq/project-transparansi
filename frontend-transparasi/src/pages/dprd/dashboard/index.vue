@@ -1,6 +1,6 @@
 <template>
   <v-container >
-
+    <div class="pa-5">
     <div class=" ">
         <div class="d-flex">
           <div class="chart-line-dashboard" style="">
@@ -103,7 +103,7 @@
           </v-table>
         </div>
     </div>
-
+  </div>
   </v-container>
 </template>
 <script>

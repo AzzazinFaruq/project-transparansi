@@ -1,7 +1,13 @@
+$breakpoint-mobile: 768px;
+@mixin mobile {
+    @media (max-width: $breakpoint-mobile) {
+      @content;
+    }
+  }
 .custom-drawer {
     background-color: #BF3232 !important; /* Warna latar belakang drawer */
     color: white !important; /* Warna teks */
-  
+
 
     .v-list-group__items .v-list-item {
       padding-inline-start: 18px !important;
