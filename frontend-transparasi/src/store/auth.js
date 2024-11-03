@@ -23,10 +23,12 @@ export const authStore = defineStore('auth', {
         .then((res)=>{
           stat = res.data.status;
           this.user_id = res.data.Id
+
         })
         .catch(err=>{
           if (err.response.data.status ==  false) {
             router.push("/home")
+            localStorage.removeItem('Role')
           }
         })
 

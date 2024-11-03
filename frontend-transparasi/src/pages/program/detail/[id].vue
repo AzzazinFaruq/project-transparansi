@@ -27,9 +27,10 @@
   <div class="">
     <div class="container-home" v-for="item in aduanList" :key="item.id">
       <div class="d-flex">
-        <div class="mr-3" style="width: 50px;">
-          <img v-if="item.user.foto_profil == ''" src="@/assets/profile.png" alt="" width="100%">
-          <img v-else :src="`${getImageUrl(item.user.foto_profil)}`" alt="" width="100%">
+        <div class="profile-container mt-1 mr-2"><a href="/profile">
+          <img v-if="item.user.foto_profil == ''" src="../detail/profile.png"  alt="" class="profile-pictures" >
+          <img v-else :src="`${getImageUrl(item.user.foto_profil)}`"  alt="" class="profile-pictures" >
+        </a>
         </div>
         <div class="ml-2" style="width: 100%;">
         <h3 class="mb-1">{{ item.user.username }}</h3>
@@ -40,9 +41,10 @@
           </v-col>
           <v-col cols="11">
             <div class="d-flex">
-              <div class="mr-3" style="width: 50px;">
-                <img v-if="item.user_tanggapan.foto_profil == ''" src="@/assets/profile.png" alt="" width="100%">
-                <img v-else :src="`${getImageUrl(item.user_tanggapan.foto_profil)}`" alt="" width="100%">
+              <div class="profile-container mt-1 mr-2"><a href="/profile">
+                <img v-if="item.user_tanggapan.foto_profil == ''" src="../detail/profile.png"  alt="" class="profile-pictures" >
+                <img v-else :src="`${getImageUrl(item.user_tanggapan.foto_profil)}`"  alt="" class="profile-pictures" >
+              </a>
               </div>
               <div class="ml-2" style="width: 100%;">
               <h3 v-if="item.user_tanggapan.username == ''" class="mb-1">Anonim (DPRD)</h3> 
