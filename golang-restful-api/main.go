@@ -36,14 +36,6 @@ func main() {
 	protected.GET("/index-role", controllers.GetAllRole)
 	protected.GET("/user/username", controllers.GetUserByUsername)
 	
-	// Route Institusi
-  protected.GET("/institusi", controllers.GetInstitusi)
-	protected.GET("/institusi/:id", controllers.GetInstitusiById)
-	protected.PUT("/institusi/:id", controllers.UpdateInstitusi)
-	protected.DELETE("institusi/:id", controllers.DeleteInstitusi)
-	protected.POST("/create-institusi", controllers.CreateInstitusi)
-	protected.GET("/institusi/search", controllers.GetInstitusiByNamaInstitusi)
-	
 	// Route Jabatan
 	protected.GET("/index-jabatan", controllers.GetAllJabatan)
 	protected.POST("/create-jabatan", controllers.CreateJabatan)
@@ -52,12 +44,11 @@ func main() {
 
 	// Route Program
 	protected.GET("/index-program", controllers.GetAllProgram)
+	protected.GET("/program/user", controllers.GetProgramByUserId)
 	protected.GET("/program/:id", controllers.DetailProgram)
-	protected.POST("/program/pengajuan", controllers.PengajuanProgram)
+	protected.POST("/program/tambah", controllers.TambahProgram)
 	protected.PUT("/program/edit/:id", controllers.EditProgram)
-	protected.GET("/program/accept/:id", controllers.AcceptProgram)
-	protected.GET("/program/reject/:id", controllers.RejectProgram)
-	protected.GET("/program/selesai/:id", controllers.SelesaikanProgram)
+	protected.GET("/program/draft/:id", controllers.DraftProgram)
 	protected.GET("/program/status/:status", controllers.GetProgramByStatus)
 	protected.GET("/index-jenis-anggaran", controllers.GetAllJenisAnggaran)
 	protected.GET("/index-kategori-penggunaan", controllers.GetAllKategoriPenggunaan)
@@ -88,6 +79,18 @@ func main() {
 	protected.GET("/index-desa", controllers.GetAllDesa)
 	protected.GET("/kecamatan/:id", controllers.GetKecamatanByKabupatenId)
 	protected.GET("/desa/:id", controllers.GetDesaByKecamatanId)
+
+	// Route Aspirator
+	protected.GET("/index-aspirator", controllers.GetAllAspirator)
+	protected.GET("/aspirator/search", controllers.GetAspiratorByNamaAspirator)
+	protected.POST("/create-aspirator", controllers.CreateAspirator)
+	protected.DELETE("/aspirator/:id", controllers.DeleteAspirator)
+
+	// Route Dinas Verifikator
+	protected.GET("/index-dinas-verifikator", controllers.GetAllDinasVerifikator)
+	protected.GET("/dinas-verifikator/search", controllers.GetDinasVerifikatorByNama)
+	protected.POST("/create-dinas-verifikator", controllers.CreateDinasVerifikator)
+	protected.DELETE("/dinas-verifikator/:id", controllers.DeleteDinasVerifikator)
 
 	//Route Log
 	protected.GET("/index-log", controllers.GetAllLog)
