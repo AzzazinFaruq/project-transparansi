@@ -16,15 +16,15 @@
   </div>
   <div class=""  v-for="(program, index) in paginatedPrograms" :key="program.id">
     <div class="" v-if="index == 2 || index == 3" style="background-color: #F5F5F5; ">
-      <div class="container-home margin-32">
+      <div class="container-home list-program margin-32">
         <a @click="tanggapi(program.id)">
         <v-row>
-          <v-col cols="12" md="4">
-            <div class="" width="100%">
-              <img :src="`${getImageUrl(program.foto_before)}`" alt="" width="100%">
+          <v-col cols="12" sm="4">
+            <div class="wrapper-image">
+              <img :src="`${getImageUrl(program.foto_before)}`" class="image-program" alt="" width="100%">
             </div>
             </v-col>
-            <v-col cols="12" md="8">
+            <v-col cols="12" sm="8">
             <h2>{{ program.nama_program }}</h2>
             <p class="mt-2 clamp-text-6">{{ program.deskripsi }}</p>
             <p class="mt-4" style="font-weight: lighter;">Diupdate pada {{ program.updated_at }}</p>
@@ -34,15 +34,15 @@
       </div>
     </div>
     <div class="" v-else style=" ">
-      <div class="container-home margin-32">
+      <div class="container-home list-program  margin-32">
         <a @click="tanggapi(program.id)">
         <v-row>
-          <v-col cols="12" md="4">
-            <div class="" width="100%">
-              <img :src="`${getImageUrl(program.foto_before)}`" alt="" width="100%">
+          <v-col cols="12" sm="4">
+            <div class="wrapper-image">
+              <img :src="`${getImageUrl(program.foto_before)}`" class="image-program" alt="">
             </div>
             </v-col>
-            <v-col cols="12" md="8">
+            <v-col cols="12" sm="8">
             <h2>{{ program.nama_program }}</h2>
             <p class="mt-2 clamp-text-6">{{ program.deskripsi }}</p>
             <p class="mt-4" style="font-weight: lighter;">Diupdate pada {{ program.updated_at }}</p>
@@ -147,14 +147,28 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="scss" scoped>
+.list-program{
+  padding-top: 32px;
+  padding-bottom: 32px;
+  .wrapper-image{
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    .image-program{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
 .margin-32 {
   padding-top: 32px;
   padding-bottom: 32px;
 }
 .clamp-text-6 {
   display: -webkit-box;
-  -webkit-line-clamp: 6; /* Jumlah baris yang ingin ditampilkan */
+  -webkit-line-clamp: 5; /* Jumlah baris yang ingin ditampilkan */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

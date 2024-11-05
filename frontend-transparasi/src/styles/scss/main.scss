@@ -33,6 +33,12 @@ $breakpoint-mobile: 768px;
 
 .v-container{
     padding: 0px !important;
+    max-width: unset !important;
+}
+@media (max-width: 960px) {
+  .v-container {
+      padding: 0px !important; 
+  }
 }
 
 a{
@@ -72,7 +78,7 @@ a:hover{
   -webkit-overflow-scrolling: touch;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 500px) {
   .d-flex.justify-space-between,
   .d-flex.align-center.justify-space-between {
     flex-direction: column;
@@ -96,13 +102,11 @@ a:hover{
   }
 
   /* Adjust table for mobile */
-  .v-table {
-    font-size: 0.875rem;
-  }
 
   .v-table th,
   .v-table td {
     padding: 8px !important;
+
   }
 
   /* Make filter dropdown full width on mobile */
@@ -128,6 +132,9 @@ a:hover{
   height: 6px;
 }
 
+
+
+
 .table-responsive::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
@@ -148,8 +155,3 @@ a:hover{
   padding: 0 16px;
 }
 
-@media (max-width: 960px) {
-  .v-container {
-    padding: 16px !important;
-  }
-}

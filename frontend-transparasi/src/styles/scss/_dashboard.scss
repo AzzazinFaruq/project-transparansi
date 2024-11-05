@@ -5,20 +5,22 @@ $breakpoint-mobile: 768px;
     }
   }
 .dashboard-card{
-
-  @include mobile{
+  @media (max-width: 500px) {
     text-align: center;
+    gap: 0 !important;
   }
-  color: white;
 .title{
-  @include mobile{
-    text-align: center;
-    width: 100%;
-  }
   padding: 15px;
   width: 35%;
+  @media (max-width: 500px) {
+    width: unset;
+    padding: 4px;
+  }
 }
 .data-angka{
+  @media (max-width: 500px) {
+    font-size: 30px;
+  }
   font-size: 45px;
   padding-right: 15px;
 }
@@ -37,9 +39,11 @@ $breakpoint-mobile: 768px;
 .no-divider th,
 .no-divider td {
   border-bottom: none !important; /* Menghilangkan garis bawah */
+
 }
 
 .no-divider thead tr,
 .no-divider tbody tr {
   border-bottom: none !important; /* Menghilangkan garis pemisah */
+
 }

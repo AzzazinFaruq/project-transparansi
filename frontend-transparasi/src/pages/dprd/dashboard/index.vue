@@ -70,7 +70,7 @@
           <v-table class="no-divider">
             <thead>
               <tr class="">
-                <th class="text-left font-weight-bold">
+                <th style="min-width: 100px;" class="text-left font-weight-bold">
                   Tanggal
                 </th>
                 <th class="text-left font-weight-bold">

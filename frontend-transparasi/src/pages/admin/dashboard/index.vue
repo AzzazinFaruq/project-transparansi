@@ -19,38 +19,41 @@
 
     <div class="mt-8">
       <v-row>
-        <v-col cols="12" lg="4">
-          <v-card variant="outlined" style="border-color: #BF3232;">
-            <div class="d-flex justify-space-between dashboard-card" style="color: black">
+        <v-col cols="12"  lg="4">
+          <v-card variant="outlined" class="text-black"  style="border-color: #BF3232;">
+            <div class="d-flex justify-space-between dashboard-card">
               <div class="title">
                 <h4>Total Keluhan</h4>
+                <h1 class="d-block d-sm-none">{{ counterAduan.total }}</h1>
               </div>
               <div class="data-angka">
-                <h1>{{ counterAduan.total }}</h1>
+                <h1 class="d-none d-sm-block">{{ counterAduan.total }}</h1>
               </div>
             </div>
           </v-card>
         </v-col>
         <v-col cols="12" md="6" lg="4">
-          <v-card style="background-color: #387144">
+          <v-card class="text-white" style="background-color: #387144">
             <div class="d-flex justify-space-between dashboard-card">
               <div class="title">
                 <h4>Keluhan Sudah Ditanggapi</h4>
+                <h1 class="d-block d-sm-none">{{ counterAduan.sudah_ditanggapi }}</h1>
               </div>
               <div class="data-angka">
-                <h1>{{ counterAduan.sudah_ditanggapi }}</h1>
+                <h1 class="d-none d-sm-block">{{ counterAduan.sudah_ditanggapi }}</h1>
               </div>
             </div>
           </v-card>
         </v-col>
         <v-col cols="12" md="6" lg="4">
-          <v-card style="background-color: #BFAD32;">
+          <v-card class="text-white" style="background-color: #BFAD32;">
             <div class="d-flex justify-space-between dashboard-card">
               <div class="title">
                 <h4>Keluhan Belum Ditanggapi</h4>
+                <h1 class="d-block d-sm-none">{{ counterAduan.belum_ditanggapi }}</h1>
               </div>
               <div class="data-angka">
-                <h1>{{ counterAduan.belum_ditanggapi }}</h1>
+                <h1 class="d-none d-sm-block">{{ counterAduan.belum_ditanggapi }}</h1>
               </div>
             </div>
           </v-card>
@@ -58,28 +61,25 @@
       </v-row>
     </div>
 
-    <div class="mt-3">
+    <div class="mt-12">
         <div class="d-flex align-center justify-space-between mr-3 mt-2">
           <v-card-title><b>Aktifitas Terbaru</b></v-card-title>
-          <a href="">
-            <v-icon class="">mdi-dots-vertical</v-icon>
-          </a>
         </div>
         <v-divider class="mx-2"></v-divider>
         <div class="">
           <v-table class="no-divider">
             <thead>
-              <tr class="">
-                <th class="text-left font-weight-bold">
+              <tr  class="" >
+                <th style="min-width: 100px;" class="text-left font-weight-bold">
                   Tanggal
                 </th>
-                <th class="text-left font-weight-bold">
+                <th style="min-width: 150px;" class="text-left font-weight-bold">
                   Pengguna
                 </th>
-                <th class="text-left font-weight-bold">
+                <th style="min-width: 150px;" class="text-left font-weight-bold">
                   Aktivitas
                 </th>
-                <th class="text-left font-weight-bold">
+                <th style="min-width: 150px;" class="text-left font-weight-bold">
                   Status
                 </th>
               </tr>

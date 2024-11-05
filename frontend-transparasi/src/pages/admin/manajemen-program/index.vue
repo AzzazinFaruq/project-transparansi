@@ -1,6 +1,6 @@
 <template>
   <v-container>
-  <div class="mt-3">
+  <div class="mt-1 pa-4">
         <div class="d-flex align-center justify-start mt-2 mb-3">
           <h2>Daftar Program</h2>
           </div>
@@ -16,9 +16,11 @@
               @keyup.enter="searchProgram"
               ></v-text-field>
             </div>
-            <div class="d-flex align-self-center">
-              <p class="mr-3">Filter : </p>
-           <div style=" min-width: 120px;">
+            <div class="d-flex" style="margin-top: 8px;">
+              <div class="" style="">
+                <p class="mr-2" style="">Filter : </p>
+              </div>
+           <div class="ml-2" style=" min-width: 128px;">
             <v-btn
                 variant="text"
                 style="border-color: #BF3232;  text-transform: none; letter-spacing: 0.5px; margin-top: -5px; padding: 0;"
@@ -40,18 +42,21 @@
            </div>
             </div>
         </div>
+
+
+
         <v-divider class="mx-2"></v-divider>
         <div class="">
           <v-table class="no-divider ">
             <thead style="">
               <tr class="">
-                <th class=" font-weight-bold">
+                <th class=" font-weight-bold" style="min-width: 100px;">
                   Tanggal
                 </th>
-                <th class=" font-weight-bold">
+                <th style="min-width: 200px;"  class=" font-weight-bold">
                   Nama
                 </th>
-                <th class=" font-weight-bold">
+                <th style="min-width: 150px;" class=" font-weight-bold">
                   Status
                 </th>
                 <th class=" font-weight-bold">
@@ -64,7 +69,7 @@
                 v-for="(item, index) in paginatedItems" :key="index"
                 >
               <td>{{ item.created_at}}</td>
-              <td>{{ item.nama_program }}</td>
+              <td style="">{{ item.nama_program }}</td>
               <td>
                 <v-badge v-if="item.status=='Menunggu' " dot inline color="#FFE642"></v-badge>
                 <v-badge v-else-if="item.status=='Dalam Proses' " dot inline color="#4BB0EB"></v-badge>

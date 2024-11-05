@@ -2,20 +2,19 @@
   <div class="">
 <div class="home-wrapper">
     <navbar-home />
-    <img src="./img/dprd.png" alt=""  class="" style="width: 100%; display: block; margin-top: -80px; filter: brightness(50%);">
-    <div class="wrapper-title text-center d-none d-md-block">
-      <p class="title d-none d-md-block">Selamat Datang</p>
-      <h1 class="caption d-none d-md-block">Website Transparansi oleh POKIR/JASMAS DPRD Jawa Timur</h1>
-    </div>
-    <div class="text-center">
-      
+    <div class="image-dprd-container">
+    <img src="./img/dprd.png" alt=""  class="image-dprd" >
+  </div>
+    <div class="wrapper-title text-center ">
+      <p class="title ">Selamat Datang</p>
+      <p class="caption ">Website Transparansi oleh POKIR/JASMAS DPRD Jawa Timur</p>
     </div>
 </div>
 <v-container class="" style="padding:16px !important;">
   <div class="section-about">
     <v-row>
   <v-col cols="12" md="4" >
-    <h1 class="text-left">Latar Belakang</h1>
+    <h1 class="title">Latar Belakang</h1>
   </v-col>
   <v-col cols="12" md="4" >
     <p class="text-left ">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
@@ -30,27 +29,27 @@
     <v-container>
       <div class="langkah">
         <v-row>
-          <v-col class="d-flex flex-column align-center">
+          <v-col cols="6" sm="3" class="d-flex flex-column align-center">
             <div class="image d-flex justify-center align-center">
-              <img src="./img/icon/account.png" alt="" style="width: 128px; height: auto;">
+              <img src="./img/icon/account.png" class="icon-langkah" alt="">
             </div>
             <p class="text-center mt-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
           </v-col>
-          <v-col class="d-flex flex-column align-center">
+          <v-col cols="6" sm="3" class="d-flex flex-column align-center">
             <div class="image d-flex justify-center align-center">
-              <img src="./img/icon/pencil.png" alt="" style="width: 128px; height: auto;">
+              <img src="./img/icon/pencil.png" class="icon-langkah" alt="">
             </div>
             <p class="text-center mt-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
           </v-col>
-          <v-col class="d-flex flex-column align-center">
+          <v-col cols="6" sm="3" class="d-flex flex-column align-center">
             <div class="image d-flex justify-center align-center">
-              <img src="./img/icon/list-box.png" alt="" style="width: 128px; height: auto;">
+                <img src="./img/icon/list-box.png" class="icon-langkah" alt="">
             </div>
             <p class="text-center mt-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
           </v-col>
-          <v-col class="d-flex flex-column align-center">
+          <v-col cols="6" sm="3" class="d-flex flex-column align-center">
             <div class="image d-flex justify-center align-center">
-              <img src="./img/icon/send.png" alt="" style="width: 128px; height: auto;">
+              <img src="./img/icon/send.png" class="icon-langkah" alt="">
             </div>
             <p class="text-center mt-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
           </v-col>
@@ -60,7 +59,7 @@
   </div>
   <div class="container-custom" style="margin-bottom: 128px;">
       <v-row>
-          <v-col  v-for="(item,index) in program.slice(0,4)" :key="item.id" cols="12" md="3">
+          <v-col  v-for="(item,index) in program.slice(0,4)" :key="item.id" cols="12" sm="6" md="3">
           <div v-if="index <3 " class="border-lg card-program pa-4">
             <div class="image-container">
               <img :src="`${getImageUrl(item.foto_before)}`" alt="" class="program-image">
@@ -113,24 +112,21 @@ export default{
   },
 }
 </script>
-<style scooped lang="scss">
+<style scoped lang="scss">
 
-$breakpoint-mobile: 1000px;
-@mixin mobile {
-    @media (max-width: $breakpoint-mobile) {
-      @content;
-    }
-  }
 .section-about{
   margin-top: 64px;
-  @include mobile{
-    margin-top: 32px;
+  .title{
+    font-size: 32px !important;
+    @media (max-width:500px) {
+      font-size: 24px !important;
+    }
   }
+
 }
 .section-intro{
   background-color: #E8E8E8;
   margin-top: 128px;
-  margin-bottom: 128px;
   padding: 16px;
   .content{
     margin-top: 64px;
@@ -144,13 +140,37 @@ $breakpoint-mobile: 1000px;
 .tutorial{
 
   .langkah{
+    @media (max-width:500px) {
+      margin-top: 64px;
+      margin-bottom: 64px;
+      }
     margin-top: 128px;
     margin-bottom: 128px;
     .image{
       width: 240px;
       height: 240px;
+      @media (max-width:1024px) {
+        width: 140px;
+        height: 140px;
+      }
+      @media (max-width:500px) {
+        width: 90px;
+        height: 90px;
+      }
       background-color: #BF3232;
       border-radius: 50%;
+      .icon-langkah{
+        width: 128px;
+        height: auto;
+        @media (max-width:1024px) {
+        width: 60px;
+        height: auto;
+      }
+        @media (max-width:500px) {
+        width: 40px;
+        height: auto;
+      }
+      }
     }
   }
 }
@@ -169,21 +189,49 @@ $breakpoint-mobile: 1000px;
 
 .home-wrapper {
   position: relative;
-  
+
+  .image-dprd-container{
+    width: 100%;
+    height: 800px;
+    @media (max-width:500px) {
+      height: 650px;
+      }
+    margin-top: -80px;
+    filter: brightness(50%);
+    overflow: hidden;
+    position: relative;
+    .image-dprd{
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Ini akan membuat gambar mengisi container dan terpotong jika berlebih */
+      object-position: center; /* Mengatur posisi gambar di tengah */
+    }
+  }
+
   .wrapper-title{
-    
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-  color: white;
+    width: 90%;
+    color: white;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-
     .title{
-      
-      font-size: 96px;
+      font-size: 100px !important;
       font-weight: bold;
+      @media (max-width:1024px) {
+        font-size: 80px !important;
+      }
+      @media (max-width:500px) {
+        font-size: 54px !important;
+      }
+    }
+    .caption{
+      font-size: 40px !important;
+      @media (max-width:1024px) {
+        font-size: 18px !important;
+      }
     }
   }
 }
@@ -194,6 +242,8 @@ $breakpoint-mobile: 1000px;
 
 .container-custom{
   padding: 16px !important;
+  margin-bottom: 64px;
+  margin-top: 64px;
 }
 
 
