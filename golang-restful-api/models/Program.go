@@ -7,10 +7,10 @@ type Program struct {
 	NamaProgram            string             `json:"nama_program"`
 	Deskripsi              string             `json:"deskripsi"`
 	NamaInstitusi          string             `json:"nama_institusi"`
-	JenisAnggaranId        *int64             `json:"jenis_anggaran_id"`
+	JenisAnggaranId        int64             `json:"jenis_anggaran_id"`
 	JenisAnggaran          JenisAnggaran      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	JumlahAnggaran         string             `json:"jumlah_anggaran"`
-	KategoriPenggunaanId   *int64             `json:"kategori_penggunaan_id"`
+	KategoriPenggunaanId   int64             `json:"kategori_penggunaan_id"`
 	KategoriPenggunaan     KategoriPenggunaan `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	AspiratorId            int64              `json:"aspirator_id"`
 	Aspirator              Aspirator          `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`

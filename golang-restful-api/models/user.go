@@ -9,8 +9,6 @@ type User struct {
 	Username   string    `json:"username"`
 	Email      string    `json:"email"`
 	Password   string    `json:"-"`
-	NoHp       string    `json:"no_hp"`
-	Alamat     string    `json:"alamat"`
 	RoleId     int64     `json:"role_id"`
 	JabatanId  int64     `json:"jabatan_id"`
 	CreatedAt  time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`                             // Menggunakan TIMESTAMP dengan default nilai CURRENT_TIMESTAMP

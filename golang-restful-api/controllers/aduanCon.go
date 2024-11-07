@@ -51,6 +51,8 @@ func CreateAduan(c *gin.Context) {
 		ProgramId int64  `json:"program_id" binding:"required"`
 		UserId    int64  `json:"user_id" binding:"required"`
 		Keluhan   string `json:"keluhan" binding:"required"`
+		NoHp      string `json:"no_hp" binding:"required"`
+		Alamat    string `json:"alamat" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -64,6 +66,8 @@ func CreateAduan(c *gin.Context) {
 		ProgramId: input.ProgramId,
 		UserId:    input.UserId,
 		Keluhan:   input.Keluhan,
+		NoHp:      input.NoHp,
+		Alamat:    input.Alamat,
 		Status:    "Belum Ditanggapi",
 		Tanggapan: nil,
 		UserTanggapan: nil,
@@ -380,6 +384,8 @@ func GetAduanByStatus(c *gin.Context) {
 			"program":    aduan.Program,
 			"user_id":    aduan.UserId,
 			"user":       aduan.User,
+			"no_hp":      aduan.NoHp,
+			"alamat":     aduan.Alamat,
 			"keluhan":    aduan.Keluhan,
 			"status":     aduan.Status,
 			"tanggapan":  aduan.Tanggapan,
@@ -427,6 +433,8 @@ func GetAduanByProgramId(c *gin.Context) {
 			"program":        aduan.Program,
 			"user_id":        aduan.UserId,
 			"user":           aduan.User,
+			"no_hp":          aduan.NoHp,
+			"alamat":         aduan.Alamat,
 			"keluhan":        aduan.Keluhan,
 			"status":         aduan.Status,
 			"tanggapan":      aduan.Tanggapan,

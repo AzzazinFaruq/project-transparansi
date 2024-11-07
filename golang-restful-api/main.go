@@ -55,11 +55,13 @@ func main() {
 	protected.GET("/program/search", controllers.SearchProgram)
 	protected.GET("/program/daerah", controllers.GetProgramByDaerah)
 
+	// Route Kategori Penggunaan
+	protected.POST("/kategori-penggunaan", controllers.CreateKategoriPenggunaan)
+	protected.DELETE("/kategori-penggunaan/:id", controllers.DeleteKategoriPenggunaan)
 
-  protected.POST("/kategori-penggunaan", controllers.CreateKategoriPenggunaan)
-  protected.DELETE("/kategori-penggunaan/:id", controllers.DeleteKategoriPenggunaan)
-  protected.POST("/jenis-anggaran", controllers.CreateJenisAnggaran)
-  protected.DELETE("/jenis-anggaran/:id", controllers.DeleteJenisAnggaran)
+	// Route Jenis Anggaran
+	protected.POST("/jenis-anggaran", controllers.CreateJenisAnggaran)
+	protected.DELETE("/jenis-anggaran/:id", controllers.DeleteJenisAnggaran)
 
 
 	// Route Aduan

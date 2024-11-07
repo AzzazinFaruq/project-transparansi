@@ -145,13 +145,6 @@ func TambahProgram(c *gin.Context) {
 		Status:                 "Publish",
 	}
 
-	if input.JenisAnggaranId != nil {
-		newProgram.JenisAnggaranId = input.JenisAnggaranId
-	}
-
-	if input.KategoriPenggunaanId != nil {
-		newProgram.KategoriPenggunaanId = input.KategoriPenggunaanId
-	}
 
 	tx := setup.DB.Begin()
 

@@ -15,4 +15,6 @@ type Aduan struct {
 	TanggapanUser User      `gorm:"foreignKey:UserTanggapan;references:Id;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	CreatedAt     time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`                             // Menggunakan TIMESTAMP dengan default nilai CURRENT_TIMESTAMP
 	UpdatedAt     time.Time `gorm:"type:timestamp;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"` // Menggunakan TIMESTAMP dengan auto-update
+	NoHp          string    `json:"no_hp"`
+	Alamat        string    `json:"alamat"`
 }
