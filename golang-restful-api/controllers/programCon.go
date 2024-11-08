@@ -51,6 +51,8 @@ func GetAllProgram(c *gin.Context) {
 			"foto_before":              program.FotoBefore,
 			"foto_progress":            program.FotoProgress,
 			"foto_after":               program.FotoAfter,
+			"latitude":                 program.Latitude,
+			"longitude":                program.Longitude,
 			"created_at":               program.CreatedAt.Format("02-01-2006"),
 			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
@@ -103,6 +105,8 @@ func GetProgramByUserId(c *gin.Context) {
 			"foto_before":              program.FotoBefore,
 			"foto_progress":            program.FotoProgress,
 			"foto_after":               program.FotoAfter,
+			"latitude":                 program.Latitude,
+			"longitude":                program.Longitude,
 			"created_at":               program.CreatedAt.Format("02-01-2006"),
 			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
@@ -143,6 +147,8 @@ func TambahProgram(c *gin.Context) {
 		FotoAfter:              input.FotoAfter,
 		UserId:                 input.UserId,
 		Status:                 "Publish",
+		Latitude:               input.Latitude,
+		Longitude:              input.Longitude,
 	}
 
 
@@ -208,6 +214,8 @@ func EditProgram(c *gin.Context) {
 	desaId := c.PostForm("desa_id")
 	kecamatanId := c.PostForm("kecamatan_id")
 	kabupatenId := c.PostForm("kabupaten_id")
+	latitude := c.PostForm("latitude")
+	longitude := c.PostForm("longitude")
 
 	fotoBefore, err := c.FormFile("foto_before")
 	if err == nil {
@@ -309,12 +317,14 @@ func EditProgram(c *gin.Context) {
 		"foto_before":              program.FotoBefore,
 		"foto_progress":            program.FotoProgress,
 		"foto_after":               program.FotoAfter,
+		"latitude":                 latitude,
+		"longitude":                longitude,
 	}
 
 	// Hanya update field yang tidak kosong
 	for key, value := range updateData {
 		if value != "" {
-			tx.Model(&program).UpdateColumn(key, value)
+				tx.Model(&program).UpdateColumn(key, value)
 		} else if value == "" {
 			tx.Model(&program).UpdateColumn(key, "")
 		}
@@ -397,6 +407,8 @@ func GetProgramByStatus(c *gin.Context) {
 			"foto_before":              program.FotoBefore,
 			"foto_progress":            program.FotoProgress,
 			"foto_after":               program.FotoAfter,
+			"latitude":                 program.Latitude,
+			"longitude":                program.Longitude,
 			"created_at":               program.CreatedAt.Format("02-01-2006"),
 			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
@@ -493,6 +505,8 @@ func SearchProgram(c *gin.Context) {
 			"foto_before":              program.FotoBefore,
 			"foto_progress":            program.FotoProgress,
 			"foto_after":               program.FotoAfter,
+			"latitude":                 program.Latitude,
+			"longitude":                program.Longitude,
 			"created_at":               program.CreatedAt.Format("02-01-2006"),
 			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
@@ -588,6 +602,8 @@ func GetProgramByDaerah(c *gin.Context) {
 			"foto_before":              program.FotoBefore,
 			"foto_progress":            program.FotoProgress,
 			"foto_after":               program.FotoAfter,
+			"latitude":                 program.Latitude,
+			"longitude":                program.Longitude,
 			"created_at":               program.CreatedAt.Format("02-01-2006"),
 			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}

@@ -33,6 +33,8 @@ type Program struct {
 	UpdatedAt              time.Time          `gorm:"type:timestamp;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"` // Menggunakan TIMESTAMP dengan auto-update
 	JenisAnggaranLain      string             `json:"jenis_anggaran_lain"`
 	KategoriPenggunaanLain string             `json:"kategori_penggunaan_lain"`
+	Latitude               float64	          `json:"latitude"`
+	Longitude              float64            `json:"longitude"`
 }
 
 type KategoriPenggunaan struct {
