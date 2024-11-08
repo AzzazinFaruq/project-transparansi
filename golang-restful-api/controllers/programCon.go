@@ -661,3 +661,49 @@ func DraftProgram(c *gin.Context) {
 		"data":    program,
 	})
 }
+
+func PublishProgram(c *gin.Context) {
+	id := c.Param("id")
+	var program models.Program
+
+	if err := setup.DB.First(&program, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
+		return
+	}
+
+	tx := setup.DB.Begin()
+
+	program.Status = "Publish"
+	if err := tx.Save(&program).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengubah status program"})
+		return
+	}
+
+	newLog := models.Log{
+		UserId:    program.UserId,
+		Aktivitas: "Publish Program",
+		Status:    "Publish",
+	}
+
+	if err := tx.Create(&newLog).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
+		return
+	}
+
+	tx.Commit()
+
+	setup.DB.Preload("Institusi").
+		Preload("KategoriPenggunaan").
+		Preload("JenisAnggaran").
+		Preload("Aspirator").
+		Preload("DinasVerifikator").
+		Preload("User").
+		First(&program, id)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Program berhasil dipublish",
+		"data":    program,
+	})
+}
