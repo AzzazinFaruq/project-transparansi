@@ -1,7 +1,8 @@
 <template>
   <v-container >
+  <div class="pa-5">
+    <v-card>
     <div class="pa-5">
-    <div class=" ">
         <div class="d-flex">
           <div class="chart-line-dashboard" style="">
             <div class="d-flex justify-space-between">
@@ -16,12 +17,13 @@
           </div>
         </div>
     </div>
+  </v-card>
 
     <div class="mt-8">
       <v-row>
         <v-col col="12" lg="4">
-          <v-card variant="outlined" style="border-color: #BF3232;">
-            <div class="d-flex justify-space-between dashboard-card" style="color: black">
+          <v-card class="text-white" style="background-color: #FF4242; height: 100%;">
+            <div class="d-flex justify-space-between dashboard-card">
               <div class="title">
                 <h4>Total Keluhan</h4>
               </div>
@@ -32,8 +34,8 @@
           </v-card>
         </v-col>
         <v-col md="6" lg="4">
-          <v-card style="background-color: #387144">
-            <div class="d-flex justify-space-between dashboard-card">
+          <v-card style="background-color: #4A975B">
+            <div class="d-flex justify-space-between dashboard-card text-white">
               <div class="title">
                 <h4>Keluhan Sudah Ditanggapi</h4>
               </div>
@@ -44,8 +46,8 @@
           </v-card>
         </v-col>
         <v-col md="6" lg="4">
-          <v-card style="background-color: #BFAD32;">
-            <div class="d-flex justify-space-between dashboard-card">
+          <v-card style="background-color: #FFE642;">
+            <div class="d-flex justify-space-between dashboard-card text-white">
               <div class="title">
                 <h4>Keluhan Belum Ditanggapi</h4>
               </div>
@@ -59,6 +61,10 @@
     </div>
 
     <div class="mt-3">
+      <v-card
+      elevation="4"
+      style="background-color: #FAFAFA;"
+      >
         <div class="d-flex align-center justify-space-between mr-3 mt-2">
           <v-card-title><b>Aktifitas Terbaru</b></v-card-title>
           <a href="">
@@ -67,19 +73,19 @@
         </div>
         <v-divider class="mx-2"></v-divider>
         <div class="">
-          <v-table class="no-divider">
+          <v-table class="no-divider" style="background-color: #FAFAFA;">
             <thead>
               <tr class="">
-                <th class="text-left font-weight-bold">
+                <th style="min-width: 120px;" class="text-left font-weight-bold">
                   Tanggal
                 </th>
-                <th class="text-left font-weight-bold">
+                <th style="min-width: 100px;" class="text-left font-weight-bold">
                   Pengguna
                 </th>
-                <th class="text-left font-weight-bold">
+                <th style="min-width: 180px;" class="text-left font-weight-bold">
                   Aktivitas
                 </th>
-                <th class="text-left font-weight-bold">
+                <th style="min-width: 180px;" class="text-left font-weight-bold">
                   Status
                 </th>
               </tr>
@@ -102,6 +108,7 @@
               </tbody>
           </v-table>
         </div>
+      </v-card>
     </div>
   </div>
   </v-container>

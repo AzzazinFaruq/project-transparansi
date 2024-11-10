@@ -42,10 +42,10 @@
                 </v-icon>
               </template>
             </v-list-item>
-            
+
             <!-- Konten group dengan transition -->
             <transition name="expand">
-              <div 
+              <div
                 v-show="activeGroup === 'anggaran'"
                 class="group-content"
               >
@@ -85,10 +85,10 @@
                 </v-icon>
               </template>
             </v-list-item>
-            
+
             <!-- Konten group dengan transition -->
             <transition name="expand">
-              <div 
+              <div
                 v-show="activeGroup === 'pengguna'"
                 class="group-content"
               >
@@ -127,10 +127,10 @@
       </v-app-bar-nav-icon>
     </div>
     <v-spacer></v-spacer>
-    <div class="mr-5">
+    <div class="mr-6">
       <v-icon class="" @click="handleLogout()">mdi-logout</v-icon>
     </div>
-   <div class="profile-container mr-5"><a href="/profile">
+   <div class="profile-container mr-8"><a href="/profile">
     <img v-if="userPhoto == ''" src="../assets/profile.png"  alt="" class="profile-pictures" >
     <img v-else :src="`${getImageUrl(userPhoto)}`"  alt="" class="profile-pictures" >
    </a>
@@ -228,7 +228,7 @@ export default {
         }
       } catch (error) {
         console.error("Error during logout:", error);
-        
+
         // Tampilkan error
         Swal.fire({
           icon: 'error',
@@ -299,11 +299,11 @@ export default {
 // Style untuk list items
 .v-list-item {
   transition: all 0.3s ease;
-  
+
   &.ml-4 {
     margin-left: 16px;
     position: relative;
-    
+
     &::before {
       content: '';
       position: absolute;

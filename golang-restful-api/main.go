@@ -74,7 +74,7 @@ func main() {
 	protected.GET("/aduan/:id", controllers.DetailAduan)
 	protected.PUT("/aduan/tanggapi/:id", controllers.TanggapiAduan)
 	protected.GET("/aduan/status/:status", controllers.GetAduanByStatus)
-	protected.GET("/aduan/aduan-by-program/:program_id", controllers.GetAduanByProgramId)
+	protected.GET("/aduan/aduan-by-program/:nama_program", controllers.GetAduanByProgramId)
 
 	// Route Daerah
 	protected.GET("/index-kabupaten", controllers.GetAllKabupaten)

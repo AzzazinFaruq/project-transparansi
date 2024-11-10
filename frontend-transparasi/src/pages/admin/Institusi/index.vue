@@ -1,8 +1,8 @@
 <template>
-  <div class="">
+  <div class="pa-3">
   <div class="mt-3">
     <div class="d-flex align-center justify-space-between mr-3 mt-2">
-      <v-card-title><b>Daftar Institusi</b></v-card-title>
+      <v-card-title><h2>Daftar Institusi</h2></v-card-title>
       <v-btn color="#387144" prepend-icon="mdi-plus" style="text-transform: none;" href="/admin/institusi/tambah">Institusi</v-btn>
     </div>
   </div>

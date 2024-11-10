@@ -1,14 +1,29 @@
 <template>
   <v-container>
-  <div class="mt-3">
-        <div class="d-flex align-center justify-space-between mr-3 mt-2">
-          <v-card-title><b>Daftar Keluhan</b></v-card-title>
-          <div class="d-flex align-center">
-           <p class="mr-3">Filter : </p>
-           <div style=" min-width: 120px;">
+    <div class="mt-1 pa-4">
+        <div class="d-flex align-center justify-start mt-2 mb-3">
+          <h2>Daftar Program</h2>
+          </div>
+          <div class="d-flex justify-space-between mb-3">
+            <div class="" style="width: 300px; margin-bottom: -20px;">
+              <v-text-field
+              class=""
+              density="compact"
+              prepend-inner-icon="mdi-magnify"
+              variant="outlined"
+              v-model="search"
+              label="Cari Program"
+              @keyup.enter="searchProgram"
+              ></v-text-field>
+            </div>
+            <div class="d-flex" style="margin-top: 8px;">
+              <div class="" style="">
+                <p class="mr-2" style="">Filter : </p>
+              </div>
+           <div class="ml-2" style=" min-width: 128px;">
             <v-btn
                 variant="text"
-                style="border-color: #BF3232;  text-transform: none; letter-spacing: 0.5px; margin-top: 3px; padding: 0;"
+                style="border-color: #BF3232;  text-transform: none; letter-spacing: 0.5px; margin-top: -5px; padding: 0;"
                 append-icon="mdi-chevron-down"
               >
                 {{ filter }}
@@ -25,20 +40,21 @@
                 </v-menu>
               </v-btn>
            </div>
-          </div>
+            </div>
         </div>
+
         <v-divider class="mx-2"></v-divider>
         <div class="">
           <v-table class="no-divider ">
             <thead style="">
               <tr class="">
-                <th class=" font-weight-bold">
+                <th style="min-width: 100px;" class=" font-weight-bold">
                   Tanggal
                 </th>
-                <th class=" font-weight-bold">
+                <th style="min-width: 200px;" class=" font-weight-bold">
                   Nama
                 </th>
-                <th class=" font-weight-bold">
+                <th style="min-width: 150px;" class=" font-weight-bold">
                   Status
                 </th>
                 <th class=" font-weight-bold">
@@ -103,6 +119,7 @@ export default {
     return {
       filter:'All Status',
       filterList:["All Status","Belum Ditanggapi","Sudah Ditanggapi"],
+      search:'',
       headers: [
         { title: "Nama", value: "username" },
         { title: "Jabatan", value: "" },
@@ -117,6 +134,14 @@ export default {
   },
   mounted() {
     this.user();
+  },
+  watch: {
+    search(newVal) {
+      if (!newVal || newVal.trim() === '') {
+        this.user();
+        this.currentPage = 1; // Reset ke halaman pertama
+      }
+    }
   },
   methods: {
     selectedFilter(item){
@@ -133,7 +158,12 @@ export default {
         })
       }
     },
-
+    searchProgram(){
+      axios.get(`/api/aduan/aduan-by-program/${this.search}`)
+      .then(res=>{
+        this.Userlist = res.data.data
+      })
+    },
     user(){
       axios.get("/api/index-aduan")
       .then(res=>{

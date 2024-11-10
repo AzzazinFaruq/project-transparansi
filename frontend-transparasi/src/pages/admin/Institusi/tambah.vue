@@ -3,11 +3,11 @@
     <v-card class="pa-5">
       <div class="d-flex justify-space-between align-center mb-5">
         <div>
-          <p class="text-h5 font-weight-bold">Tambah Institusi</p>
+          <h2 class=" font-weight-bold">Tambah Institusi</h2>
           <p class="text-subtitle-1 text-grey">Tambahkan data institusi baru</p>
         </div>
-        <v-btn 
-          color="error" 
+        <v-btn
+          color="error"
           @click="$router.go(-1)"
           prepend-icon="mdi-arrow-left"
         >
@@ -79,7 +79,7 @@
                 :rules="[rules.required]"
                 @change="previewImage"
               ></v-file-input>
-              
+
               <v-img
                 v-if="imagePreview"
                 :src="imagePreview"

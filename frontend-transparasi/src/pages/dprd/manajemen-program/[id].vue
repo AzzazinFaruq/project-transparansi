@@ -1,28 +1,13 @@
 <template>
   <div>
-    <v-card class="pa-5">
-      <div class="d-flex justify-space-between align-center mb-5">
-        <div>
-          <p class="text-h5 font-weight-bold">Detail Program</p>
-          <p class="text-subtitle-1 text-grey">Informasi lengkap program</p>
-        </div>
-        <v-btn 
-          color="error" 
-          @click="back()"
-          prepend-icon="mdi-arrow-left"
-        >
-          Kembali
-        </v-btn>
-      </div>
-
-      <v-divider class="mb-5"></v-divider>
 
       <v-row>
         <v-col cols="12" md="8">
-          <v-form v-if="user.status == 'Menunggu' || user.status == 'Dalam Proses'">
+          <v-card elevation="4" class="pa-4 ma-4">
+          <v-form >
             <!-- Informasi Dasar -->
             <div class="mb-5">
-              <label class="label-form mb-2 d-block">Nama Program</label>
+              <label class="label-form mb-2 d-block">Nama Program / Proyek</label>
               <v-text-field
                 v-model="user.nama_program"
                 variant="outlined"
@@ -31,7 +16,7 @@
             </div>
 
             <div class="mb-5">
-              <label class="label-form mb-2 d-block">Institusi</label>
+              <label class="label-form mb-2 d-block">Nama Aspirator</label>
               <v-select
                 v-model="user.institusi_id"
                 :items="institusi"
@@ -40,6 +25,27 @@
                 variant="outlined"
                 density="compact"
               ></v-select>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Nama Dinas Verifikator</label>
+              <v-select
+                v-model="user.institusi_id"
+                :items="institusi"
+                item-title="nama_institusi"
+                item-value="id"
+                variant="outlined"
+                density="compact"
+              ></v-select>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Institusi</label>
+              <v-text-field
+                v-model="user.nama_program"
+                variant="outlined"
+                density="compact"
+              ></v-text-field>
             </div>
 
             <div class="mb-5">
@@ -136,9 +142,9 @@
                 density="compact"
               ></v-autocomplete>
             </div>
-          
+
             <!-- Detail Dokumentasi -->
-            <div v-if="user.status == 'Dalam Proses'">
+            <div >
               <h2 class="text-h6 font-weight-bold mb-3">Detail Dokumentasi</h2>
               <v-divider class="mb-5"></v-divider>
 
@@ -197,142 +203,27 @@
             </div>
 
             <!-- Tombol Aksi -->
-          
 
-            <div class="d-flex gap-2 mt-5" v-if="user.status=='Dalam Proses' || user.status == 'Menunggu'">
+
+            <div class="d-flex gap-2 mt-5" >
               <v-btn
                 color="#387144"
                 style="color: white"
                 prepend-icon="mdi-content-save"
                 @click=" simpan()"
               >
-                Simpan
+                Draft
               </v-btn>
               <v-btn
                 color="#BF3232"
                 style="color: white"
-                @click="back()"
+                @click="draft()"
               >
-                Kembali
+                Publish
               </v-btn>
             </div>
           </v-form>
-
-          <!-- View Mode untuk status Ditolak atau Selesai -->
-          <div v-if="user.status=='Ditolak' || user.status=='Selesai'">
-            <!-- Informasi Dasar -->
-            <div class="mb-5">
-              <label class="label-form mb-2 d-block">Nama Program</label>
-              <p class="text-body-1">{{ user.nama_program }}</p>
-            </div>
-
-            <div class="mb-5">
-              <label class="label-form mb-2 d-block">Institusi</label>
-              <p class="text-body-1">{{ getInstitusiName(user.institusi_id) }}</p>
-            </div>
-
-            <div class="mb-5">
-              <label class="label-form mb-2 d-block">Deskripsi</label>
-              <p class="text-body-1">{{ user.deskripsi }}</p>
-            </div>
-
-            <!-- Detail Anggaran -->
-            <h2 class="text-h6 font-weight-bold mb-3">Detail Anggaran</h2>
-            <v-divider class="mb-5"></v-divider>
-
-            <div class="mb-5">
-              <label class="label-form mb-2 d-block">Jenis Anggaran</label>
-              <p class="text-body-1">{{ getJenisAnggaranName(user.jenis_anggaran_id) }}</p>
-            </div>
-
-            <div class="mb-5">
-              <label class="label-form mb-2 d-block">Jumlah Anggaran</label>
-              <p class="text-body-1">Rp {{ user.jumlah_anggaran }}</p>
-            </div>
-
-            <div class="mb-5">
-              <label class="label-form mb-2 d-block">Kategori Penggunaan</label>
-              <p class="text-body-1">{{ getKategoriName(user.kategori_penggunaan_id) }}</p>
-            </div>
-
-            <!-- Detail Alamat -->
-            <h2 class="text-h6 font-weight-bold mb-3">Detail Alamat</h2>
-            <v-divider class="mb-5"></v-divider>
-
-            <div class="mb-5">
-              <label class="label-form mb-2 d-block">Dusun</label>
-              <p class="text-body-1">{{ user.dusun }}</p>
-            </div>
-
-            <div class="mb-5">
-              <label class="label-form mb-2 d-block">Desa</label>
-              <p class="text-body-1">{{ getDesaName(user.desa_id) }}</p>
-            </div>
-
-            <div class="mb-5">
-              <label class="label-form mb-2 d-block">Kecamatan</label>
-              <p class="text-body-1">{{ getKecamatanName(user.kecamatan_id) }}</p>
-            </div>
-
-            <div class="mb-5">
-              <label class="label-form mb-2 d-block">Kabupaten / Kota</label>
-              <p class="text-body-1">{{ getKabupatenName(user.kabupaten_id) }}</p>
-            </div>
-
-            <!-- Detail Dokumentasi untuk status Selesai -->
-            <div v-if="user.status=='Selesai'">
-              <h2 class="text-h6 font-weight-bold mb-3">Detail Dokumentasi</h2>
-              <v-divider class="mb-5"></v-divider>
-
-              <div class="foto-section">
-                <!-- Foto Before -->
-                <div class="mb-5">
-                  <label class="label-form mb-2 d-block">Foto Before</label>
-                  <div class="preview-container" v-if="user.foto_before">
-                    <img :src="getImageUrl(user.foto_before)" alt="Foto Before" class="preview-image">
-                  </div>
-                </div>
-
-                <!-- Foto Progress -->
-                <div class="mb-5">
-                  <label class="label-form mb-2 d-block">Foto Progress</label>
-                  <div class="preview-container" v-if="user.foto_progress">
-                    <img :src="getImageUrl(user.foto_progress)" alt="Foto Progress" class="preview-image">
-                  </div>
-                </div>
-
-                <!-- Foto After -->
-                <div class="mb-5">
-                  <label class="label-form mb-2 d-block">Foto After</label>
-                  <div class="preview-container" v-if="user.foto_after">
-                    <img :src="getImageUrl(user.foto_after)" alt="Foto After" class="preview-image">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Status Badge -->
-            <div class="mb-5">
-              <v-chip
-                :color="user.status === 'Selesai' ? '#387144' : '#BF3232'"
-                style="color: white"
-                class="mt-3"
-              >
-                {{ user.status }}
-              </v-chip>
-            </div>
-
-            <!-- Tombol Kembali -->
-            <div class="d-flex gap-2 mt-5">
-              <v-btn
-                color="#BF3232"
-                style="color: white"
-                @click="back()"
-              >
-                Kembali
-              </v-btn>
-            </div>
-          </div>
+        </v-card>
         </v-col>
 
         <v-col cols="12" md="4">
@@ -346,7 +237,6 @@
           </div>
         </v-col>
       </v-row>
-    </v-card>
   </div>
 </template>
 
@@ -396,6 +286,9 @@ export default{
     this.listdaerah()
   },
   methods: {
+    aspirator(){
+      
+    },
     listdaerah(){
       axios.all([
     axios.get('/api/index-kabupaten'),  // Endpoint untuk kabupaten
@@ -440,65 +333,7 @@ export default{
     back(){
       this.$router.go(-1)
     },
-    async selesai() {
-      try {
-        // Konfirmasi selesaikan program
-        const result = await Swal.fire({
-          title: 'Selesaikan Program?',
-          text: "Pastikan semua dokumentasi telah lengkap",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Ya, Selesaikan!',
-          cancelButtonText: 'Batal'
-        });
 
-        if (result.isConfirmed) {
-          // Cek kelengkapan dokumentasi
-          if (!this.user.foto_before || !this.user.foto_progress || !this.user.foto_after) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Dokumentasi Belum Lengkap',
-              text: 'Harap lengkapi foto before, progress, dan after sebelum menyelesaikan program',
-              confirmButtonText: 'OK'
-            });
-            return;
-          }
-
-          // Tampilkan loading
-          Swal.fire({
-            title: 'Sedang memproses...',
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
-            }
-          });
-
-          // Proses selesaikan program
-          await axios.get(`/api/program/selesai/${this.$route.params.id}`);
-          
-          // Tampilkan sukses
-          await Swal.fire({
-            icon: 'success',
-            title: 'Program Selesai',
-            text: 'Program telah berhasil diselesaikan',
-            showConfirmButton: false,
-            timer: 1500
-          });
-
-          this.$router.go(-1);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Terjadi kesalahan saat menyelesaikan program',
-          confirmButtonText: 'Tutup'
-        });
-      }
-    },
     handleFileUpload(event, type) {
       const file = event.target.files[0]
       if (file) {
@@ -515,50 +350,6 @@ export default{
         // Reset preview jika file dihapus
         this[`preview${type.charAt(0).toUpperCase() + type.slice(1)}`] = null
       }
-    },
-
-    simpan(){
-      // Buat objek FormData baru
-      const formData = new FormData()
-
-      // Append semua field dari user object ke FormData
-      formData.append('nama_program', this.user.nama_program)
-      formData.append('deskripsi', this.user.deskripsi)
-      formData.append('jenis_anggaran_id', this.user.jenis_anggaran_id)
-      formData.append('jumlah_anggaran', this.user.jumlah_anggaran)
-      formData.append('kategori_penggunaan_id', this.user.kategori_penggunaan_id)
-      formData.append('institusi_id', this.user.institusi_id)
-      formData.append('dusun', this.user.dusun)
-      formData.append('desa_id', this.user.desa_id)
-      formData.append('kecamatan_id', this.user.kecamatan_id)
-      formData.append('kabupaten_id', this.user.kabupaten_id)
-
-      Object.keys(this.user).forEach(key => {
-        if (key !== 'foto_before' && key !== 'foto_progress' && key !== 'foto_after') {
-          formData.append(key, this.user[key])
-        }
-      })
-
-      // Append file foto jika ada perubahan
-      if (this.fotoBeforeFile) {
-        formData.append('foto_before', this.fotoBeforeFile)
-      }
-      if (this.fotoProgressFile) {
-        formData.append('foto_progress', this.fotoProgressFile)
-      }
-      if (this.fotoAfterFile) {
-        formData.append('foto_after', this.fotoAfterFile)
-      }
-
-      // Kirim dengan axios menggunakan FormData
-      axios.put(`/api/program/edit/${this.$route.params.id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      .then(res => {
-        this.$router.go(-1)
-      })
     },
 
     getInstitusiName(id) {
@@ -627,7 +418,7 @@ export default{
       try {
         const response = await axios.get('/api/index-kabupaten')
         this.kablist = response.data.data
-        
+
         // Jika ada data program yang dimuat, ambil data kecamatan dan desa
         if (this.user.kabupaten_id) {
           await this.getKecamatan(this.user.kabupaten_id)
@@ -644,8 +435,7 @@ export default{
         })
       }
     },
-
-    async simpan() {
+        async simpan() {
       try {
         // Tampilkan loading
         Swal.fire({
@@ -658,6 +448,34 @@ export default{
 
         const formData = new FormData()
         // ... kode formData tetap sama ...
+
+        formData.append('nama_program', this.user.nama_program)
+      formData.append('deskripsi', this.user.deskripsi)
+      formData.append('jenis_anggaran_id', this.user.jenis_anggaran_id)
+      formData.append('jumlah_anggaran', this.user.jumlah_anggaran)
+      formData.append('kategori_penggunaan_id', this.user.kategori_penggunaan_id)
+      formData.append('institusi_id', this.user.institusi_id)
+      formData.append('dusun', this.user.dusun)
+      formData.append('desa_id', this.user.desa_id)
+      formData.append('kecamatan_id', this.user.kecamatan_id)
+      formData.append('kabupaten_id', this.user.kabupaten_id)
+
+      Object.keys(this.user).forEach(key => {
+        if (key !== 'foto_before' && key !== 'foto_progress' && key !== 'foto_after') {
+          formData.append(key, this.user[key])
+        }
+      })
+
+      // Append file foto jika ada perubahan
+      if (this.fotoBeforeFile) {
+        formData.append('foto_before', this.fotoBeforeFile)
+      }
+      if (this.fotoProgressFile) {
+        formData.append('foto_progress', this.fotoProgressFile)
+      }
+      if (this.fotoAfterFile) {
+        formData.append('foto_after', this.fotoAfterFile)
+      }
 
         await axios.put(`/api/program/edit/${this.$route.params.id}`, formData, {
           headers: {
@@ -684,7 +502,72 @@ export default{
           confirmButtonText: 'Tutup'
         })
       }
+    },
+    async draft() {
+      try {
+        // Tampilkan loading
+        Swal.fire({
+          title: 'Sedang menyimpan...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading()
+          }
+        })
+
+        const formData = new FormData()
+        // ... kode formData tetap sama ...
+
+        formData.append('nama_program', this.user.nama_program)
+      formData.append('deskripsi', this.user.deskripsi)
+      formData.append('jenis_anggaran_id', this.user.jenis_anggaran_id)
+      formData.append('jumlah_anggaran', this.user.jumlah_anggaran)
+      formData.append('kategori_penggunaan_id', this.user.kategori_penggunaan_id)
+      formData.append('institusi_id', this.user.institusi_id)
+      formData.append('dusun', this.user.dusun)
+      formData.append('desa_id', this.user.desa_id)
+      formData.append('kecamatan_id', this.user.kecamatan_id)
+      formData.append('kabupaten_id', this.user.kabupaten_id)
+
+      Object.keys(this.user).forEach(key => {
+        if (key !== 'foto_before' && key !== 'foto_progress' && key !== 'foto_after') {
+          formData.append(key, this.user[key])
+        }
+      })
+
+      // Append file foto jika ada perubahan
+      if (this.fotoBeforeFile) {
+        formData.append('foto_before', this.fotoBeforeFile)
+      }
+      if (this.fotoProgressFile) {
+        formData.append('foto_progress', this.fotoProgressFile)
+      }
+      if (this.fotoAfterFile) {
+        formData.append('foto_after', this.fotoAfterFile)
+      }
+
+        await axios.get(`/api/program/draft/${this.$route.params.id}`)
+
+        // Tampilkan sukses
+        await Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: 'Program berhasil disimpan',
+          timer: 1500,
+          showConfirmButton: false
+        })
+
+        this.$router.go(-1)
+      } catch (error) {
+        console.error('Error:', error)
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Terjadi kesalahan saat menyimpan program',
+          confirmButtonText: 'Tutup'
+        })
+      }
     }
+
   },
 
   watch: {
