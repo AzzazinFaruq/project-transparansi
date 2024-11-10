@@ -74,8 +74,6 @@ func AddUser(c *gin.Context) {
 		Username:  input.Username,
 		Email:     input.Email,
 		Password:  input.Password,
-		NoHp:      input.NoHp,
-		Alamat:    input.Alamat,
 		RoleId:    input.RoleId,
 		JabatanId: input.JabatanId,
 	}
@@ -102,8 +100,6 @@ func EditUser(c *gin.Context) {
 	// Ambil data form
 	username := c.PostForm("username")
 	email := c.PostForm("email")
-	noHp := c.PostForm("no_hp")
-	alamat := c.PostForm("alamat")
 	roleId := c.PostForm("role_id")
 	jabatanId := c.PostForm("jabatan_id")
 
@@ -115,12 +111,6 @@ func EditUser(c *gin.Context) {
 	}
 	if email != "" {
 		updates["email"] = email
-	}
-	if noHp != "" {
-		updates["no_hp"] = noHp
-	}
-	if alamat != "" {
-		updates["alamat"] = alamat
 	}
 	if roleId != "" {
 		updates["role_id"] = roleId
@@ -194,8 +184,6 @@ func CreateDPRD(c *gin.Context) {
 		Username  string `json:"username" binding:"required"`
 		Email     string `json:"email" binding:"required,email"`
 		Password  string `json:"password" binding:"required,min=8"`
-		NoHp      string `json:"no_hp" binding:"required"`
-		Alamat    string `json:"alamat" binding:"required"`
 		JabatanId int64  `json:"jabatan_id" binding:"required"`
 	}
 
@@ -220,8 +208,6 @@ func CreateDPRD(c *gin.Context) {
 		Username:  input.Username,
 		Email:     input.Email,
 		Password:  string(hashedPassword),
-		NoHp:      input.NoHp,
-		Alamat:    input.Alamat,
 		RoleId:    2,
 		JabatanId: input.JabatanId,
 	}

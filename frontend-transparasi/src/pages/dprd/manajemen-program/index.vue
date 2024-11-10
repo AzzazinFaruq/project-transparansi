@@ -1,55 +1,57 @@
 <template>
-  <div class="mt-3">
-        <div class="d-flex align-center justify-space-between mr-3 mt-2">
-          <v-card-title><b>Daftar Program</b></v-card-title>
-          <div class="d-flex align-center">
-           <p class="mr-3">Filter : </p>
-           <div style="">
-            <v-btn
-                class="mr-3"
-                variant="text"
-                style="border-color: #BF3232;  text-transform: none; letter-spacing: 0.5px; margin-top: 3px; padding: 0;"
-                append-icon="mdi-chevron-down"
+  <div class="mt-3 pa-5">
+    <v-card>
+      <div class="d-flex justify-space-between pa-3">
+        <h2 class="mr-4">Daftar Program</h2>
+        <v-text-field
+        class="mr-4"
+        variant="outlined"
+        density="compact"
+          name="name"
+          label="Cari Program"
+          id="id"
+          prepend-inner-icon="mdi-magnify"
+        ></v-text-field>
+        <div class="d-flex jsutify-center mr-2 mt-1" style="">
+          <p class="mt-1">Filter :</p>
+          <v-btn variant="text" style="text-transform: none;" append-icon="mdi-chevron-down">{{ filter }}</v-btn>
+          <v-menu activator="parent">
+            <v-list>
+              <v-list-item
+              v-for="item in filterList"
+              :key="item"
+              @click="selectedFilter(item)"
               >
-                {{ filter }}
-                <v-menu activator="parent">
-                  <v-list>
-                    <v-list-item
-                    v-for="item in filterList"
-                    :key="item"
-                    @click="selectedFilter(item);"
-                    >
-                      <v-list-item-title >{{ item }}</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </v-btn>
-              <v-btn
-                style="text-transform: none;"
-                color="#BF3232"
-                prepend-icon="mdi-plus"
-                href="/dprd/manajemen-program/tambah"
-                >
-                Program
-              </v-btn>
-          </div>
-          </div>
+                {{ item }}
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </div>
-        <v-divider class="mx-2"></v-divider>
-        <div class="">
+        <v-btn
+        class="mt-1"
+        style="text-transform: none; width: 130px;"
+        color="#BF3232"
+        prepend-icon="mdi-plus"
+        href="/dprd/manajemen-program/tambah"
+        >
+        Program
+      </v-btn>
+      </div>
+      <v-divider class="mx-2"></v-divider>
+        <div class="pa-2">
           <v-table class="no-divider ">
             <thead style="">
               <tr class="">
-                <th class=" font-weight-bold">
+                <th style="min-width: 120px;" class=" font-weight-bold">
                   Tanggal
                 </th>
-                <th class=" font-weight-bold">
+                <th style="min-width: 160px;" class=" font-weight-bold">
                   Nama
                 </th>
-                <th class=" font-weight-bold">
+                <th style="min-width: 120px;" class=" font-weight-bold">
                   Status
                 </th>
-                <th class=" font-weight-bold">
+                <th style="min-width: 120px;" class=" font-weight-bold">
                   Action
                 </th>
               </tr>
@@ -61,10 +63,8 @@
               <td>{{ item.created_at}}</td>
               <td>{{ item.nama_program }}</td>
               <td>
-                <v-badge v-if="item.status=='Menunggu'" dot inline color="#FFE642"></v-badge>
-                <v-badge v-else-if="item.status=='Selesai'" dot inline color="#4A975B"></v-badge>
-                <v-badge v-else-if="item.status=='Dalam Proses'" dot inline color="#4BB0EB"></v-badge>
-                <v-badge v-else-if="item.status=='Ditolak'" dot inline color="#FF4242"></v-badge>
+                <v-badge v-if="item.status=='Draft'" dot inline color="#4BB0EB"></v-badge>
+                <v-badge v-else-if="item.status=='Publish'" dot inline color="#4A975B"></v-badge>
                 {{ item.status }}
               </td>
               <td>
@@ -77,10 +77,10 @@
               </tbody>
           </v-table>
         </div>
-        <v-divider class="my-3"></v-divider>
-        <div class="d-flex justify-end align-center">
-          <p class="mr-3">Data/Halaman :</p>
-          <div class="mr-5" style="width: 100px;height: 40px;">
+        <v-divider class="my-3 "></v-divider>
+        <div class="d-flex justify-end align-center mb-2">
+          <p class="mr-3 d-none d-sm-block">Data/Halaman :</p>
+          <div class="mr-5 d-none d-sm-block" style="width: 100px;height: 40px;">
             <v-select
             density="compact"
             class="custom-outline"
@@ -100,6 +100,8 @@
           >
           </v-pagination>
         </div>
+
+    </v-card>
     </div>
 </template>
 <script>
@@ -109,7 +111,7 @@ export default {
   data() {
     return {
       filter:'All Status',
-      filterList:["All Status","Menunggu","Disetujui","Ditolak"],
+      filterList:["All Status","Draft","Publish"],
       detailProgram:[],
       Userlist:[],
       currentPage: 1,
@@ -175,3 +177,5 @@ export default {
   },
 }
 </script>
+
+

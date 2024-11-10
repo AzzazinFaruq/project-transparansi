@@ -30,6 +30,11 @@ $breakpoint-mobile: 768px;
     background-color: #FFE642 !important;
 }
 
+.v-text-field .v-input__details {
+  display: none !important;
+  padding-inline: 16px;
+}
+
 
 .v-container{
     padding: 0px !important;

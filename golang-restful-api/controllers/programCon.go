@@ -13,7 +13,6 @@ func GetAllProgram(c *gin.Context) {
 	var program []models.Program
 
 	if err := setup.DB.
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
 		Preload("User.Jabatan").
@@ -32,25 +31,28 @@ func GetAllProgram(c *gin.Context) {
 
 	for i, program := range program {
 		formattedPrograms[i] = gin.H{
-			"id":                  program.Id,
-			"nama_program":        program.NamaProgram,
-			"deskripsi":           program.Deskripsi,
-			"institusi":           program.NamaInstitusi,
-			"jenis_anggaran":      program.JenisAnggaran,
-			"kategori_penggunaan": program.KategoriPenggunaan,
-			"aspirator":           program.Aspirator,
-			"dinas_verifikator":   program.DinasVerifikator,
-			"dusun":               program.Dusun,
-			"desa":                program.Desa,
-			"kecamatan":           program.Kecamatan,
-			"kabupaten":           program.Kabupaten,
-			"user":                program.User,
-			"status":              program.Status,
-			"foto_before":         program.FotoBefore,
-			"foto_progress":       program.FotoProgress,
-			"foto_after":          program.FotoAfter,
-			"created_at":          program.CreatedAt.Format("02-01-2006"),
-			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
+			"id":                       program.Id,
+			"nama_program":             program.NamaProgram,
+			"deskripsi":                program.Deskripsi,
+			"nama_institusi":           program.NamaInstitusi,
+			"jenis_anggaran":           program.JenisAnggaran,
+			"kategori_penggunaan":      program.KategoriPenggunaan,
+			"jenis_anggaran_lain":      program.JenisAnggaranLain,
+			"kategori_penggunaan_lain": program.KategoriPenggunaanLain,
+			"jumlah_anggaran":          program.JumlahAnggaran,
+			"aspirator":                program.Aspirator,
+			"dinas_verifikator":        program.DinasVerifikator,
+			"dusun":                    program.Dusun,
+			"desa":                     program.Desa,
+			"kecamatan":                program.Kecamatan,
+			"kabupaten":                program.Kabupaten,
+			"user":                     program.User,
+			"status":                   program.Status,
+			"foto_before":              program.FotoBefore,
+			"foto_progress":            program.FotoProgress,
+			"foto_after":               program.FotoAfter,
+			"created_at":               program.CreatedAt.Format("02-01-2006"),
+			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
 	}
 
@@ -63,7 +65,6 @@ func GetProgramByUserId(c *gin.Context) {
 	var program []models.Program
 
 	if err := setup.DB.
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
 		Preload("User.Jabatan").
@@ -83,25 +84,27 @@ func GetProgramByUserId(c *gin.Context) {
 
 	for i, program := range program {
 		formattedPrograms[i] = gin.H{
-			"id":                  program.Id,
-			"nama_program":        program.NamaProgram,
-			"deskripsi":           program.Deskripsi,
-			"institusi":           program.NamaInstitusi,
-			"jenis_anggaran":      program.JenisAnggaran,
-			"kategori_penggunaan": program.KategoriPenggunaan,
-			"aspirator":           program.Aspirator,
-			"dinas_verifikator":   program.DinasVerifikator,
-			"dusun":               program.Dusun,
-			"desa":                program.Desa,
-			"kecamatan":           program.Kecamatan,
-			"kabupaten":           program.Kabupaten,
-			"user":                program.User,
-			"status":              program.Status,
-			"foto_before":         program.FotoBefore,
-			"foto_progress":       program.FotoProgress,
-			"foto_after":          program.FotoAfter,
-			"created_at":          program.CreatedAt.Format("02-01-2006"),
-			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
+			"id":                       program.Id,
+			"nama_program":             program.NamaProgram,
+			"deskripsi":                program.Deskripsi,
+			"nama_institusi":           program.NamaInstitusi,
+			"jenis_anggaran":           program.JenisAnggaran,
+			"kategori_penggunaan":      program.KategoriPenggunaan,
+			"jenis_anggaran_lain":      program.JenisAnggaranLain,
+			"kategori_penggunaan_lain": program.KategoriPenggunaanLain,
+			"aspirator":                program.Aspirator,
+			"dinas_verifikator":        program.DinasVerifikator,
+			"dusun":                    program.Dusun,
+			"desa":                     program.Desa,
+			"kecamatan":                program.Kecamatan,
+			"kabupaten":                program.Kabupaten,
+			"user":                     program.User,
+			"status":                   program.Status,
+			"foto_before":              program.FotoBefore,
+			"foto_progress":            program.FotoProgress,
+			"foto_after":               program.FotoAfter,
+			"created_at":               program.CreatedAt.Format("02-01-2006"),
+			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
 	}
 
@@ -115,31 +118,33 @@ func TambahProgram(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Data input tidak valid: " + err.Error()})
 		return
 	}
-
-	if input.NamaProgram == "" || input.NamaInstitusi == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Nama program dan institusi wajib diisi"})
+	if input.NamaProgram == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Nama program wajib diisi"})
 		return
 	}
 
 	newProgram := models.Program{
-		NamaProgram:          input.NamaProgram,
-		Deskripsi:            input.Deskripsi,
-		NamaInstitusi:        input.NamaInstitusi,
-		JenisAnggaranId:      input.JenisAnggaranId,
-		JumlahAnggaran:       input.JumlahAnggaran,
-		KategoriPenggunaanId: input.KategoriPenggunaanId,
-		AspiratorId:          input.AspiratorId,
-		DinasVerifikatorId:   input.DinasVerifikatorId,
-		Dusun:                input.Dusun,
-		DesaId:               input.DesaId,
-		KecamatanId:          input.KecamatanId,
-		KabupatenId:          input.KabupatenId,
-		FotoBefore:           input.FotoBefore,
-		FotoProgress:         input.FotoProgress,
-		FotoAfter:            input.FotoAfter,
-		UserId:               input.UserId,
-		Status:               "Publish",
+		NamaProgram:            input.NamaProgram,
+		Deskripsi:              input.Deskripsi,
+		NamaInstitusi:          input.NamaInstitusi,
+		JenisAnggaranId:        input.JenisAnggaranId,
+		JumlahAnggaran:         input.JumlahAnggaran,
+		KategoriPenggunaanId:   input.KategoriPenggunaanId,
+		JenisAnggaranLain:      input.JenisAnggaranLain,
+		KategoriPenggunaanLain: input.KategoriPenggunaanLain,
+		AspiratorId:            input.AspiratorId,
+		DinasVerifikatorId:     input.DinasVerifikatorId,
+		Dusun:                  input.Dusun,
+		DesaId:                 input.DesaId,
+		KecamatanId:            input.KecamatanId,
+		KabupatenId:            input.KabupatenId,
+		FotoBefore:             input.FotoBefore,
+		FotoProgress:           input.FotoProgress,
+		FotoAfter:              input.FotoAfter,
+		UserId:                 input.UserId,
+		Status:                 "Publish",
 	}
+
 
 	tx := setup.DB.Begin()
 
@@ -163,7 +168,7 @@ func TambahProgram(c *gin.Context) {
 
 	tx.Commit()
 
-	setup.DB.Preload("Institusi").
+	setup.DB.
 		Preload("JenisAnggaran").
 		Preload("KategoriPenggunaan").
 		Preload("Aspirator").
@@ -172,12 +177,11 @@ func TambahProgram(c *gin.Context) {
 		Preload("Desa").
 		Preload("Kecamatan").
 		Preload("Kabupaten").
-
 		First(&newProgram, newProgram.Id)
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Program berhasil ditambahkan", 
-		"data": newProgram,
+		"message": "Program berhasil ditambahkan",
+		"data":    newProgram,
 	})
 }
 
@@ -192,10 +196,12 @@ func EditProgram(c *gin.Context) {
 
 	namaProgram := c.PostForm("nama_program")
 	deskripsi := c.PostForm("deskripsi")
-	institusiId := c.PostForm("institusi_id")
+	namaInstitusi := c.PostForm("nama_institusi")
 	jenisAnggaranId := c.PostForm("jenis_anggaran_id")
 	jumlahAnggaran := c.PostForm("jumlah_anggaran")
 	kategoriPenggunaanId := c.PostForm("kategori_penggunaan_id")
+	jenisAnggaranLain := c.PostForm("jenis_anggaran_lain")
+	kategoriPenggunaanLain := c.PostForm("kategori_penggunaan_lain")
 	aspiratorId := c.PostForm("aspirator_id")
 	dinasVerifikatorId := c.PostForm("dinas_verifikator_id")
 	dusun := c.PostForm("dusun")
@@ -286,21 +292,23 @@ func EditProgram(c *gin.Context) {
 	tx := setup.DB.Begin()
 
 	updateData := map[string]interface{}{
-		"nama_program":           namaProgram,
-		"deskripsi":              deskripsi,
-		"institusi_id":           institusiId,
-		"jenis_anggaran_id":      jenisAnggaranId,
-		"jumlah_anggaran":        jumlahAnggaran,
-		"kategori_penggunaan_id": kategoriPenggunaanId,
-		"aspirator_id":           aspiratorId,
-		"dinas_verifikator_id":   dinasVerifikatorId,
-		"dusun":                  dusun,
-		"desa_id":                desaId,
-		"kecamatan_id":           kecamatanId,
-		"kabupaten_id":           kabupatenId,
-		"foto_before":            program.FotoBefore,
-		"foto_progress":          program.FotoProgress,
-		"foto_after":             program.FotoAfter,
+		"nama_program":             namaProgram,
+		"deskripsi":                deskripsi,
+		"nama_institusi":           namaInstitusi,
+		"jenis_anggaran_id":        jenisAnggaranId,
+		"jumlah_anggaran":          jumlahAnggaran,
+		"kategori_penggunaan_id":   kategoriPenggunaanId,
+		"jenis_anggaran_lain":      jenisAnggaranLain,
+		"kategori_penggunaan_lain": kategoriPenggunaanLain,
+		"aspirator_id":             aspiratorId,
+		"dinas_verifikator_id":     dinasVerifikatorId,
+		"dusun":                    dusun,
+		"desa_id":                  desaId,
+		"kecamatan_id":             kecamatanId,
+		"kabupaten_id":             kabupatenId,
+		"foto_before":              program.FotoBefore,
+		"foto_progress":            program.FotoProgress,
+		"foto_after":               program.FotoAfter,
 	}
 
 	// Hanya update field yang tidak kosong
@@ -326,7 +334,7 @@ func EditProgram(c *gin.Context) {
 
 	tx.Commit()
 
-	setup.DB.Preload("Institusi").
+	setup.DB.
 		Preload("JenisAnggaran").
 		Preload("KategoriPenggunaan").
 		Preload("Aspirator").
@@ -356,7 +364,6 @@ func GetProgramByStatus(c *gin.Context) {
 	var programs []models.Program
 
 	if err := setup.DB.
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
 		Preload("Aspirator").
@@ -373,23 +380,25 @@ func GetProgramByStatus(c *gin.Context) {
 
 	for i, program := range programs {
 		formattedPrograms[i] = gin.H{
-			"id":                  program.Id,
-			"nama_program":        program.NamaProgram,
-			"deskripsi":           program.Deskripsi,
-			"institusi":           program.NamaInstitusi,
-			"jenis_anggaran":      program.JenisAnggaran,
-			"jumlah_anggaran":     program.JumlahAnggaran,
-			"kategori_penggunaan": program.KategoriPenggunaan,
-			"aspirator":           program.Aspirator,
-			"dinas_verifikator":   program.DinasVerifikator,
-			"dusun":               program.Dusun,
-			"user":                program.User,
-			"status":              program.Status,
-			"foto_before":         program.FotoBefore,
-			"foto_progress":       program.FotoProgress,
-			"foto_after":          program.FotoAfter,
-			"created_at":          program.CreatedAt.Format("02-01-2006"),
-			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
+			"id":                       program.Id,
+			"nama_program":             program.NamaProgram,
+			"deskripsi":                program.Deskripsi,
+			"nama_institusi":           program.NamaInstitusi,
+			"jenis_anggaran":           program.JenisAnggaran,
+			"jumlah_anggaran":          program.JumlahAnggaran,
+			"kategori_penggunaan":      program.KategoriPenggunaan,
+			"jenis_anggaran_lain":      program.JenisAnggaranLain,
+			"kategori_penggunaan_lain": program.KategoriPenggunaanLain,
+			"aspirator":                program.Aspirator,
+			"dinas_verifikator":        program.DinasVerifikator,
+			"dusun":                    program.Dusun,
+			"user":                     program.User,
+			"status":                   program.Status,
+			"foto_before":              program.FotoBefore,
+			"foto_progress":            program.FotoProgress,
+			"foto_after":               program.FotoAfter,
+			"created_at":               program.CreatedAt.Format("02-01-2006"),
+			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
 	}
 
@@ -404,19 +413,24 @@ func DetailProgram(c *gin.Context) {
 
 	var program models.Program
 
-	if err := setup.DB.
+	result := setup.DB.
 		Preload("Desa").
 		Preload("Kecamatan").
 		Preload("Kabupaten").
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
 		Preload("Aspirator").
 		Preload("DinasVerifikator").
 		Preload("User.Jabatan").
 		Preload("User.Role").
-		First(&program, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
+		First(&program, id)
+
+	if result.Error != nil {
+		if result.Error.Error() == "record not found" {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Program dengan ID " + id + " tidak ditemukan"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Terjadi kesalahan: " + result.Error.Error()})
 		return
 	}
 
@@ -437,7 +451,6 @@ func SearchProgram(c *gin.Context) {
 
 	// Gunakan LIKE untuk pencarian partial match
 	if err := setup.DB.
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
 		Preload("Aspirator").
@@ -463,23 +476,25 @@ func SearchProgram(c *gin.Context) {
 	formattedPrograms := make([]gin.H, len(programs))
 	for i, program := range programs {
 		formattedPrograms[i] = gin.H{
-			"id":                  program.Id,
-			"nama_program":        program.NamaProgram,
-			"deskripsi":           program.Deskripsi,
-			"institusi":           program.NamaInstitusi,
-			"jenis_anggaran":      program.JenisAnggaran,
-			"jumlah_anggaran":     program.JumlahAnggaran,
-			"kategori_penggunaan": program.KategoriPenggunaan,
-			"aspirator":           program.Aspirator,
-			"dinas_verifikator":   program.DinasVerifikator,
-			"dusun":               program.Dusun,
-			"user":                program.User,
-			"status":              program.Status,
-			"foto_before":         program.FotoBefore,
-			"foto_progress":       program.FotoProgress,
-			"foto_after":          program.FotoAfter,
-			"created_at":          program.CreatedAt.Format("02-01-2006"),
-			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
+			"id":                       program.Id,
+			"nama_program":             program.NamaProgram,
+			"deskripsi":                program.Deskripsi,
+			"nama_institusi":           program.NamaInstitusi,
+			"jenis_anggaran":           program.JenisAnggaran,
+			"jumlah_anggaran":          program.JumlahAnggaran,
+			"kategori_penggunaan":      program.KategoriPenggunaan,
+			"jenis_anggaran_lain":      program.JenisAnggaranLain,
+			"kategori_penggunaan_lain": program.KategoriPenggunaanLain,
+			"aspirator":                program.Aspirator,
+			"dinas_verifikator":        program.DinasVerifikator,
+			"dusun":                    program.Dusun,
+			"user":                     program.User,
+			"status":                   program.Status,
+			"foto_before":              program.FotoBefore,
+			"foto_progress":            program.FotoProgress,
+			"foto_after":               program.FotoAfter,
+			"created_at":               program.CreatedAt.Format("02-01-2006"),
+			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
 	}
 
@@ -494,7 +509,6 @@ func GetProgramLandingPage(c *gin.Context) {
 	var program []models.Program
 
 	if err := setup.DB.
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
 		Preload("Aspirator").
@@ -509,12 +523,10 @@ func GetProgramLandingPage(c *gin.Context) {
 
 	for i, program := range program {
 		formattedPrograms[i] = gin.H{
-			"id":                program.Id,
-			"nama_program":      program.NamaProgram,
-			"deskripsi":         program.Deskripsi,
-			"foto_before":       program.FotoBefore,
-			"aspirator":         program.Aspirator,
-			"dinas_verifikator": program.DinasVerifikator,
+			"id":           program.Id,
+			"nama_program": program.NamaProgram,
+			"deskripsi":    program.Deskripsi,
+			"foto_before":  program.FotoBefore,
 		}
 	}
 
@@ -534,7 +546,6 @@ func GetProgramByDaerah(c *gin.Context) {
 	var programs []models.Program
 
 	if err := setup.DB.
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
 		Preload("Aspirator").
@@ -560,23 +571,25 @@ func GetProgramByDaerah(c *gin.Context) {
 	formattedPrograms := make([]gin.H, len(programs))
 	for i, program := range programs {
 		formattedPrograms[i] = gin.H{
-			"id":                  program.Id,
-			"nama_program":        program.NamaProgram,
-			"deskripsi":           program.Deskripsi,
-			"institusi":           program.NamaInstitusi,
-			"jenis_anggaran":      program.JenisAnggaran,
-			"jumlah_anggaran":     program.JumlahAnggaran,
-			"kategori_penggunaan": program.KategoriPenggunaan,
-			"aspirator":           program.Aspirator,
-			"dinas_verifikator":   program.DinasVerifikator,
-			"dusun":               program.Dusun,
-			"user":                program.User,
-			"status":              program.Status,
-			"foto_before":         program.FotoBefore,
-			"foto_progress":       program.FotoProgress,
-			"foto_after":          program.FotoAfter,
-			"created_at":          program.CreatedAt.Format("02-01-2006"),
-			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
+			"id":                       program.Id,
+			"nama_program":             program.NamaProgram,
+			"deskripsi":                program.Deskripsi,
+			"nama_institusi":           program.NamaInstitusi,
+			"jenis_anggaran":           program.JenisAnggaran,
+			"jumlah_anggaran":          program.JumlahAnggaran,
+			"kategori_penggunaan":      program.KategoriPenggunaan,
+			"jenis_anggaran_lain":      program.JenisAnggaranLain,
+			"kategori_penggunaan_lain": program.KategoriPenggunaanLain,
+			"aspirator":                program.Aspirator,
+			"dinas_verifikator":        program.DinasVerifikator,
+			"dusun":                    program.Dusun,
+			"user":                     program.User,
+			"status":                   program.Status,
+			"foto_before":              program.FotoBefore,
+			"foto_progress":            program.FotoProgress,
+			"foto_after":               program.FotoAfter,
+			"created_at":               program.CreatedAt.Format("02-01-2006"),
+			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
 	}
 
