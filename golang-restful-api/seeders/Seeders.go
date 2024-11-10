@@ -27,8 +27,6 @@ func SeedersUser(db gorm.DB) {
 		Username:  "Admin",
 		Email:     "test@user.com",
 		Password:  string(password),
-		NoHp:      "08229485792",
-		Alamat:    "Malang",
 		RoleId:    1,
 		JabatanId: 1,
 	}

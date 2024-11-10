@@ -13,11 +13,12 @@ func GetAllProgram(c *gin.Context) {
 	var program []models.Program
 
 	if err := setup.DB.
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
 		Preload("User.Jabatan").
 		Preload("User.Role").
+		Preload("Aspirator").
+		Preload("DinasVerifikator").
 		Preload("Desa").
 		Preload("Kecamatan").
 		Preload("Kabupaten").
@@ -30,64 +31,139 @@ func GetAllProgram(c *gin.Context) {
 
 	for i, program := range program {
 		formattedPrograms[i] = gin.H{
-			"id":                  program.Id,
-			"nama_program":        program.NamaProgram,
-			"deskripsi":           program.Deskripsi,
-			"institusi":           program.Institusi,
-			"jenis_anggaran":      program.JenisAnggaran,
-			"kategori_penggunaan": program.KategoriPenggunaan,
-			"dusun":               program.Dusun,
-			"desa":                program.Desa,
-			"kecamatan":           program.Kecamatan,
-			"kabupaten":           program.Kabupaten,
-			"user":                program.User,
-			"status":              program.Status,
-			"foto_before":         program.FotoBefore,
-			"foto_progress":       program.FotoProgress,
-			"foto_after":          program.FotoAfter,
-			"created_at":          program.CreatedAt.Format("02-01-2006"),
-			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
+			"id":                       program.Id,
+			"nama_program":             program.NamaProgram,
+			"deskripsi":                program.Deskripsi,
+			"nama_institusi":           program.NamaInstitusi,
+			"jenis_anggaran":           program.JenisAnggaran,
+			"kategori_penggunaan":      program.KategoriPenggunaan,
+			"jenis_anggaran_lain":      program.JenisAnggaranLain,
+			"kategori_penggunaan_lain": program.KategoriPenggunaanLain,
+			"jumlah_anggaran":          program.JumlahAnggaran,
+			"aspirator":                program.Aspirator,
+			"dinas_verifikator":        program.DinasVerifikator,
+			"dusun":                    program.Dusun,
+			"desa":                     program.Desa,
+			"kecamatan":                program.Kecamatan,
+			"kabupaten":                program.Kabupaten,
+			"user":                     program.User,
+			"status":                   program.Status,
+			"foto_before":              program.FotoBefore,
+			"foto_progress":            program.FotoProgress,
+			"foto_after":               program.FotoAfter,
+			"latitude":                 program.Latitude,
+			"longitude":                program.Longitude,
+			"created_at":               program.CreatedAt.Format("02-01-2006"),
+			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": formattedPrograms})
 }
 
-func PengajuanProgram(c *gin.Context) {
+func GetProgramByUserId(c *gin.Context) {
+	userId := c.GetInt64("user_id")
+
+	var program []models.Program
+
+	if err := setup.DB.
+		Preload("KategoriPenggunaan").
+		Preload("JenisAnggaran").
+		Preload("User.Jabatan").
+		Preload("User.Role").
+		Preload("Aspirator").
+		Preload("DinasVerifikator").
+		Preload("Desa").
+		Preload("Kecamatan").
+		Preload("Kabupaten").
+		Where("user_id = ?", userId).
+		Order("created_at DESC").
+		Find(&program).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	formattedPrograms := make([]gin.H, len(program))
+
+	for i, program := range program {
+		formattedPrograms[i] = gin.H{
+			"id":                       program.Id,
+			"nama_program":             program.NamaProgram,
+			"deskripsi":                program.Deskripsi,
+			"nama_institusi":           program.NamaInstitusi,
+			"jenis_anggaran":           program.JenisAnggaran,
+			"kategori_penggunaan":      program.KategoriPenggunaan,
+			"jenis_anggaran_lain":      program.JenisAnggaranLain,
+			"kategori_penggunaan_lain": program.KategoriPenggunaanLain,
+			"aspirator":                program.Aspirator,
+			"dinas_verifikator":        program.DinasVerifikator,
+			"dusun":                    program.Dusun,
+			"desa":                     program.Desa,
+			"kecamatan":                program.Kecamatan,
+			"kabupaten":                program.Kabupaten,
+			"user":                     program.User,
+			"status":                   program.Status,
+			"foto_before":              program.FotoBefore,
+			"foto_progress":            program.FotoProgress,
+			"foto_after":               program.FotoAfter,
+			"latitude":                 program.Latitude,
+			"longitude":                program.Longitude,
+			"created_at":               program.CreatedAt.Format("02-01-2006"),
+			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": formattedPrograms})
+}
+
+func TambahProgram(c *gin.Context) {
 	var input models.Program
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Data input tidak valid"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Data input tidak valid: " + err.Error()})
+		return
+	}
+	if input.NamaProgram == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Nama program wajib diisi"})
 		return
 	}
 
 	newProgram := models.Program{
-		NamaProgram:          input.NamaProgram,
-		Deskripsi:            input.Deskripsi,
-		InstitusiId:          input.InstitusiId,
-		JenisAnggaranId:      input.JenisAnggaranId,
-		JumlahAnggaran:       input.JumlahAnggaran,
-		KategoriPenggunaanId: input.KategoriPenggunaanId,
-		Dusun:                input.Dusun,
-		DesaId:               input.DesaId,
-		KecamatanId:          input.KecamatanId,
-		KabupatenId:          input.KabupatenId,
-		UserId:               input.UserId,
-		Status:               "Menunggu",
+		NamaProgram:            input.NamaProgram,
+		Deskripsi:              input.Deskripsi,
+		NamaInstitusi:          input.NamaInstitusi,
+		JenisAnggaranId:        input.JenisAnggaranId,
+		JumlahAnggaran:         input.JumlahAnggaran,
+		KategoriPenggunaanId:   input.KategoriPenggunaanId,
+		JenisAnggaranLain:      input.JenisAnggaranLain,
+		KategoriPenggunaanLain: input.KategoriPenggunaanLain,
+		AspiratorId:            input.AspiratorId,
+		DinasVerifikatorId:     input.DinasVerifikatorId,
+		Dusun:                  input.Dusun,
+		DesaId:                 input.DesaId,
+		KecamatanId:            input.KecamatanId,
+		KabupatenId:            input.KabupatenId,
+		FotoBefore:             input.FotoBefore,
+		FotoProgress:           input.FotoProgress,
+		FotoAfter:              input.FotoAfter,
+		UserId:                 input.UserId,
+		Status:                 "Publish",
+		Latitude:               input.Latitude,
+		Longitude:              input.Longitude,
 	}
+
 
 	tx := setup.DB.Begin()
 
 	if err := tx.Create(&newProgram).Error; err != nil {
 		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengajukan program baru"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan program: " + err.Error()})
 		return
 	}
 
 	newLog := models.Log{
 		UserId:    input.UserId,
-		Aktivitas: "Pengajuan Program",
-		Status:    "Menunggu",
+		Aktivitas: "Menambahkan Program",
+		Status:    "Publish",
 	}
 
 	if err := tx.Create(&newLog).Error; err != nil {
@@ -98,13 +174,21 @@ func PengajuanProgram(c *gin.Context) {
 
 	tx.Commit()
 
-	setup.DB.Preload("Institusi").
+	setup.DB.
 		Preload("JenisAnggaran").
 		Preload("KategoriPenggunaan").
+		Preload("Aspirator").
+		Preload("DinasVerifikator").
 		Preload("User").
+		Preload("Desa").
+		Preload("Kecamatan").
+		Preload("Kabupaten").
 		First(&newProgram, newProgram.Id)
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Program berhasil diajukan", "data": newProgram})
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Program berhasil ditambahkan",
+		"data":    newProgram,
+	})
 }
 
 func EditProgram(c *gin.Context) {
@@ -116,22 +200,25 @@ func EditProgram(c *gin.Context) {
 		return
 	}
 
-	// Bind form data
 	namaProgram := c.PostForm("nama_program")
 	deskripsi := c.PostForm("deskripsi")
-	institusiId := c.PostForm("institusi_id")
+	namaInstitusi := c.PostForm("nama_institusi")
 	jenisAnggaranId := c.PostForm("jenis_anggaran_id")
 	jumlahAnggaran := c.PostForm("jumlah_anggaran")
 	kategoriPenggunaanId := c.PostForm("kategori_penggunaan_id")
+	jenisAnggaranLain := c.PostForm("jenis_anggaran_lain")
+	kategoriPenggunaanLain := c.PostForm("kategori_penggunaan_lain")
+	aspiratorId := c.PostForm("aspirator_id")
+	dinasVerifikatorId := c.PostForm("dinas_verifikator_id")
 	dusun := c.PostForm("dusun")
 	desaId := c.PostForm("desa_id")
 	kecamatanId := c.PostForm("kecamatan_id")
 	kabupatenId := c.PostForm("kabupaten_id")
+	latitude := c.PostForm("latitude")
+	longitude := c.PostForm("longitude")
 
-	// Handle foto before
 	fotoBefore, err := c.FormFile("foto_before")
 	if err == nil {
-		// Validasi tipe file
 		if !strings.HasSuffix(strings.ToLower(fotoBefore.Filename), ".jpg") &&
 			!strings.HasSuffix(strings.ToLower(fotoBefore.Filename), ".jpeg") &&
 			!strings.HasSuffix(strings.ToLower(fotoBefore.Filename), ".png") {
@@ -139,29 +226,23 @@ func EditProgram(c *gin.Context) {
 			return
 		}
 
-		// Validasi ukuran file (max 6MB)
 		if fotoBefore.Size > 6*1024*1024 {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Ukuran file terlalu besar"})
 			return
 		}
 
-		// Simpan file di folder uploads/foto-before
 		uploadPath := "uploads/foto-before/" + fotoBefore.Filename
 
-		// Simpan file
 		if err := c.SaveUploadedFile(fotoBefore, uploadPath); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan foto"})
 			return
 		}
 
-		// Simpan path ke database
 		program.FotoBefore = uploadPath
 	}
 
-	// Handle foto progress
 	fotoProgress, err := c.FormFile("foto_progress")
 	if err == nil {
-		// Validasi tipe file
 		if !strings.HasSuffix(strings.ToLower(fotoProgress.Filename), ".jpg") &&
 			!strings.HasSuffix(strings.ToLower(fotoProgress.Filename), ".jpeg") &&
 			!strings.HasSuffix(strings.ToLower(fotoProgress.Filename), ".png") {
@@ -169,28 +250,22 @@ func EditProgram(c *gin.Context) {
 			return
 		}
 
-		// Validasi ukuran file (max 6MB)
 		if fotoProgress.Size > 6*1024*1024 {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Ukuran file terlalu besar"})
 			return
 		}
-		// Simpan file di folder uploads/foto-progress
 		uploadPath := "uploads/foto-progress/" + fotoProgress.Filename
 
-		// Simpan file
 		if err := c.SaveUploadedFile(fotoProgress, uploadPath); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan foto"})
 			return
 		}
 
-		// Simpan path ke database
 		program.FotoProgress = uploadPath
 	}
 
-	// Handle foto after
 	fotoAfter, err := c.FormFile("foto_after")
 	if err == nil {
-		// Validasi tipe file
 		if !strings.HasSuffix(strings.ToLower(fotoAfter.Filename), ".jpg") &&
 			!strings.HasSuffix(strings.ToLower(fotoAfter.Filename), ".jpeg") &&
 			!strings.HasSuffix(strings.ToLower(fotoAfter.Filename), ".png") {
@@ -198,51 +273,63 @@ func EditProgram(c *gin.Context) {
 			return
 		}
 
-		// Validasi ukuran file (max 6MB)
 		if fotoAfter.Size > 6*1024*1024 {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Ukuran file terlalu besar"})
 			return
 		}
-		// Simpan file di folder uploads/foto-after
 		uploadPath := "uploads/foto-after/" + fotoAfter.Filename
 
-		// Simpan file
 		if err := c.SaveUploadedFile(fotoAfter, uploadPath); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan foto"})
 			return
 		}
 
-		// Simpan path ke database
 		program.FotoAfter = uploadPath
 	}
 
-	// Update data program
+	if fotoBefore == nil {
+		program.FotoBefore = ""
+	}
+	if fotoProgress == nil {
+		program.FotoProgress = ""
+	}
+	if fotoAfter == nil {
+		program.FotoAfter = ""
+	}
+
 	tx := setup.DB.Begin()
 
 	updateData := map[string]interface{}{
-		"nama_program":           namaProgram,
-		"deskripsi":              deskripsi,
-		"institusi_id":           institusiId,
-		"jenis_anggaran_id":      jenisAnggaranId,
-		"jumlah_anggaran":        jumlahAnggaran,
-		"kategori_penggunaan_id": kategoriPenggunaanId,
-		"dusun":                  dusun,
-		"desa_id":                desaId,
-		"kecamatan_id":           kecamatanId,
-		"kabupaten_id":           kabupatenId,
-		"foto_before":            program.FotoBefore,
-		"foto_progress":          program.FotoProgress,
-		"foto_after":             program.FotoAfter,
+		"nama_program":             namaProgram,
+		"deskripsi":                deskripsi,
+		"nama_institusi":           namaInstitusi,
+		"jenis_anggaran_id":        jenisAnggaranId,
+		"jumlah_anggaran":          jumlahAnggaran,
+		"kategori_penggunaan_id":   kategoriPenggunaanId,
+		"jenis_anggaran_lain":      jenisAnggaranLain,
+		"kategori_penggunaan_lain": kategoriPenggunaanLain,
+		"aspirator_id":             aspiratorId,
+		"dinas_verifikator_id":     dinasVerifikatorId,
+		"dusun":                    dusun,
+		"desa_id":                  desaId,
+		"kecamatan_id":             kecamatanId,
+		"kabupaten_id":             kabupatenId,
+		"foto_before":              program.FotoBefore,
+		"foto_progress":            program.FotoProgress,
+		"foto_after":               program.FotoAfter,
+		"latitude":                 latitude,
+		"longitude":                longitude,
 	}
 
 	// Hanya update field yang tidak kosong
 	for key, value := range updateData {
 		if value != "" {
-			tx.Model(&program).UpdateColumn(key, value)
+				tx.Model(&program).UpdateColumn(key, value)
+		} else if value == "" {
+			tx.Model(&program).UpdateColumn(key, "")
 		}
 	}
 
-	// Catat log aktivitas
 	newLog := models.Log{
 		UserId:    program.UserId,
 		Aktivitas: "Edit Program",
@@ -257,10 +344,11 @@ func EditProgram(c *gin.Context) {
 
 	tx.Commit()
 
-	// Ambil data terbaru
-	setup.DB.Preload("Institusi").
+	setup.DB.
 		Preload("JenisAnggaran").
 		Preload("KategoriPenggunaan").
+		Preload("Aspirator").
+		Preload("DinasVerifikator").
 		Preload("User").
 		First(&program, program.Id)
 
@@ -270,86 +358,12 @@ func EditProgram(c *gin.Context) {
 	})
 }
 
-func AcceptProgram(c *gin.Context) {
-	id := c.Param("id")
-	var program models.Program
-
-	if err := setup.DB.First(&program, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
-		return
-	}
-
-	program.Status = "Dalam Proses"
-
-	tx := setup.DB.Begin()
-
-	if err := tx.Save(&program).Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyetujui program"})
-		return
-	}
-
-	newLog := models.Log{
-		UserId:    program.UserId,
-		Aktivitas: "Penyetujuan Program",
-		Status:    "Dalam Proses",
-	}
-
-	if err := tx.Create(&newLog).Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
-		return
-	}
-
-	tx.Commit()
-
-	c.JSON(http.StatusOK, gin.H{"message": "Program berhasil disetujui", "data": program})
-}
-
-func RejectProgram(c *gin.Context) {
-	id := c.Param("id")
-	var program models.Program
-
-	if err := setup.DB.Find(&program, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
-		return
-	}
-
-	program.Status = "Ditolak"
-
-	tx := setup.DB.Begin()
-
-	if err := tx.Save(&program).Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menolak program"})
-		return
-	}
-
-	newLog := models.Log{
-		UserId:    program.UserId,
-		Aktivitas: "Penolakan Program",
-		Status:    "Ditolak",
-	}
-
-	if err := tx.Create(&newLog).Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
-		return
-	}
-
-	tx.Commit()
-
-	c.JSON(http.StatusOK, gin.H{"message": "Program berhasil ditolak", "data": program})
-}
-
 func GetProgramByStatus(c *gin.Context) {
 	status := c.Param("status")
 
 	validStatus := map[string]bool{
-		"Menunggu":     true,
-		"Dalam Proses": true,
-		"Selesai":      true,
-		"Ditolak":      true,
+		"Publish": true,
+		"Draft":   true,
 	}
 
 	if !validStatus[status] {
@@ -360,9 +374,10 @@ func GetProgramByStatus(c *gin.Context) {
 	var programs []models.Program
 
 	if err := setup.DB.
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
+		Preload("Aspirator").
+		Preload("DinasVerifikator").
 		Preload("User.Jabatan").
 		Preload("User.Role").
 		Where("status = ?", status).
@@ -375,21 +390,27 @@ func GetProgramByStatus(c *gin.Context) {
 
 	for i, program := range programs {
 		formattedPrograms[i] = gin.H{
-			"id":                  program.Id,
-			"nama_program":        program.NamaProgram,
-			"deskripsi":           program.Deskripsi,
-			"institusi":           program.Institusi,
-			"jenis_anggaran":      program.JenisAnggaran,
-			"jumlah_anggaran":     program.JumlahAnggaran,
-			"kategori_penggunaan": program.KategoriPenggunaan,
-			"dusun":               program.Dusun,
-			"user":                program.User,
-			"status":              program.Status,
-			"foto_before":         program.FotoBefore,
-			"foto_progress":       program.FotoProgress,
-			"foto_after":          program.FotoAfter,
-			"created_at":          program.CreatedAt.Format("02-01-2006"),
-			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
+			"id":                       program.Id,
+			"nama_program":             program.NamaProgram,
+			"deskripsi":                program.Deskripsi,
+			"nama_institusi":           program.NamaInstitusi,
+			"jenis_anggaran":           program.JenisAnggaran,
+			"jumlah_anggaran":          program.JumlahAnggaran,
+			"kategori_penggunaan":      program.KategoriPenggunaan,
+			"jenis_anggaran_lain":      program.JenisAnggaranLain,
+			"kategori_penggunaan_lain": program.KategoriPenggunaanLain,
+			"aspirator":                program.Aspirator,
+			"dinas_verifikator":        program.DinasVerifikator,
+			"dusun":                    program.Dusun,
+			"user":                     program.User,
+			"status":                   program.Status,
+			"foto_before":              program.FotoBefore,
+			"foto_progress":            program.FotoProgress,
+			"foto_after":               program.FotoAfter,
+			"latitude":                 program.Latitude,
+			"longitude":                program.Longitude,
+			"created_at":               program.CreatedAt.Format("02-01-2006"),
+			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
 	}
 
@@ -404,17 +425,24 @@ func DetailProgram(c *gin.Context) {
 
 	var program models.Program
 
-	if err := setup.DB.
+	result := setup.DB.
 		Preload("Desa").
 		Preload("Kecamatan").
 		Preload("Kabupaten").
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
+		Preload("Aspirator").
+		Preload("DinasVerifikator").
 		Preload("User.Jabatan").
 		Preload("User.Role").
-		First(&program, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
+		First(&program, id)
+
+	if result.Error != nil {
+		if result.Error.Error() == "record not found" {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Program dengan ID " + id + " tidak ditemukan"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Terjadi kesalahan: " + result.Error.Error()})
 		return
 	}
 
@@ -435,9 +463,10 @@ func SearchProgram(c *gin.Context) {
 
 	// Gunakan LIKE untuk pencarian partial match
 	if err := setup.DB.
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
+		Preload("Aspirator").
+		Preload("DinasVerifikator").
 		Preload("User.Jabatan").
 		Preload("User.Role").
 		Where("nama_program LIKE ?", "%"+query+"%").
@@ -459,21 +488,27 @@ func SearchProgram(c *gin.Context) {
 	formattedPrograms := make([]gin.H, len(programs))
 	for i, program := range programs {
 		formattedPrograms[i] = gin.H{
-			"id":                  program.Id,
-			"nama_program":        program.NamaProgram,
-			"deskripsi":           program.Deskripsi,
-			"institusi":           program.Institusi,
-			"jenis_anggaran":      program.JenisAnggaran,
-			"jumlah_anggaran":     program.JumlahAnggaran,
-			"kategori_penggunaan": program.KategoriPenggunaan,
-			"dusun":               program.Dusun,
-			"user":                program.User,
-			"status":              program.Status,
-			"foto_before":         program.FotoBefore,
-			"foto_progress":       program.FotoProgress,
-			"foto_after":          program.FotoAfter,
-			"created_at":          program.CreatedAt.Format("02-01-2006"),
-			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
+			"id":                       program.Id,
+			"nama_program":             program.NamaProgram,
+			"deskripsi":                program.Deskripsi,
+			"nama_institusi":           program.NamaInstitusi,
+			"jenis_anggaran":           program.JenisAnggaran,
+			"jumlah_anggaran":          program.JumlahAnggaran,
+			"kategori_penggunaan":      program.KategoriPenggunaan,
+			"jenis_anggaran_lain":      program.JenisAnggaranLain,
+			"kategori_penggunaan_lain": program.KategoriPenggunaanLain,
+			"aspirator":                program.Aspirator,
+			"dinas_verifikator":        program.DinasVerifikator,
+			"dusun":                    program.Dusun,
+			"user":                     program.User,
+			"status":                   program.Status,
+			"foto_before":              program.FotoBefore,
+			"foto_progress":            program.FotoProgress,
+			"foto_after":               program.FotoAfter,
+			"latitude":                 program.Latitude,
+			"longitude":                program.Longitude,
+			"created_at":               program.CreatedAt.Format("02-01-2006"),
+			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
 	}
 
@@ -488,9 +523,10 @@ func GetProgramLandingPage(c *gin.Context) {
 	var program []models.Program
 
 	if err := setup.DB.
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
+		Preload("Aspirator").
+		Preload("DinasVerifikator").
 		Preload("User.Jabatan").
 		Preload("User.Role").
 		Find(&program).Error; err != nil {
@@ -511,49 +547,11 @@ func GetProgramLandingPage(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": formattedPrograms})
 }
 
-func SelesaikanProgram(c *gin.Context) {
-	id := c.Param("id")
-	var program models.Program
-
-	if err := setup.DB.First(&program, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
-		return
-	}
-
-	program.Status = "Selesai"
-
-	tx := setup.DB.Begin()
-
-	if err := tx.Save(&program).Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyelesaikan program"})
-		return
-	}
-
-	newLog := models.Log{
-		UserId:    program.UserId,
-		Aktivitas: "Penyelesaian Program",
-		Status:    "Selesai",
-	}
-
-	if err := tx.Create(&newLog).Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
-		return
-	}
-
-	tx.Commit()
-
-	c.JSON(http.StatusOK, gin.H{"message": "Program berhasil diselesaikan", "data": program})
-}
-
 func GetProgramByDaerah(c *gin.Context) {
-	// Ambil parameter pencarian dari query string
 	queryDesa := c.Query("desa")
 	queryKecamatan := c.Query("kecamatan")
 	queryKabupaten := c.Query("kabupaten")
 
-	// Jika query kosong
 	if queryDesa == "" && queryKecamatan == "" && queryKabupaten == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Pencarian tidak boleh kosong"})
 		return
@@ -561,11 +559,11 @@ func GetProgramByDaerah(c *gin.Context) {
 
 	var programs []models.Program
 
-	// Gunakan LIKE untuk pencarian partial match
 	if err := setup.DB.
-		Preload("Institusi").
 		Preload("KategoriPenggunaan").
 		Preload("JenisAnggaran").
+		Preload("Aspirator").
+		Preload("DinasVerifikator").
 		Preload("User.Jabatan").
 		Preload("User.Role").
 		Where("desa_id = ?", queryDesa).
@@ -576,7 +574,6 @@ func GetProgramByDaerah(c *gin.Context) {
 		return
 	}
 
-	// Jika tidak ada hasil
 	if len(programs) == 0 {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Tidak ada program yang ditemukan",
@@ -585,25 +582,30 @@ func GetProgramByDaerah(c *gin.Context) {
 		return
 	}
 
-	// Format hasil pencarian
 	formattedPrograms := make([]gin.H, len(programs))
 	for i, program := range programs {
 		formattedPrograms[i] = gin.H{
-			"id":                  program.Id,
-			"nama_program":        program.NamaProgram,
-			"deskripsi":           program.Deskripsi,
-			"institusi":           program.Institusi,
-			"jenis_anggaran":      program.JenisAnggaran,
-			"jumlah_anggaran":     program.JumlahAnggaran,
-			"kategori_penggunaan": program.KategoriPenggunaan,
-			"dusun":               program.Dusun,
-			"user":                program.User,
-			"status":              program.Status,
-			"foto_before":         program.FotoBefore,
-			"foto_progress":       program.FotoProgress,
-			"foto_after":          program.FotoAfter,
-			"created_at":          program.CreatedAt.Format("02-01-2006"),
-			"updated_at":          program.UpdatedAt.Format("02-01-2006"),
+			"id":                       program.Id,
+			"nama_program":             program.NamaProgram,
+			"deskripsi":                program.Deskripsi,
+			"nama_institusi":           program.NamaInstitusi,
+			"jenis_anggaran":           program.JenisAnggaran,
+			"jumlah_anggaran":          program.JumlahAnggaran,
+			"kategori_penggunaan":      program.KategoriPenggunaan,
+			"jenis_anggaran_lain":      program.JenisAnggaranLain,
+			"kategori_penggunaan_lain": program.KategoriPenggunaanLain,
+			"aspirator":                program.Aspirator,
+			"dinas_verifikator":        program.DinasVerifikator,
+			"dusun":                    program.Dusun,
+			"user":                     program.User,
+			"status":                   program.Status,
+			"foto_before":              program.FotoBefore,
+			"foto_progress":            program.FotoProgress,
+			"foto_after":               program.FotoAfter,
+			"latitude":                 program.Latitude,
+			"longitude":                program.Longitude,
+			"created_at":               program.CreatedAt.Format("02-01-2006"),
+			"updated_at":               program.UpdatedAt.Format("02-01-2006"),
 		}
 	}
 
@@ -611,5 +613,97 @@ func GetProgramByDaerah(c *gin.Context) {
 		"message": "Program ditemukan",
 		"total":   len(programs),
 		"data":    formattedPrograms,
+	})
+}
+
+func DraftProgram(c *gin.Context) {
+	id := c.Param("id")
+	var program models.Program
+
+	if err := setup.DB.First(&program, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
+		return
+	}
+
+	tx := setup.DB.Begin()
+
+	program.Status = "Draft"
+	if err := tx.Save(&program).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengubah status program"})
+		return
+	}
+
+	newLog := models.Log{
+		UserId:    program.UserId,
+		Aktivitas: "Draft Program",
+		Status:    "Draft",
+	}
+
+	if err := tx.Create(&newLog).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
+		return
+	}
+
+	tx.Commit()
+
+	setup.DB.Preload("Institusi").
+		Preload("KategoriPenggunaan").
+		Preload("JenisAnggaran").
+		Preload("Aspirator").
+		Preload("DinasVerifikator").
+		Preload("User").
+		First(&program, id)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Program berhasil didraft",
+		"data":    program,
+	})
+}
+
+func PublishProgram(c *gin.Context) {
+	id := c.Param("id")
+	var program models.Program
+
+	if err := setup.DB.First(&program, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
+		return
+	}
+
+	tx := setup.DB.Begin()
+
+	program.Status = "Publish"
+	if err := tx.Save(&program).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengubah status program"})
+		return
+	}
+
+	newLog := models.Log{
+		UserId:    program.UserId,
+		Aktivitas: "Publish Program",
+		Status:    "Publish",
+	}
+
+	if err := tx.Create(&newLog).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mencatat log aktivitas"})
+		return
+	}
+
+	tx.Commit()
+
+	setup.DB.Preload("Institusi").
+		Preload("KategoriPenggunaan").
+		Preload("JenisAnggaran").
+		Preload("Aspirator").
+		Preload("DinasVerifikator").
+		Preload("User").
+		First(&program, id)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Program berhasil dipublish",
+		"data":    program,
 	})
 }
