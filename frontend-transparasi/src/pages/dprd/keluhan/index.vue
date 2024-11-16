@@ -1,5 +1,6 @@
 <template>
   <div class="mt-3">
+    <v-card class="mx-4">
         <div class="d-flex align-center justify-space-between mr-3 mt-2">
           <v-card-title><b>Daftar Keluhan</b></v-card-title>
           <a href="">
@@ -69,6 +70,7 @@
           >
           </v-pagination>
         </div>
+      </v-card>
     </div>
 </template>
 <script>

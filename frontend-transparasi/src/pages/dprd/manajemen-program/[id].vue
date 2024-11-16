@@ -1,6 +1,8 @@
 <template>
   <div>
-
+    <div class="">
+      <v-btn variant="text" prepend-icon="mdi-chevron-left" @click="this.$router.go(-1)">Kembali</v-btn>
+    </div>
       <v-row>
         <v-col cols="12" md="8">
           <v-card elevation="4" class="pa-4 ma-4">
@@ -18,10 +20,10 @@
             <div class="mb-5">
               <label class="label-form mb-2 d-block">Nama Aspirator</label>
               <v-select
-                v-model="user.institusi_id"
-                :items="institusi"
-                item-title="nama_institusi"
-                item-value="id"
+                v-model="user.aspirator_id"
+                :items="aspirator"
+                item-title="nama_aspirator"
+                item-value="Id"
                 variant="outlined"
                 density="compact"
               ></v-select>
@@ -30,10 +32,10 @@
             <div class="mb-5">
               <label class="label-form mb-2 d-block">Nama Dinas Verifikator</label>
               <v-select
-                v-model="user.institusi_id"
-                :items="institusi"
-                item-title="nama_institusi"
-                item-value="id"
+                v-model="user.dinas_verifikator_id"
+                :items="verifikator"
+                item-title="nama_dinas_verifikator"
+                item-value="Id"
                 variant="outlined"
                 density="compact"
               ></v-select>
@@ -42,7 +44,7 @@
             <div class="mb-5">
               <label class="label-form mb-2 d-block">Institusi</label>
               <v-text-field
-                v-model="user.nama_program"
+                v-model="user.nama_institusi"
                 variant="outlined"
                 density="compact"
               ></v-text-field>
@@ -79,6 +81,9 @@
                 v-model="user.jumlah_anggaran"
                 variant="outlined"
                 density="compact"
+                type="number"
+                min="0"
+                @input="formatJumlahAnggaran"
               ></v-text-field>
             </div>
 
@@ -97,15 +102,6 @@
             <!-- Detail Alamat -->
             <h2 class="text-h6 font-weight-bold mb-3">Detail Alamat</h2>
             <v-divider class="mb-5"></v-divider>
-
-            <div class="mb-5">
-              <label class="label-form mb-2 d-block">Dusun</label>
-              <v-text-field
-                v-model="user.dusun"
-                variant="outlined"
-                density="compact"
-              ></v-text-field>
-            </div>
 
             <div class="mb-5">
               <label class="label-form mb-2 d-block">Kabupaten / Kota</label>
@@ -141,6 +137,32 @@
                 variant="outlined"
                 density="compact"
               ></v-autocomplete>
+            </div>
+
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Dusun</label>
+              <v-text-field
+                v-model="user.dusun"
+                variant="outlined"
+                density="compact"
+              ></v-text-field>
+            </div>
+
+            <!-- Tambahkan setelah Detail Alamat dan sebelum form dusun -->
+            <div class="mb-5">
+              <label class="label-form mb-2 d-block">Pilih Lokasi di Peta</label>
+              <div class="search-container mb-2">
+                <v-text-field
+                  v-model="searchQuery"
+                  label="Cari lokasi..."
+                  variant="outlined"
+                  density="compact"
+                  @keyup.enter="handleSearch"
+                  append-inner-icon="mdi-magnify"
+                  @click:append-inner="handleSearch"
+                ></v-text-field>
+              </div>
+              <div id="map" style="height: 400px;" class="mb-3"></div>
             </div>
 
             <!-- Detail Dokumentasi -->
@@ -205,22 +227,32 @@
             <!-- Tombol Aksi -->
 
 
-            <div class="d-flex gap-2 mt-5" >
+            <div class="d-flex justify-space-between gap-2 mt-5" >
               <v-btn
                 color="#387144"
                 style="color: white"
                 prepend-icon="mdi-content-save"
-                @click=" simpan()"
+                @click=" savebutton()"
+              >
+                Simpan
+              </v-btn>
+              <div class="">
+                <v-btn
+                color="#BF3232"
+                style="color: white"
+                prepend-icon="mdi-content-save"
+                @click=" draft()"
               >
                 Draft
               </v-btn>
               <v-btn
-                color="#BF3232"
+                color="#387144"
                 style="color: white"
-                @click="draft()"
+                @click="publish()"
               >
                 Publish
               </v-btn>
+            </div>
             </div>
           </v-form>
         </v-card>
@@ -244,6 +276,10 @@
 import axios from 'axios';
 import { getImageUrl } from '@/config/foto';
 import Swal from 'sweetalert2';
+import router from '@/router';
+import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
 export default{
   data() {
@@ -257,37 +293,57 @@ export default{
       KategoriPenggunaan:[],
       user:{
         nama_program:'',
+        aspirator_id:'',
+        dinas_verifikator_id:'',
         deskripsi: '',
         jenis_anggaran_id:'',
         jumlah_anggaran:'',
         kategori_penggunaan_id:'',
-        institusi_id:'',
+        nama_institusi:'',
         dusun:'',
         desa_id:'',
         kecamatan_id:'',
         kabupaten_id:'',
         foto_before:'',
         foto_progress:'',
-        foto_after:''
+        foto_after:'',
+        latitude: '',
+        longitude: '',
       },
       fotoBeforeFile: null,
       fotoProgressFile: null,
       fotoAfterFile: null,
       previewBefore: null,
       previewProgress: null,
-      previewAfter: null
+      previewAfter: null,
+      aspirator:[],
+      verifikator:[],
+      map: null,
+      marker: null,
+      searchQuery: '',
+      searchProvider: null,
     }
   },
   mounted() {
     this.getProgram();
     this.listJenisAnggaran();
     this.listKategoriPenggunaan();
-    this.listinstitusi();
     this.listdaerah()
+    this.aspiratorList()
+    this.verifikatorList()
   },
   methods: {
-    aspirator(){
-      
+    verifikatorList(){
+      axios.get("/api/index-dinas-verifikator")
+      .then(res=>{
+        this.verifikator = res.data.data
+      })
+    },
+    aspiratorList(){
+      axios.get("/api/index-aspirator")
+      .then(res=>{
+        this.aspirator = res.data.data
+      })
     },
     listdaerah(){
       axios.all([
@@ -305,12 +361,6 @@ export default{
     console.error("Error fetching data:", error);
   });
     },
-    listinstitusi(){
-      axios.get("/api/institusi")
-      .then(res=>{
-        this.institusi = res.data.data
-      })
-    },
     listJenisAnggaran(){
       axios.get("/api/index-jenis-anggaran")
       .then(res=>{
@@ -323,12 +373,18 @@ export default{
         this.KategoriPenggunaan = res.data.data
       })
     },
-    getProgram(){
-      axios.get(`/api/program/${this.$route.params.id}`)
-      .then(res=>{
-        console.log(res.data.data)
-        this.user = res.data.data
-      })
+    async getProgram() {
+      try {
+        const response = await axios.get(`/api/program/${this.$route.params.id}`);
+        this.user = response.data.data;
+
+        // Inisialisasi peta setelah data terload
+        this.$nextTick(() => {
+          this.initMap();
+        });
+      } catch (error) {
+        console.error('Error fetching program:', error);
+      }
     },
     back(){
       this.$router.go(-1)
@@ -435,139 +491,230 @@ export default{
         })
       }
     },
-        async simpan() {
+    async savebutton() {
+      await this.saveProgram('/api/program/edit/');
+    },
+    async draft() {
+      await this.saveProgram('/api/program/draft/');
+    },
+    async publish() {
+      await this.saveProgram('/api/program/publish/');
+    },
+    async saveProgram(apiEndpoint) {
       try {
+        // Validasi koordinat jika diisi
+        if (this.user.latitude || this.user.longitude) {
+          const lat = parseFloat(this.user.latitude);
+          const lng = parseFloat(this.user.longitude);
+
+          if (isNaN(lat) || isNaN(lng) ||
+              lat < -90 || lat > 90 ||
+              lng < -180 || lng > 180) {
+            await Swal.fire({
+              icon: 'error',
+              title: 'Koordinat Tidak Valid',
+              text: 'Silakan pilih lokasi yang valid pada peta'
+            });
+            return;
+          }
+        }
+
         // Tampilkan loading
         Swal.fire({
           title: 'Sedang menyimpan...',
           allowOutsideClick: false,
           didOpen: () => {
-            Swal.showLoading()
+            Swal.showLoading();
           }
-        })
+        });
 
-        const formData = new FormData()
-        // ... kode formData tetap sama ...
+        const formData = new FormData();
+        // Menambahkan data ke formData
+        formData.append('nama_program', this.user.nama_program);
+        formData.append('aspirator_id', this.user.aspirator_id);
+        formData.append('dinas_verifikator_id', this.user.dinas_verifikator_id);
+        formData.append('deskripsi', this.user.deskripsi);
+        formData.append('jenis_anggaran_id', this.user.jenis_anggaran_id);
+        formData.append('jumlah_anggaran', this.user.jumlah_anggaran);
+        formData.append('kategori_penggunaan_id', this.user.kategori_penggunaan_id);
+        formData.append('nama_institusi', this.user.nama_institusi);
+        formData.append('dusun', this.user.dusun);
+        formData.append('desa_id', this.user.desa_id);
+        formData.append('kecamatan_id', this.user.kecamatan_id);
+        formData.append('kabupaten_id', this.user.kabupaten_id);
 
-        formData.append('nama_program', this.user.nama_program)
-      formData.append('deskripsi', this.user.deskripsi)
-      formData.append('jenis_anggaran_id', this.user.jenis_anggaran_id)
-      formData.append('jumlah_anggaran', this.user.jumlah_anggaran)
-      formData.append('kategori_penggunaan_id', this.user.kategori_penggunaan_id)
-      formData.append('institusi_id', this.user.institusi_id)
-      formData.append('dusun', this.user.dusun)
-      formData.append('desa_id', this.user.desa_id)
-      formData.append('kecamatan_id', this.user.kecamatan_id)
-      formData.append('kabupaten_id', this.user.kabupaten_id)
+        // Tambahkan koordinat ke formData
+        formData.append('latitude', this.user.latitude);
+        formData.append('longitude', this.user.longitude);
 
-      Object.keys(this.user).forEach(key => {
-        if (key !== 'foto_before' && key !== 'foto_progress' && key !== 'foto_after') {
-          formData.append(key, this.user[key])
+        // Menambahkan file jika ada
+        if (this.fotoBeforeFile) {
+          formData.append('foto_before', this.fotoBeforeFile);
         }
-      })
+        if (this.fotoProgressFile) {
+          formData.append('foto_progress', this.fotoProgressFile);
+        }
+        if (this.fotoAfterFile) {
+          formData.append('foto_after', this.fotoAfterFile);
+        }
 
-      // Append file foto jika ada perubahan
-      if (this.fotoBeforeFile) {
-        formData.append('foto_before', this.fotoBeforeFile)
-      }
-      if (this.fotoProgressFile) {
-        formData.append('foto_progress', this.fotoProgressFile)
-      }
-      if (this.fotoAfterFile) {
-        formData.append('foto_after', this.fotoAfterFile)
-      }
-
-        await axios.put(`/api/program/edit/${this.$route.params.id}`, formData, {
+        await axios.put(`${apiEndpoint}${this.$route.params.id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
-        })
+        });
+
+        var stat = '';
+
+        if (apiEndpoint == '/api/program/draft/') {
+          stat = 'draft';
+        }else if (apiEndpoint == '/api/program/edit/') {
+          stat = 'simpan';
+        }else if (apiEndpoint == '/api/program/publish/') {
+          stat = 'publish';
+        }
 
         // Tampilkan sukses
         await Swal.fire({
           icon: 'success',
           title: 'Berhasil!',
-          text: 'Program berhasil disimpan',
+          text: `Program berhasil di${stat}`,
           timer: 1500,
           showConfirmButton: false
-        })
+        });
 
-        this.$router.go(-1)
+        this.$router.go(-1);
       } catch (error) {
-        console.error('Error:', error)
+        console.error('Error:', error);
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: 'Terjadi kesalahan saat menyimpan program',
           confirmButtonText: 'Tutup'
-        })
+        });
       }
     },
-    async draft() {
-      try {
-        // Tampilkan loading
-        Swal.fire({
-          title: 'Sedang menyimpan...',
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading()
-          }
-        })
 
-        const formData = new FormData()
-        // ... kode formData tetap sama ...
+    initMap() {
+      // Hapus map yang lama jika ada
+      if (this.map) {
+        this.map.remove();
+      }
 
-        formData.append('nama_program', this.user.nama_program)
-      formData.append('deskripsi', this.user.deskripsi)
-      formData.append('jenis_anggaran_id', this.user.jenis_anggaran_id)
-      formData.append('jumlah_anggaran', this.user.jumlah_anggaran)
-      formData.append('kategori_penggunaan_id', this.user.kategori_penggunaan_id)
-      formData.append('institusi_id', this.user.institusi_id)
-      formData.append('dusun', this.user.dusun)
-      formData.append('desa_id', this.user.desa_id)
-      formData.append('kecamatan_id', this.user.kecamatan_id)
-      formData.append('kabupaten_id', this.user.kabupaten_id)
+      // Inisialisasi peta baru
+      this.map = L.map('map').setView([-2.5489, 118.0149], 5);
 
-      Object.keys(this.user).forEach(key => {
-        if (key !== 'foto_before' && key !== 'foto_progress' && key !== 'foto_after') {
-          formData.append(key, this.user[key])
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(this.map);
+
+      // Debug: cek nilai koordinat
+      console.log('Koordinat:', {
+        lat: this.user.latitude,
+        lng: this.user.longitude
+      });
+
+      // Set marker jika koordinat ada
+      if (this.user.latitude && this.user.longitude) {
+        const lat = parseFloat(this.user.latitude);
+        const lng = parseFloat(this.user.longitude);
+
+        console.log('Parsed koordinat:', { lat, lng });
+
+        if (!isNaN(lat) && !isNaN(lng) &&
+            lat >= -90 && lat <= 90 &&
+            lng >= -180 && lng <= 180) {
+
+          // Tambahkan marker
+          this.marker = L.marker([lat, lng]).addTo(this.map);
+
+          // Zoom ke lokasi
+          this.map.setView([lat, lng], 15);
+
+          console.log('Marker ditambahkan pada:', { lat, lng });
         }
-      })
-
-      // Append file foto jika ada perubahan
-      if (this.fotoBeforeFile) {
-        formData.append('foto_before', this.fotoBeforeFile)
-      }
-      if (this.fotoProgressFile) {
-        formData.append('foto_progress', this.fotoProgressFile)
-      }
-      if (this.fotoAfterFile) {
-        formData.append('foto_after', this.fotoAfterFile)
       }
 
-        await axios.get(`/api/program/draft/${this.$route.params.id}`)
+      // Event click untuk update lokasi
+      this.map.on('click', (e) => {
+        const { lat, lng } = e.latlng;
 
-        // Tampilkan sukses
-        await Swal.fire({
-          icon: 'success',
-          title: 'Berhasil!',
-          text: 'Program berhasil disimpan',
-          timer: 1500,
-          showConfirmButton: false
-        })
+        // Update koordinat
+        this.user.latitude = lat.toFixed(6);
+        this.user.longitude = lng.toFixed(6);
 
-        this.$router.go(-1)
+        // Update marker
+        if (this.marker) {
+          this.marker.setLatLng([lat, lng]);
+        } else {
+          this.marker = L.marker([lat, lng]).addTo(this.map);
+        }
+
+      });
+
+      // Inisialisasi search provider
+      this.searchProvider = new OpenStreetMapProvider();
+    },
+
+    // Tambahkan method untuk reset marker
+    resetMarker() {
+      if (this.marker) {
+        this.marker.remove();
+        this.marker = null;
+      }
+      this.user.latitude = '';
+      this.user.longitude = '';
+      this.map.setView([-2.5489, 118.0149], 5); // Reset view ke Indonesia
+    },
+
+    async handleSearch() {
+      if (!this.searchQuery) return;
+
+      try {
+        const results = await this.searchProvider.search({ query: this.searchQuery });
+
+        if (results && results.length > 0) {
+          const { x: lng, y: lat } = results[0];
+
+          // Update koordinat
+          this.user.latitude = lat.toFixed(6);
+          this.user.longitude = lng.toFixed(6);
+
+          // Update marker dan view
+          if (this.marker) {
+            this.marker.setLatLng([lat, lng]);
+          } else {
+            this.marker = L.marker([lat, lng]).addTo(this.map);
+          }
+
+          this.map.setView([lat, lng], 15);
+
+          // Reset search query
+          this.searchQuery = '';
+        } else {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Lokasi Tidak Ditemukan',
+            text: 'Silakan coba dengan kata kunci lain',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        }
       } catch (error) {
-        console.error('Error:', error)
+        console.error('Error searching location:', error);
         Swal.fire({
           icon: 'error',
-          title: 'Oops...',
-          text: 'Terjadi kesalahan saat menyimpan program',
-          confirmButtonText: 'Tutup'
-        })
+          title: 'Error',
+          text: 'Gagal mencari lokasi',
+          timer: 2000,
+          showConfirmButton: false
+        });
       }
-    }
-
+    },
+    formatJumlahAnggaran(event) {
+      // Hapus karakter non-digit
+      this.user.jumlah_anggaran = event.target.value.replace(/\D/g, '');
+    },
   },
 
   watch: {
@@ -586,6 +733,20 @@ export default{
           // Reset desa ketika kecamatan berubah
 
           this.getDesa(newVal)
+        }
+      }
+    },
+    'user.latitude': {
+      handler(newVal) {
+        if (!newVal && this.marker) {
+          this.resetMarker();
+        }
+      }
+    },
+    'user.longitude': {
+      handler(newVal) {
+        if (!newVal && this.marker) {
+          this.resetMarker();
         }
       }
     }
@@ -625,7 +786,15 @@ export default{
     }
   },
 
-
+  beforeDestroy() {
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+    }
+    if (this.marker) {
+      this.marker = null;
+    }
+  }
 }
 </script>
 
@@ -656,6 +825,42 @@ export default{
 
 .v-btn {
   text-transform: none !important;
+}
+
+/* Fix icon markers yang hilang */
+.leaflet-default-icon-path {
+  background-image: url(https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png);
+}
+
+/* Optional: styling untuk kontainer peta */
+#map {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Tambahkan style untuk memastikan peta terlihat */
+#map {
+  min-height: 400px;
+  width: 100%;
+  z-index: 1;
+}
+
+/* Fix untuk marker yang tidak muncul */
+.leaflet-marker-icon {
+  width: 25px !important;
+  height: 41px !important;
+}
+
+/* Fix untuk popup */
+.leaflet-popup-content {
+  margin: 13px;
+  min-width: 150px;
+}
+
+.search-container {
+  margin-bottom: 10px;
+  z-index: 1000;
+  width: 100%;
 }
 </style>
 

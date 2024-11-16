@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://194.31.53.241:8000'
+export const BASE_URL = 'http://localhost:8000'
 export const getImageUrl = (path) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;

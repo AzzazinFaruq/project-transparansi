@@ -11,7 +11,7 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() { //username:password(if exist)@tcp(database URL)/database_name
-	database, err := gorm.Open(mysql.Open("root:Dh4n1sw4r4@tcp(localhost:3306)/db_project_tranparansi_publik?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
+	database, err := gorm.Open(mysql.Open("root:@tcp(127.0.0.1:3306)/db_project_tranparansi_publik?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}

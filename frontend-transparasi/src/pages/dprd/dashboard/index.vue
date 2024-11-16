@@ -19,7 +19,7 @@
     </div>
   </v-card>
 
-    <div class="mt-8">
+    <div class="mt-8 mb-8">
       <v-row>
         <v-col col="12" lg="4">
           <v-card class="text-white" style="background-color: #FF4242; height: 100%;">

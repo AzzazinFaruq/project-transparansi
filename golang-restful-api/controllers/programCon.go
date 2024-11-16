@@ -4,6 +4,7 @@ import (
 	"Azzazin/backend/models"
 	"Azzazin/backend/setup"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -116,41 +117,194 @@ func GetProgramByUserId(c *gin.Context) {
 }
 
 func TambahProgram(c *gin.Context) {
-	var input models.Program
+	var program models.Program
 
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Data input tidak valid: " + err.Error()})
-		return
-	}
-	if input.NamaProgram == "" {
+	namaProgram := c.PostForm("nama_program")
+	if namaProgram == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Nama program wajib diisi"})
 		return
 	}
 
-	newProgram := models.Program{
-		NamaProgram:            input.NamaProgram,
-		Deskripsi:              input.Deskripsi,
-		NamaInstitusi:          input.NamaInstitusi,
-		JenisAnggaranId:        input.JenisAnggaranId,
-		JumlahAnggaran:         input.JumlahAnggaran,
-		KategoriPenggunaanId:   input.KategoriPenggunaanId,
-		JenisAnggaranLain:      input.JenisAnggaranLain,
-		KategoriPenggunaanLain: input.KategoriPenggunaanLain,
-		AspiratorId:            input.AspiratorId,
-		DinasVerifikatorId:     input.DinasVerifikatorId,
-		Dusun:                  input.Dusun,
-		DesaId:                 input.DesaId,
-		KecamatanId:            input.KecamatanId,
-		KabupatenId:            input.KabupatenId,
-		FotoBefore:             input.FotoBefore,
-		FotoProgress:           input.FotoProgress,
-		FotoAfter:              input.FotoAfter,
-		UserId:                 input.UserId,
-		Status:                 "Publish",
-		Latitude:               input.Latitude,
-		Longitude:              input.Longitude,
+	deskripsi := c.PostForm("deskripsi")
+	namaInstitusi := c.PostForm("nama_institusi")
+	jenisAnggaranId := c.PostForm("jenis_anggaran_id")
+	jumlahAnggaran := c.PostForm("jumlah_anggaran")
+	kategoriPenggunaanId := c.PostForm("kategori_penggunaan_id")
+	jenisAnggaranLain := c.PostForm("jenis_anggaran_lain")
+	kategoriPenggunaanLain := c.PostForm("kategori_penggunaan_lain")
+	aspiratorId := c.PostForm("aspirator_id")
+	dinasVerifikatorId := c.PostForm("dinas_verifikator_id")
+	dusun := c.PostForm("dusun")
+	desaId := c.PostForm("desa_id")
+	kecamatanId := c.PostForm("kecamatan_id")
+	kabupatenId := c.PostForm("kabupaten_id")
+	userId := c.PostForm("user_id")
+	latitude := c.PostForm("latitude")
+	longitude := c.PostForm("longitude")
+
+	jenisAnggaranIdInt, err := strconv.ParseInt(jenisAnggaranId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format jenis anggaran ID tidak valid"})
+		return
 	}
 
+	kategoriPenggunaanIdInt, err := strconv.ParseInt(kategoriPenggunaanId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format kategori penggunaan ID tidak valid"})
+		return
+	}
+
+	aspiratorIdInt, err := strconv.ParseInt(aspiratorId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format aspirator ID tidak valid"})
+		return
+	}
+
+	dinasVerifikatorIdInt, err := strconv.ParseInt(dinasVerifikatorId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format dinas verifikator ID tidak valid"})
+		return
+	}
+
+	desaIdInt, err := strconv.ParseInt(desaId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format desa ID tidak valid"})
+		return
+	}
+
+	kecamatanIdInt, err := strconv.ParseInt(kecamatanId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format kecamatan ID tidak valid"})
+		return
+	}
+
+	kabupatenIdInt, err := strconv.ParseInt(kabupatenId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format kabupaten ID tidak valid"})
+		return
+	}
+
+	userIdInt, err := strconv.ParseInt(userId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format user ID tidak valid"})
+		return
+	}
+
+	latitudeFloat, err := strconv.ParseFloat(latitude, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format latitude tidak valid"})
+		return
+	}
+
+	longitudeFloat, err := strconv.ParseFloat(longitude, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format longitude tidak valid"})
+		return
+	}
+
+	fotoBefore, err := c.FormFile("foto_before")
+	if err == nil {
+		if !strings.HasSuffix(strings.ToLower(fotoBefore.Filename), ".jpg") &&
+			!strings.HasSuffix(strings.ToLower(fotoBefore.Filename), ".jpeg") &&
+			!strings.HasSuffix(strings.ToLower(fotoBefore.Filename), ".png") {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Format file tidak didukung"})
+			return
+		}
+
+		if fotoBefore.Size > 6*1024*1024 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Ukuran file terlalu besar"})
+			return
+		}
+
+		uploadPath := "uploads/foto-before/" + fotoBefore.Filename
+
+		if err := c.SaveUploadedFile(fotoBefore, uploadPath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan foto"})
+			return
+		}
+
+		program.FotoBefore = uploadPath
+	}
+
+	fotoProgress, err := c.FormFile("foto_progress")
+	if err == nil {
+		if !strings.HasSuffix(strings.ToLower(fotoProgress.Filename), ".jpg") &&
+			!strings.HasSuffix(strings.ToLower(fotoProgress.Filename), ".jpeg") &&
+			!strings.HasSuffix(strings.ToLower(fotoProgress.Filename), ".png") {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Format file tidak didukung"})
+			return
+		}
+
+		if fotoProgress.Size > 6*1024*1024 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Ukuran file terlalu besar"})
+			return
+		}
+		uploadPath := "uploads/foto-progress/" + fotoProgress.Filename
+
+		if err := c.SaveUploadedFile(fotoProgress, uploadPath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan foto"})
+			return
+		}
+
+		program.FotoProgress = uploadPath
+	}
+
+	fotoAfter, err := c.FormFile("foto_after")
+	if err == nil {
+		if !strings.HasSuffix(strings.ToLower(fotoAfter.Filename), ".jpg") &&
+			!strings.HasSuffix(strings.ToLower(fotoAfter.Filename), ".jpeg") &&
+			!strings.HasSuffix(strings.ToLower(fotoAfter.Filename), ".png") {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Format file tidak didukung"})
+			return
+		}
+
+		if fotoAfter.Size > 6*1024*1024 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Ukuran file terlalu besar"})
+			return
+		}
+		uploadPath := "uploads/foto-after/" + fotoAfter.Filename
+
+		if err := c.SaveUploadedFile(fotoAfter, uploadPath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan foto"})
+			return
+		}
+
+		program.FotoAfter = uploadPath
+	}
+
+	if fotoBefore == nil {
+		program.FotoBefore = ""
+	}
+	if fotoProgress == nil {
+		program.FotoProgress = ""
+	}
+	if fotoAfter == nil {
+		program.FotoAfter = ""
+	}
+
+	newProgram := models.Program{
+		NamaProgram:            namaProgram,
+		Deskripsi:              deskripsi,
+		NamaInstitusi:          namaInstitusi,
+		JenisAnggaranId:        jenisAnggaranIdInt,
+		JumlahAnggaran:         jumlahAnggaran,
+		KategoriPenggunaanId:   kategoriPenggunaanIdInt,
+		JenisAnggaranLain:      jenisAnggaranLain,
+		KategoriPenggunaanLain: kategoriPenggunaanLain,
+		AspiratorId:            aspiratorIdInt,
+		DinasVerifikatorId:     dinasVerifikatorIdInt,
+		Dusun:                  dusun,
+		DesaId:                 desaIdInt,
+		KecamatanId:            kecamatanIdInt,
+		KabupatenId:            kabupatenIdInt,
+		FotoBefore:             program.FotoBefore,
+		FotoProgress:           program.FotoProgress,
+		FotoAfter:              program.FotoAfter,
+		UserId:                 userIdInt,
+		Status:                 "Publish",
+		Latitude:               latitudeFloat,
+		Longitude:              longitudeFloat,
+	}
 
 	tx := setup.DB.Begin()
 
@@ -161,7 +315,7 @@ func TambahProgram(c *gin.Context) {
 	}
 
 	newLog := models.Log{
-		UserId:    input.UserId,
+		UserId:    userIdInt,
 		Aktivitas: "Menambahkan Program",
 		Status:    "Publish",
 	}
