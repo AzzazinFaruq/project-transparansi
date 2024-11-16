@@ -17,7 +17,7 @@
   style="color:black !important; border-color:#BF3232 !important;"
   ><b>Latar Belakang</b></v-btn>
   <h1 class="mt-8">Menerima berbagai aspirasi dan membandingkan setiap kritik & saran yang diberikan</h1>
-  <p class="mt-8">Website Transparansi oleh POKIR / JASMAS DPRD Provinsi Jawa Timur hadir sebagai sara transparansi dari rakyat utnuk rakyat. Website ini menghadirkan berbagi program yang dijalankan oleh DPRD Provinsi Jawa Timur dalam jangka beberapa tahun terakhir. Dengan adanya website ini, masyarakat diharapkan dapat menyampaikan aspirasi dengan lebih terbuka.</p>
+  <p class="mt-8">Website Transparansi oleh POKIR / JASMAS DPRD Provinsi Jawa Timur hadir sebagai sara transparansi dari rakyat untuk rakyat. Website ini menghadirkan berbagi program yang dijalankan oleh DPRD Provinsi Jawa Timur dalam jangka beberapa tahun terakhir. Dengan adanya website ini, masyarakat diharapkan dapat menyampaikan aspirasi dengan lebih terbuka.</p>
 </div>
 <div class="container-custom text-center">
   <v-btn
@@ -61,7 +61,7 @@
             height="288px"
             >
             <div class="image d-flex justify-center align-center">
-                  <img src="./img/icon/pencil.png" class="icon-langkah" alt="">
+                  <img src="./img/icon/account-plus.png" class="icon-langkah" alt="">
                 </div>
               <h2 class="mt-8 text-center">Membuat Akun</h2>
           </v-card>
@@ -82,7 +82,7 @@
             class="langkah d-flex flex-column align-center pt-10"
             >
             <div class="image d-flex justify-center align-center">
-                  <img src="./img/icon/pencil.png" class="icon-langkah" alt="">
+                  <img src="./img/icon/account-plus.png" class="icon-langkah" alt="">
                 </div>
                 <div class="text-center">
                   <h2 class="mt-8 text-center">Membuat Akun</h2>
@@ -117,9 +117,9 @@
             height="288px"
             >
             <div class="image d-flex justify-center align-center">
-                  <img src="./img/icon/pencil.png" class="icon-langkah" alt="">
+                  <img src="./img/icon/text-search.png" class="icon-langkah" alt="">
                 </div>
-              <h2 class="mt-8 text-center">Membuat Akun</h2>
+              <h2 class="mt-8 text-center">Memilih Program</h2>
           </v-card>
         </div>
           </v-col>
@@ -131,10 +131,10 @@
             class="langkah d-flex flex-column align-center pt-10"
             >
             <div class="image d-flex justify-center align-center">
-                  <img src="./img/icon/pencil.png" class="icon-langkah" alt="">
+                  <img src="./img/icon/text-search.png" class="icon-langkah" alt="">
                 </div>
                 <div class="text-center">
-                  <h2 class="mt-8 text-center">Membuat Akun</h2>
+                  <h2 class="mt-8 text-center">Memilih Program</h2>
                   <div class=" pa-6" style="">
                     <div class="">
                       <p>Klik tombol <b>Program</b> pada bagian teratas website. Anda dapat mencari program sesuai dengan domestik anda sekarang. Dengan menekan tombol <b>Filter : Semua</b> dan memilih domestik anda, maka halaman akan menampilkan program pada domestik tersebut.</p>
@@ -153,13 +153,13 @@
             <v-card
             elevation="3"
             class="langkah d-flex flex-column align-center pt-10"
-            width="170px"
+            width="223px"
             height="288px"
             >
             <div class="image d-flex justify-center align-center">
-                  <img src="./img/icon/pencil.png" class="icon-langkah" alt="">
+                  <img src="./img/icon/chat-processing.png" class="icon-langkah" alt="">
                 </div>
-              <h2 class="mt-8 text-center">Membuat Akun</h2>
+              <h2 class="mt-8 mx-5 text-center">Memberikan Kritik & Saran</h2>
           </v-card>
           </v-col>
           <v-col cols="12" md="8">
@@ -178,10 +178,10 @@
             class="langkah d-flex flex-column align-center pt-10"
             >
             <div class="image d-flex justify-center align-center">
-                  <img src="./img/icon/pencil.png" class="icon-langkah" alt="">
+                  <img src="./img/icon/chat-processing.png" class="icon-langkah" alt="">
                 </div>
                 <div class="text-center">
-                  <h2 class="mt-8 text-center">Membuat Akun</h2>
+                  <h2 class="mt-8 text-center">Memberikan Kritik & Saran</h2>
                   <div class=" pa-6" style="">
                     <div class="">
                       <p>Klik Tombol <b>Daftar</b> atau <b>Masuk</b> di pojok kanan atas, lalu isi data diri anda dengan benar.</p>
@@ -213,9 +213,9 @@
             height="288px"
             >
             <div class="image d-flex justify-center align-center">
-                  <img src="./img/icon/pencil.png" class="icon-langkah" alt="">
+                  <img src="./img/icon/timelapse.png" class="icon-langkah" alt="">
                 </div>
-              <h2 class="mt-8 text-center">Membuat Akun</h2>
+              <h2 class="mt-8 text-center">Menunggu Tanggapan</h2>
           </v-card>
         </div>
           </v-col>
@@ -227,10 +227,10 @@
             class="langkah d-flex flex-column align-center pt-10"
             >
             <div class="image d-flex justify-center align-center">
-                  <img src="./img/icon/pencil.png" class="icon-langkah" alt="">
+                    <img src="./img/icon/timelapse.png" class="icon-langkah" alt="">
                 </div>
                 <div class="text-center">
-                  <h2 class="mt-8 text-center">Membuat Akun</h2>
+                    <h2 class="mt-8 text-center">Menunggu Tanggapan</h2>
                   <div class=" pa-6" style="">
                     <div class="">
                       <p>Klik Tombol <b>Daftar</b> atau <b>Masuk</b> di pojok kanan atas, lalu isi data diri anda dengan benar.</p>
