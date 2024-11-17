@@ -11,7 +11,6 @@ import (
 )
 
 func AuthMiddleware() gin.HandlerFunc {
-	//checking for login session
 	return func(c *gin.Context) {
 		tokenString, err := c.Cookie("Authorization")
 		if err != nil {
