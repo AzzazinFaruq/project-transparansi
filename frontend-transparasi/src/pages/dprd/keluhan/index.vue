@@ -12,16 +12,16 @@
           <v-table class="no-divider ">
             <thead style="">
               <tr class="">
-                <th class=" font-weight-bold">
+                <th style="min-width: 100px;" class=" font-weight-bold">
                   Tanggal
                 </th>
-                <th class=" font-weight-bold">
+                <th style="min-width: 150px;" class=" font-weight-bold">
                   Nama
                 </th>
-                <th class=" font-weight-bold">
+                <th style="min-width: 150px;" class=" font-weight-bold">
                   Status
                 </th>
-                <th class=" font-weight-bold">
+                <th style="min-width: 100px;" class=" font-weight-bold">
                   Aksi
                 </th>
               </tr>

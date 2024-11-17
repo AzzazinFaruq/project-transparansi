@@ -119,6 +119,7 @@ func GetProgramByUserId(c *gin.Context) {
 func TambahProgram(c *gin.Context) {
 	var program models.Program
 
+	// Cek field yang wajib diisi
 	namaProgram := c.PostForm("nama_program")
 	if namaProgram == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Nama program wajib diisi"})
@@ -126,6 +127,12 @@ func TambahProgram(c *gin.Context) {
 	}
 
 	deskripsi := c.PostForm("deskripsi")
+	if deskripsi == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Deskripsi wajib diisi"})
+		return
+	}
+
+	// Ambil data lainnya (opsional)
 	namaInstitusi := c.PostForm("nama_institusi")
 	jenisAnggaranId := c.PostForm("jenis_anggaran_id")
 	jumlahAnggaran := c.PostForm("jumlah_anggaran")
@@ -142,146 +149,136 @@ func TambahProgram(c *gin.Context) {
 	latitude := c.PostForm("latitude")
 	longitude := c.PostForm("longitude")
 
-	jenisAnggaranIdInt, err := strconv.ParseInt(jenisAnggaranId, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Format jenis anggaran ID tidak valid"})
-		return
+	// Set status default ke "Draft" jika data tidak lengkap
+	status := "Draft"
+
+	// Cek kelengkapan data untuk status "Publish"
+	isComplete := true
+
+	// Parse dan validasi data opsional
+	var jenisAnggaranIdInt, kategoriPenggunaanIdInt, aspiratorIdInt, dinasVerifikatorIdInt int64
+	var desaIdInt, kecamatanIdInt, kabupatenIdInt, userIdInt int64
+	var latitudeFloat, longitudeFloat float64
+	var err error
+
+	if jenisAnggaranId != "" {
+		jenisAnggaranIdInt, err = strconv.ParseInt(jenisAnggaranId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
 	}
 
-	kategoriPenggunaanIdInt, err := strconv.ParseInt(kategoriPenggunaanId, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Format kategori penggunaan ID tidak valid"})
-		return
+	if kategoriPenggunaanId != "" {
+		kategoriPenggunaanIdInt, err = strconv.ParseInt(kategoriPenggunaanId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
 	}
 
-	aspiratorIdInt, err := strconv.ParseInt(aspiratorId, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Format aspirator ID tidak valid"})
-		return
+	if aspiratorId != "" {
+		aspiratorIdInt, err = strconv.ParseInt(aspiratorId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
 	}
 
-	dinasVerifikatorIdInt, err := strconv.ParseInt(dinasVerifikatorId, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Format dinas verifikator ID tidak valid"})
-		return
+	if dinasVerifikatorId != "" {
+		dinasVerifikatorIdInt, err = strconv.ParseInt(dinasVerifikatorId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
 	}
 
-	desaIdInt, err := strconv.ParseInt(desaId, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Format desa ID tidak valid"})
-		return
+	if desaId != "" {
+		desaIdInt, err = strconv.ParseInt(desaId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
 	}
 
-	kecamatanIdInt, err := strconv.ParseInt(kecamatanId, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Format kecamatan ID tidak valid"})
-		return
+	if kecamatanId != "" {
+		kecamatanIdInt, err = strconv.ParseInt(kecamatanId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
 	}
 
-	kabupatenIdInt, err := strconv.ParseInt(kabupatenId, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Format kabupaten ID tidak valid"})
-		return
+	if kabupatenId != "" {
+		kabupatenIdInt, err = strconv.ParseInt(kabupatenId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
 	}
 
-	userIdInt, err := strconv.ParseInt(userId, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Format user ID tidak valid"})
-		return
+	if userId != "" {
+		userIdInt, err = strconv.ParseInt(userId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
 	}
 
-	latitudeFloat, err := strconv.ParseFloat(latitude, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Format latitude tidak valid"})
-		return
+	if latitude != "" {
+		latitudeFloat, err = strconv.ParseFloat(latitude, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
 	}
 
-	longitudeFloat, err := strconv.ParseFloat(longitude, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Format longitude tidak valid"})
-		return
+	if longitude != "" {
+		longitudeFloat, err = strconv.ParseFloat(longitude, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
 	}
 
+	// Handle foto uploads (opsional)
 	fotoBefore, err := c.FormFile("foto_before")
 	if err == nil {
 		if !strings.HasSuffix(strings.ToLower(fotoBefore.Filename), ".jpg") &&
 			!strings.HasSuffix(strings.ToLower(fotoBefore.Filename), ".jpeg") &&
 			!strings.HasSuffix(strings.ToLower(fotoBefore.Filename), ".png") {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Format file tidak didukung"})
-			return
+			isComplete = false
 		}
 
 		if fotoBefore.Size > 6*1024*1024 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Ukuran file terlalu besar"})
-			return
+			isComplete = false
 		}
 
 		uploadPath := "uploads/foto-before/" + fotoBefore.Filename
-
 		if err := c.SaveUploadedFile(fotoBefore, uploadPath); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan foto"})
-			return
+			isComplete = false
 		}
-
 		program.FotoBefore = uploadPath
+	} else {
+		isComplete = false
 	}
 
-	fotoProgress, err := c.FormFile("foto_progress")
-	if err == nil {
-		if !strings.HasSuffix(strings.ToLower(fotoProgress.Filename), ".jpg") &&
-			!strings.HasSuffix(strings.ToLower(fotoProgress.Filename), ".jpeg") &&
-			!strings.HasSuffix(strings.ToLower(fotoProgress.Filename), ".png") {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Format file tidak didukung"})
-			return
-		}
-
-		if fotoProgress.Size > 6*1024*1024 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Ukuran file terlalu besar"})
-			return
-		}
-		uploadPath := "uploads/foto-progress/" + fotoProgress.Filename
-
-		if err := c.SaveUploadedFile(fotoProgress, uploadPath); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan foto"})
-			return
-		}
-
-		program.FotoProgress = uploadPath
+	// Set status berdasarkan kelengkapan data
+	if isComplete {
+		status = "Publish"
 	}
 
-	fotoAfter, err := c.FormFile("foto_after")
-	if err == nil {
-		if !strings.HasSuffix(strings.ToLower(fotoAfter.Filename), ".jpg") &&
-			!strings.HasSuffix(strings.ToLower(fotoAfter.Filename), ".jpeg") &&
-			!strings.HasSuffix(strings.ToLower(fotoAfter.Filename), ".png") {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Format file tidak didukung"})
-			return
-		}
-
-		if fotoAfter.Size > 6*1024*1024 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Ukuran file terlalu besar"})
-			return
-		}
-		uploadPath := "uploads/foto-after/" + fotoAfter.Filename
-
-		if err := c.SaveUploadedFile(fotoAfter, uploadPath); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan foto"})
-			return
-		}
-
-		program.FotoAfter = uploadPath
-	}
-
-	if fotoBefore == nil {
-		program.FotoBefore = ""
-	}
-	if fotoProgress == nil {
-		program.FotoProgress = ""
-	}
-	if fotoAfter == nil {
-		program.FotoAfter = ""
-	}
-
+	// Buat objek program baru
 	newProgram := models.Program{
 		NamaProgram:            namaProgram,
 		Deskripsi:              deskripsi,
@@ -301,7 +298,7 @@ func TambahProgram(c *gin.Context) {
 		FotoProgress:           program.FotoProgress,
 		FotoAfter:              program.FotoAfter,
 		UserId:                 userIdInt,
-		Status:                 "Publish",
+		Status:                 status,
 		Latitude:               latitudeFloat,
 		Longitude:              longitudeFloat,
 	}
@@ -317,7 +314,7 @@ func TambahProgram(c *gin.Context) {
 	newLog := models.Log{
 		UserId:    userIdInt,
 		Aktivitas: "Menambahkan Program",
-		Status:    "Publish",
+		Status:    status,
 	}
 
 	if err := tx.Create(&newLog).Error; err != nil {
@@ -340,7 +337,7 @@ func TambahProgram(c *gin.Context) {
 		First(&newProgram, newProgram.Id)
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Program berhasil ditambahkan",
+		"message": "Program berhasil ditambahkan dengan status " + status,
 		"data":    newProgram,
 	})
 }
@@ -683,6 +680,7 @@ func GetProgramLandingPage(c *gin.Context) {
 		Preload("DinasVerifikator").
 		Preload("User.Jabatan").
 		Preload("User.Role").
+		Where("status = ?", "Publish").
 		Find(&program).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

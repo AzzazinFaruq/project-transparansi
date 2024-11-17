@@ -42,7 +42,7 @@
             </div>
 
             <div class="mb-5">
-              <label class="label-form mb-2 d-block">Institusi</label>
+              <label class="label-form mb-2 d-block">Lembaga / Organisasi / Pokmas</label>
               <v-text-field
                 v-model="user.nama_institusi"
                 variant="outlined"
@@ -529,6 +529,8 @@ export default{
         });
 
         const formData = new FormData();
+
+        
         // Menambahkan data ke formData
         formData.append('nama_program', this.user.nama_program);
         formData.append('aspirator_id', this.user.aspirator_id);
