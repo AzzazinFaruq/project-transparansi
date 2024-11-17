@@ -17,7 +17,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import VueApexCharts from "vue3-apexcharts";
 
 
-axios.defaults.baseURL = 'http://localhost:8000';
+axios.defaults.baseURL = os.env.BE_URL || 'http://localhost:8000';
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json';

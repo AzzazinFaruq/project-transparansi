@@ -85,18 +85,6 @@ export const navitemstore = defineStore('navItem', {
           }
         })
         .catch(err=>{
-          // if (err.response.data.status ==  false) {
-          //   router.push("/login")
-          //   swal({
-          //     toast: "true",
-          //     timer:2000,
-          //     position:"top-end",
-          //     icon: "error",
-          //     title: "Error ",
-          //     text:"Error Memuat data Navigasi",
-          //     showConfirmButton :false
-          //     });
-          // }
         })
 
 
