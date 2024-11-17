@@ -42,7 +42,7 @@
             </div>
 
             <div class="mb-5">
-              <label class="label-form mb-2 d-block">Institusi</label>
+              <label class="label-form mb-2 d-block">Lembaga / Organisasi / Pokmas</label>
               <v-text-field
                 v-model="user.nama_institusi"
                 variant="outlined"
@@ -474,63 +474,119 @@ export default{
       }
     },
     async savebutton() {
-      await this.saveProgram('/api/program/tambah');
-    },
-    async draft() {
-      await this.saveProgram('/api/program/draft/');
-    },
-    async publish() {
-      await this.saveProgram('/api/program/publish/');
-    },
-    async saveProgram(apiEndpoint) {
-      try {
-        // Validasi koordinat jika diisi
-        if (this.user.latitude || this.user.longitude) {
-          const lat = parseFloat(this.user.latitude);
-          const lng = parseFloat(this.user.longitude);
+      // Definisi field wajib dengan label yang sesuai
+      const requiredFields = {
+        'Nama Program': this.user.nama_program,
+        'Aspirator': this.user.aspirator_id,
+        'Dinas Verifikator': this.user.dinas_verifikator_id,
+        'Nama Institusi': this.user.nama_institusi,
+        'Deskripsi': this.user.deskripsi,
+        'Jenis Anggaran': this.user.jenis_anggaran_id,
+        'Jumlah Anggaran': this.user.jumlah_anggaran,
+        'Kategori Penggunaan': this.user.kategori_penggunaan_id,
+        'Kabupaten': this.user.kabupaten_id,
+        'Kecamatan': this.user.kecamatan_id,
+        'Desa': this.user.desa_id,
+        'Dusun': this.user.dusun
+      };
 
-          if (isNaN(lat) || isNaN(lng) ||
-              lat < -90 || lat > 90 ||
-              lng < -180 || lng > 180) {
-            await Swal.fire({
-              icon: 'error',
-              title: 'Koordinat Tidak Valid',
-              text: 'Silakan pilih lokasi yang valid pada peta'
-            });
-            return;
-          }
-        }
+      // Cek field yang kosong
+      const emptyFields = Object.entries(requiredFields)
+        .filter(([_, value]) => !value)
+        .map(([key]) => key);
 
-        // Tampilkan loading
-        Swal.fire({
-          title: 'Sedang menyimpan...',
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
-          }
+      // Validasi koordinat
+      if (!this.user.latitude || !this.user.longitude) {
+        emptyFields.push('Lokasi pada Peta');
+      }
+
+      // Jika ada field yang kosong, tampilkan pesan error
+      if (emptyFields.length > 0) {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Data Belum Lengkap',
+          html: `
+            <p>Silakan lengkapi data berikut:</p>
+            <ul style="text-align: left; margin-top: 10px;">
+              ${emptyFields.map(field => `<li>${field}</li>`).join('')}
+            </ul>
+          `,
+          confirmButtonColor: '#387144',
+          confirmButtonText: 'Mengerti'
         });
+        return;
+      }
 
+      // Validasi format jumlah anggaran (harus berupa angka)
+      if (isNaN(this.user.jumlah_anggaran)) {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Format Tidak Valid',
+          text: 'Jumlah Anggaran harus berupa angka',
+          confirmButtonColor: '#387144'
+        });
+        return;
+      }
+
+      // Validasi koordinat
+      const lat = parseFloat(this.user.latitude);
+      const lng = parseFloat(this.user.longitude);
+      if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Koordinat Tidak Valid',
+          text: 'Silakan pilih lokasi yang valid pada peta',
+          confirmButtonColor: '#387144'
+        });
+        return;
+      }
+
+      // Jika semua validasi berhasil, tampilkan konfirmasi
+      const result = await Swal.fire({
+        icon: 'question',
+        title: 'Konfirmasi Simpan',
+        text: 'Apakah Anda yakin ingin menyimpan program ini?',
+        showCancelButton: true,
+        confirmButtonColor: '#387144',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Simpan',
+        cancelButtonText: 'Batal'
+      });
+
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      // Tampilkan loading
+      Swal.fire({
+        title: 'Sedang menyimpan...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      try {
         const formData = new FormData();
-        // Menambahkan data ke formData
+
+        // Tambahkan semua data ke formData
         formData.append('nama_program', this.user.nama_program);
         formData.append('aspirator_id', this.user.aspirator_id);
         formData.append('dinas_verifikator_id', this.user.dinas_verifikator_id);
+        formData.append('nama_institusi', this.user.nama_institusi);
         formData.append('deskripsi', this.user.deskripsi);
         formData.append('jenis_anggaran_id', this.user.jenis_anggaran_id);
         formData.append('jumlah_anggaran', this.user.jumlah_anggaran);
         formData.append('kategori_penggunaan_id', this.user.kategori_penggunaan_id);
-        formData.append('nama_institusi', this.user.nama_institusi);
         formData.append('dusun', this.user.dusun);
         formData.append('desa_id', this.user.desa_id);
         formData.append('kecamatan_id', this.user.kecamatan_id);
         formData.append('kabupaten_id', this.user.kabupaten_id);
         formData.append('user_id', this.user.user_id);
-
-        // Tambahkan koordinat ke formData
         formData.append('latitude', this.user.latitude);
         formData.append('longitude', this.user.longitude);
 
-        // Menambahkan file jika ada
+        // Tambahkan file foto jika ada
         if (this.fotoBeforeFile) {
           formData.append('foto_before', this.fotoBeforeFile);
         }
@@ -541,23 +597,17 @@ export default{
           formData.append('foto_after', this.fotoAfterFile);
         }
 
-        await axios.post(`${apiEndpoint}`, formData, {
+        const response = await axios.post('/api/program/tambah', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
 
-        var stat = '';
-
-        if (apiEndpoint == '/api/program/tambah') {
-          stat = 'tambahkan';
-        }
-
-        // Tampilkan sukses
+        // Tampilkan pesan sukses
         await Swal.fire({
           icon: 'success',
           title: 'Berhasil!',
-          text: `Program berhasil di${stat}`,
+          text: 'Program berhasil disimpan',
           timer: 1500,
           showConfirmButton: false
         });
@@ -568,8 +618,8 @@ export default{
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: 'Terjadi kesalahan saat menyimpan program',
-          confirmButtonText: 'Tutup'
+          text: error.response?.data?.error || 'Terjadi kesalahan saat menyimpan program',
+          confirmButtonColor: '#387144'
         });
       }
     },

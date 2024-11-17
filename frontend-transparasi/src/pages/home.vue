@@ -5,12 +5,12 @@
     <div class="image-dprd-container">
     <img src="./img/dprd.png" alt=""  class="image-dprd" >
   </div>
-    <div class="wrapper-title text-center ">
+    <div class="wrapper-title text-center">
       <p class="title ">Selamat Datang</p>
       <p class="caption ">Website Transparansi oleh POKIR/JASMAS DPRD Jawa Timur</p>
     </div>
 </div>
-<div class="text-center container-custom">
+<div class="text-left text-sm-center container-custom">
   <v-btn
   variant="outlined"
   color="red"
@@ -19,7 +19,7 @@
   <h1 class="mt-8">Menerima berbagai aspirasi dan membandingkan setiap kritik & saran yang diberikan</h1>
   <p class="mt-8">Website Transparansi oleh POKIR / JASMAS DPRD Provinsi Jawa Timur hadir sebagai sara transparansi dari rakyat untuk rakyat. Website ini menghadirkan berbagi program yang dijalankan oleh DPRD Provinsi Jawa Timur dalam jangka beberapa tahun terakhir. Dengan adanya website ini, masyarakat diharapkan dapat menyampaikan aspirasi dengan lebih terbuka.</p>
 </div>
-<div class="container-custom text-center">
+<div class="container-custom text-left text-sm-center">
   <v-btn
   variant="outlined"
   color="red"
@@ -29,16 +29,19 @@
     <h1>POKIR / JASMAS</h1>
     <h1>DPRD Provinsi Jawa Timur</h1>
   </div>
-  <div class="mt-12">
+  <div class="mt-0 mt-sm-12">
     <v-row>
       <v-col cols="12" md="3">
-        <img src="./img/logo-dprd-1.png" alt="" style="max-width:240px">
+        <div class="text-center d-none d-sm-block">
+          <img src="./img/logo-dprd-1.png" alt="" style="max-width:240px">
+        </div>
       </v-col>
       <v-col cols="12" md="9">
-        <div class="text-sm-center text-md-left content-about" style="">
-          <p>Lorem ipsum dolor sit amet consectetur. Scelerisque sed sed pulvinar quis lorem aliquam nunc. Tincidunt tempus adipiscing eget ac massa neque etiam. Leo orci egestas aliquam risus libero maecenas orci. Tristique congue sem habitant convallis. Arcu ullamcorper vitae pellentesque porttitor. At mi duis eget dui. Netus platea nisl mi pharetra nullam nulla orci. Nulla laoreet nulla senectus tellus massa amet sed.</p>
-          <p class="mt-3">Lorem ipsum dolor sit amet consectetur. Scelerisque sed sed pulvinar quis lorem aliquam nunc. Tincidunt tempus adipiscing eget ac massa neque etiam. Leo orci egestas aliquam risus libero maecenas orci. Tristique congue sem habitant convallis. Arcu ullamcorper vitae pellentesque porttitor. At mi duis eget dui. Netus platea nisl mi pharetra nullam nulla orci. Nulla laoreet nulla senectus tellus massa amet sed.</p>
-          <p class="mt-3">Lorem ipsum dolor sit amet consectetur. Scelerisque sed sed pulvinar quis lorem aliquam nunc. Tincidunt tempus adipiscing eget ac massa neque etiam. Leo orci egestas aliquam risus libero maecenas orci. Tristique congue sem habitant convallis. Arcu ullamcorper vitae pellentesque porttitor. At mi duis eget dui. Netus platea nisl mi pharetra nullam nulla orci. Nulla laoreet nulla senectus tellus massa amet sed.</p>
+        <div class="text-left content-about mt-0 mt-md-0 mt-sm-8" style="">
+          <p>Pokok Pikiran (POKIR) atau Jaring Aspirasi Masyarakat (JASMAS) DPRD Provinsi Jawa Timur merupakan sebuah unit kerja yang memiliki peran krusial dalam menjembatani aspirasi masyarakat dengan pemerintah daerah. Kami bertugas mengumpulkan, mengelola, dan menindaklanjuti usulan dan masukan dari masyarakat terkait pembangunan daerah. Melalui berbagai kegiatan reses dan pertemuan dengan konstituen, anggota DPRD dapat menyerap aspirasi masyarakat secara langsung dan kemudian merumuskan pokok-pokok pikiran yang menjadi dasar penyusunan kebijakan publik.
+          </p>
+          <p class="mt-5">POKIR/JASMAS DPRD Jawa Timur menjadi sarana penting dalam mewujudkan pemerintahan yang responsif dan akuntabel. Dengan adanya kami, masyarakat memiliki wadah untuk menyampaikan harapan dan kebutuhannya, sehingga pemerintah daerah dapat mengalokasikan anggaran dan program pembangunan yang lebih tepat sasaran.</p>
+          <p class="mt-5">Selain itu, divisi ini juga berperan dalam mengawasi pelaksanaan program-program pemerintah yang bersentuhan langsung dengan masyarakat, memastikan bahwa anggaran yang dialokasikan digunakan secara efektif dan efisien untuk kepentingan masyarakat banyak.</p>
         </div>
       </v-col>
     </v-row>
@@ -243,7 +246,7 @@
     </div>
   </div>
 </div>
-
+<VDivider/>
   <div class="container-custom" style="margin-bottom: 128px;">
       <v-row>
           <v-col  v-for="(item,index) in program.slice(0,3)" :key="item.id" cols="12" sm="6" md="4">

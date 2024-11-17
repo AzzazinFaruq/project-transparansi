@@ -14,7 +14,17 @@
       <div v-if="!hasCoordinates" class="text-center pa-4" style="background: #f5f5f5; border-radius: 4px;">
         <p>Koordinat lokasi tidak tersedia</p>
       </div>
-      <div v-else id="map" style="height: 400px; width: 100%; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px;"></div>
+      <div v-else>
+        <v-btn
+          color="primary"
+          class="mb-2"
+          prepend-icon="mdi-google-maps"
+          @click="openGoogleMaps"
+        >
+          Buka di Google Maps
+        </v-btn>
+        <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;"></div>
+      </div>
     </div>
 
     <div class="mt-5" style="width:100%;max-width:500px" >
@@ -304,6 +314,14 @@ export default {
           if (this.detail.nama_program) {
             marker.bindPopup(this.detail.nama_program);
           }
+
+          marker.on('click', () => {
+            this.openGoogleMaps();
+          });
+
+          this.map.on('click', () => {
+            this.openGoogleMaps();
+          });
         }
 
         setTimeout(() => {
@@ -313,6 +331,14 @@ export default {
       } catch (error) {
         console.error("Error initializing map:", error);
       }
+    },
+
+    openGoogleMaps() {
+      if (!this.latitude || !this.longitude) return;
+
+      const url = `https://www.google.com/maps/search/?api=1&query=${this.latitude},${this.longitude}`;
+
+      window.open(url, '_blank');
     }
   },
   beforeUnmount() {
@@ -339,5 +365,13 @@ export default {
 
 .leaflet-default-shadow-path {
   background-image: url("https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png");
+}
+
+#map {
+  cursor: pointer;
+}
+
+.leaflet-container {
+  cursor: pointer !important;
 }
 </style>
