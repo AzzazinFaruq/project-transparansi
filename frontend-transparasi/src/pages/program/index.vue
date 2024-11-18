@@ -21,7 +21,8 @@
         <v-row>
           <v-col cols="12" sm="4">
             <div class="wrapper-image">
-              <img :src="`${getImageUrl(program.foto_before)}`" class="image-program" alt="" width="100%">
+              <img v-if="program.foto_before == ''" src="../img/dummy-image.jpg" alt="" width="100%" class="image-program">
+              <img v-else :src="`${getImageUrl(program.foto_before)}`" class="image-program" alt="" width="100%">
             </div>
             </v-col>
             <v-col cols="12" sm="8">
@@ -39,7 +40,8 @@
         <v-row>
           <v-col cols="12" sm="4">
             <div class="wrapper-image">
-              <img :src="`${getImageUrl(program.foto_before)}`" class="image-program" alt="">
+              <img v-if="program.foto_before == ''" src="../img/dummy-image.jpg" alt="" width="100%" class="image-program">
+              <img v-else :src="`${getImageUrl(program.foto_before)}`" class="image-program" alt="">
             </div>
             </v-col>
             <v-col cols="12" sm="8">
@@ -106,17 +108,10 @@ export default {
     },
     async getProgram() {
     try {
-      // Mengambil program dengan status "diproses"
-      const diprosesRes = await axios.get('/api/program/status/Dalam Proses');
-      const diprosesData = diprosesRes.data.data || [];
-
-      // Mengambil program dengan status "selesai"
-      const selesaiRes = await axios.get('/api/program/status/Selesai');
-      const selesaiData = selesaiRes.data.data || [];
-
-      // Menggabungkan kedua array
-      this.program = [ ...selesaiData,...diprosesData];
-      console.log(this.program);
+      axios.get('/api/program/status/Publish')
+      .then(res => {
+        this.program = res.data.data;
+      })
     } catch (err) {
       console.log(err);
     }

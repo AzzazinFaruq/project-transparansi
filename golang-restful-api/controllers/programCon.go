@@ -4,6 +4,7 @@ import (
 	"Azzazin/backend/models"
 	"Azzazin/backend/setup"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -116,41 +117,191 @@ func GetProgramByUserId(c *gin.Context) {
 }
 
 func TambahProgram(c *gin.Context) {
-	var input models.Program
+	var program models.Program
 
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Data input tidak valid: " + err.Error()})
-		return
-	}
-	if input.NamaProgram == "" {
+	// Cek field yang wajib diisi
+	namaProgram := c.PostForm("nama_program")
+	if namaProgram == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Nama program wajib diisi"})
 		return
 	}
 
-	newProgram := models.Program{
-		NamaProgram:            input.NamaProgram,
-		Deskripsi:              input.Deskripsi,
-		NamaInstitusi:          input.NamaInstitusi,
-		JenisAnggaranId:        input.JenisAnggaranId,
-		JumlahAnggaran:         input.JumlahAnggaran,
-		KategoriPenggunaanId:   input.KategoriPenggunaanId,
-		JenisAnggaranLain:      input.JenisAnggaranLain,
-		KategoriPenggunaanLain: input.KategoriPenggunaanLain,
-		AspiratorId:            input.AspiratorId,
-		DinasVerifikatorId:     input.DinasVerifikatorId,
-		Dusun:                  input.Dusun,
-		DesaId:                 input.DesaId,
-		KecamatanId:            input.KecamatanId,
-		KabupatenId:            input.KabupatenId,
-		FotoBefore:             input.FotoBefore,
-		FotoProgress:           input.FotoProgress,
-		FotoAfter:              input.FotoAfter,
-		UserId:                 input.UserId,
-		Status:                 "Publish",
-		Latitude:               input.Latitude,
-		Longitude:              input.Longitude,
+	deskripsi := c.PostForm("deskripsi")
+	if deskripsi == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Deskripsi wajib diisi"})
+		return
 	}
 
+	// Ambil data lainnya (opsional)
+	namaInstitusi := c.PostForm("nama_institusi")
+	jenisAnggaranId := c.PostForm("jenis_anggaran_id")
+	jumlahAnggaran := c.PostForm("jumlah_anggaran")
+	kategoriPenggunaanId := c.PostForm("kategori_penggunaan_id")
+	jenisAnggaranLain := c.PostForm("jenis_anggaran_lain")
+	kategoriPenggunaanLain := c.PostForm("kategori_penggunaan_lain")
+	aspiratorId := c.PostForm("aspirator_id")
+	dinasVerifikatorId := c.PostForm("dinas_verifikator_id")
+	dusun := c.PostForm("dusun")
+	desaId := c.PostForm("desa_id")
+	kecamatanId := c.PostForm("kecamatan_id")
+	kabupatenId := c.PostForm("kabupaten_id")
+	userId := c.PostForm("user_id")
+	latitude := c.PostForm("latitude")
+	longitude := c.PostForm("longitude")
+
+	// Set status default ke "Draft" jika data tidak lengkap
+	status := "Draft"
+
+	// Cek kelengkapan data untuk status "Publish"
+	isComplete := true
+
+	// Parse dan validasi data opsional
+	var jenisAnggaranIdInt, kategoriPenggunaanIdInt, aspiratorIdInt, dinasVerifikatorIdInt int64
+	var desaIdInt, kecamatanIdInt, kabupatenIdInt, userIdInt int64
+	var latitudeFloat, longitudeFloat float64
+	var err error
+
+	if jenisAnggaranId != "" {
+		jenisAnggaranIdInt, err = strconv.ParseInt(jenisAnggaranId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
+	}
+
+	if kategoriPenggunaanId != "" {
+		kategoriPenggunaanIdInt, err = strconv.ParseInt(kategoriPenggunaanId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
+	}
+
+	if aspiratorId != "" {
+		aspiratorIdInt, err = strconv.ParseInt(aspiratorId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
+	}
+
+	if dinasVerifikatorId != "" {
+		dinasVerifikatorIdInt, err = strconv.ParseInt(dinasVerifikatorId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
+	}
+
+	if desaId != "" {
+		desaIdInt, err = strconv.ParseInt(desaId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
+	}
+
+	if kecamatanId != "" {
+		kecamatanIdInt, err = strconv.ParseInt(kecamatanId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
+	}
+
+	if kabupatenId != "" {
+		kabupatenIdInt, err = strconv.ParseInt(kabupatenId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
+	}
+
+	if userId != "" {
+		userIdInt, err = strconv.ParseInt(userId, 10, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
+	}
+
+	if latitude != "" {
+		latitudeFloat, err = strconv.ParseFloat(latitude, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
+	}
+
+	if longitude != "" {
+		longitudeFloat, err = strconv.ParseFloat(longitude, 64)
+		if err != nil {
+			isComplete = false
+		}
+	} else {
+		isComplete = false
+	}
+
+	// Handle foto uploads (opsional)
+	fotoBefore, err := c.FormFile("foto_before")
+	if err == nil {
+		if !strings.HasSuffix(strings.ToLower(fotoBefore.Filename), ".jpg") &&
+			!strings.HasSuffix(strings.ToLower(fotoBefore.Filename), ".jpeg") &&
+			!strings.HasSuffix(strings.ToLower(fotoBefore.Filename), ".png") {
+			isComplete = false
+		}
+
+		if fotoBefore.Size > 6*1024*1024 {
+			isComplete = false
+		}
+
+		uploadPath := "uploads/foto-before/" + fotoBefore.Filename
+		if err := c.SaveUploadedFile(fotoBefore, uploadPath); err != nil {
+			isComplete = false
+		}
+		program.FotoBefore = uploadPath
+	} else {
+		isComplete = false
+	}
+
+	// Set status berdasarkan kelengkapan data
+	if isComplete {
+		status = "Publish"
+	}
+
+	// Buat objek program baru
+	newProgram := models.Program{
+		NamaProgram:            namaProgram,
+		Deskripsi:              deskripsi,
+		NamaInstitusi:          namaInstitusi,
+		JenisAnggaranId:        jenisAnggaranIdInt,
+		JumlahAnggaran:         jumlahAnggaran,
+		KategoriPenggunaanId:   kategoriPenggunaanIdInt,
+		JenisAnggaranLain:      jenisAnggaranLain,
+		KategoriPenggunaanLain: kategoriPenggunaanLain,
+		AspiratorId:            aspiratorIdInt,
+		DinasVerifikatorId:     dinasVerifikatorIdInt,
+		Dusun:                  dusun,
+		DesaId:                 desaIdInt,
+		KecamatanId:            kecamatanIdInt,
+		KabupatenId:            kabupatenIdInt,
+		FotoBefore:             program.FotoBefore,
+		FotoProgress:           program.FotoProgress,
+		FotoAfter:              program.FotoAfter,
+		UserId:                 userIdInt,
+		Status:                 status,
+		Latitude:               latitudeFloat,
+		Longitude:              longitudeFloat,
+	}
 
 	tx := setup.DB.Begin()
 
@@ -161,9 +312,9 @@ func TambahProgram(c *gin.Context) {
 	}
 
 	newLog := models.Log{
-		UserId:    input.UserId,
+		UserId:    userIdInt,
 		Aktivitas: "Menambahkan Program",
-		Status:    "Publish",
+		Status:    status,
 	}
 
 	if err := tx.Create(&newLog).Error; err != nil {
@@ -186,7 +337,7 @@ func TambahProgram(c *gin.Context) {
 		First(&newProgram, newProgram.Id)
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "Program berhasil ditambahkan",
+		"message": "Program berhasil ditambahkan dengan status " + status,
 		"data":    newProgram,
 	})
 }
@@ -529,6 +680,7 @@ func GetProgramLandingPage(c *gin.Context) {
 		Preload("DinasVerifikator").
 		Preload("User.Jabatan").
 		Preload("User.Role").
+		Where("status = ?", "Publish").
 		Find(&program).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

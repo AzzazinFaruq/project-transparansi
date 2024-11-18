@@ -401,24 +401,18 @@ func GetAduanByStatus(c *gin.Context) {
 }
 
 func GetAduanByProgramId(c *gin.Context) {
-	nama_program := c.Param("nama_program")
-
-	var programs []models.Program
-
-	// Mengubah query untuk mencari semua program yang namanya mengandung string yang dicari
-	if err := setup.DB.Where("nama_program LIKE ?", "%"+nama_program+"%").Find(&programs).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Program tidak ditemukan"})
-		return
-	}
+	programId := c.Param("program_id")
 
 	var aduan []models.Aduan
 
-	// Mengambil semua aduan yang terkait dengan program yang ditemukan
 	if err := setup.DB.
 		Preload("Program").
 		Preload("User.Jabatan").
 		Preload("User.Role").
-		Where("program_id IN (?)", getProgramIds(programs)).Find(&aduan).Error; err != nil {
+		Preload("TanggapanUser").
+		Where("program_id = ?", programId).
+		Order("created_at DESC").
+		Find(&aduan).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -427,13 +421,11 @@ func GetAduanByProgramId(c *gin.Context) {
 
 	for i, aduan := range aduan {
 		var userTanggapan models.User
-		// Mengambil data lengkap user tanggapan termasuk relasi
 		if aduan.UserTanggapan != nil && *aduan.UserTanggapan != 0 {
 			setup.DB.
 				Preload("Jabatan").
 				Preload("Role").
-				Where("id = ?", aduan.UserTanggapan).
-				First(&userTanggapan)
+				First(&userTanggapan, aduan.UserTanggapan)
 		}
 
 		formattedAduan[i] = gin.H{
@@ -454,13 +446,4 @@ func GetAduanByProgramId(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": formattedAduan})
-}
-
-// Fungsi helper untuk mendapatkan ID dari program yang ditemukan
-func getProgramIds(programs []models.Program) []int64 {
-	ids := make([]int64, len(programs))
-	for i, program := range programs {
-		ids[i] = program.Id
-	}
-	return ids
 }

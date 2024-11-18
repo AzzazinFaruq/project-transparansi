@@ -14,6 +14,8 @@
     "apexcharts": "^3.54.1",
     "axios": "^1.7.7",
     "core-js": "^3.37.1",
+    "leaflet": "^1.9.4",
+    "leaflet-geosearch": "^4.0.0",
     "npm-watch": "^0.13.0",
     "pinia": "^2.2.4",
     "roboto-fontface": "*",
@@ -23,6 +25,7 @@
     "vuetify": "^3.6.11"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.14",
     "@vitejs/plugin-vue": "^5.0.5",
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",

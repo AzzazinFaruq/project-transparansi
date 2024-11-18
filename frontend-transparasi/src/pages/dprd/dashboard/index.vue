@@ -19,7 +19,7 @@
     </div>
   </v-card>
 
-    <div class="mt-8">
+    <div class="mt-8 mb-8">
       <v-row>
         <v-col col="12" lg="4">
           <v-card class="text-white" style="background-color: #FF4242; height: 100%;">
@@ -100,8 +100,8 @@
               <td>{{ item.aktivitas }}</td>
               <td>
                 <v-badge v-if="item.status=='Menunggu' || item.status=='Belum Ditanggapi'" dot inline color="#FFE642"></v-badge>
-                <v-badge v-else-if="item.status=='Dalam Proses'" dot inline color="#4BB0EB"></v-badge>
-                <v-badge v-else-if="item.status=='Selesai' || item.status=='Sudah Ditanggapi'" dot inline color="#4A975B"></v-badge>
+                <v-badge v-else-if="item.status=='Draft'" dot inline color="#4BB0EB"></v-badge>
+                <v-badge v-else-if="item.status=='Publish' || item.status=='Sudah Ditanggapi'" dot inline color="#4A975B"></v-badge>
                 <v-badge v-else-if="item.status=='Ditolak'" dot inline color="#FF4242"></v-badge>{{ item.status }}
               </td>
               </tr>

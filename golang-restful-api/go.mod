@@ -10,6 +10,9 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
+require github.com/joho/godotenv v1.5.1 // indirect
+require github.com/bxcodec/faker/v3 v3.8.1
+
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/bytedance/sonic v1.12.2 // indirect
