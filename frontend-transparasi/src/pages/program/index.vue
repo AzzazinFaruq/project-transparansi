@@ -1,7 +1,7 @@
 <template>
   <div class="">
   <navbar-program style=""></navbar-program>
-<div class="" style="margin-top: 64px">
+<div class="" style="margin-top: 100px">
   <div class="container-home mb-5">
     <v-text-field
       density="compact"
@@ -60,7 +60,7 @@
         <v-pagination
           v-model="currentPage"
           :length="totalPages"
-          :total-visible="7"
+          :total-visible="3"
           rounded="circle"
         ></v-pagination>
       </div>
