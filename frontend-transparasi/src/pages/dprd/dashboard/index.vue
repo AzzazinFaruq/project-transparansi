@@ -65,11 +65,8 @@
       elevation="4"
       style="background-color: #FAFAFA;"
       >
-        <div class="d-flex align-center justify-space-between mr-3 mt-2">
+        <div class="d-flex align-center justify-start mr-3 mt-2">
           <v-card-title><b>Aktifitas Terbaru</b></v-card-title>
-          <a href="">
-            <v-icon class="">mdi-dots-vertical</v-icon>
-          </a>
         </div>
         <v-divider class="mx-2"></v-divider>
         <div class="">

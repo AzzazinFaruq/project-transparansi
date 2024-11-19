@@ -1,11 +1,8 @@
 <template>
   <div class="mt-3">
     <v-card class="mx-4">
-        <div class="d-flex align-center justify-space-between mr-3 mt-2">
+        <div class="d-flex align-center justify-start mr-3 mt-2">
           <v-card-title><b>Daftar Keluhan</b></v-card-title>
-          <a href="">
-            <v-icon class="">mdi-dots-vertical</v-icon>
-          </a>
         </div>
         <v-divider class="mx-2"></v-divider>
         <div class="">
@@ -48,7 +45,8 @@
           </v-table>
         </div>
         <v-divider class="my-3"></v-divider>
-        <div class="d-flex justify-end align-center">
+        <div class="d-flex justify-end align-center ">
+          <div class="d-none d-sm-flex">
           <p class="mr-3">Data/Halaman :</p>
           <div class="mr-5" style="width: 100px;height: 40px;">
             <v-select
@@ -59,6 +57,7 @@
             variant="outlined"
           ></v-select>
           </div>
+        </div>
           <p class="mr-5">{{ currentPage }} dari {{ totalPages }} Halaman</p>
           <v-pagination
             class="custom-pagination"
