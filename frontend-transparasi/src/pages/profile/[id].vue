@@ -13,21 +13,21 @@
              width="200px"
              height="auto"
              class="mx-auto mb-3"
-           ></img>
+           >
            <img
              v-else-if="imagePreview"
              :src="imagePreview"
              width="200px"
              height="auto"
              class="mx-auto mb-3"
-           ></img>
+           >
            <img
              v-else
              :src="`${getImageUrl(user.foto_profil)}`"
              width="200px"
              height="auto"
              class="mx-auto mb-3"
-           ></img>
+           >
          </div>
          <div class="text-center">
          <v-btn

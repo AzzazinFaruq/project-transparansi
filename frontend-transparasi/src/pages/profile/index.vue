@@ -7,8 +7,8 @@
     <v-row>
       <v-col cols="12" md="3">
         <div class="text-center">
-          <img v-if="user.foto_profil == ''" src="@/assets/profile.png" width="200px" height="auto"></img>
-          <img :src="`${getImageUrl(user.foto_profil)}`" width="200px" height="auto"></img>
+          <img v-if="user.foto_profil == ''" src="@/assets/profile.png" width="200px" height="auto">
+          <img :src="`${getImageUrl(user.foto_profil)}`" width="200px" height="auto">
         </div>
       </v-col>
       <v-col cols="12" md="9">
