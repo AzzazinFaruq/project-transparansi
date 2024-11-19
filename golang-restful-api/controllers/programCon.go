@@ -532,6 +532,7 @@ func GetProgramByStatus(c *gin.Context) {
 		Preload("User.Jabatan").
 		Preload("User.Role").
 		Where("status = ?", status).
+		Order("created_at DESC").
 		Find(&programs).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
