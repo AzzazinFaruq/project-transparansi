@@ -9,8 +9,9 @@
         density="compact"
           name="name"
           label="Cari Program"
-          id="id"
+          v-model="searchQuery"
           prepend-inner-icon="mdi-magnify"
+          @keyup.enter="searchPrograms"
         ></v-text-field>
         <div class="d-flex jsutify-center mr-2 mt-1" style="">
           <p class="mt-1">Filter :</p>
@@ -110,6 +111,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      searchQuery: '',
       filter:'All Status',
       filterList:["All Status","Draft","Publish"],
       detailProgram:[],
@@ -122,17 +124,29 @@ export default {
     this.user();
   },
   methods: {
+    searchPrograms() {
+      axios.get(`/api/program/search?nama=${this.searchQuery}`)
+      .then(res => {
+        this.Userlist = res.data.data;
+        this.currentPage = 1; // Reset ke halaman pertama saat search
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
     selectedFilter(item){
       this.filter = item
       if (this.filter == "All Status") {
         axios.get("/api/index-program")
         .then(res=>{
           this.Userlist = res.data.data
+          this.currentPage = 1; // Reset ke halaman pertama saat filter
         })
       } else {
         axios.get(`/api/program/status/${item}`)
         .then(res=>{
           this.Userlist = res.data.data
+          this.currentPage = 1; // Reset ke halaman pertama saat filter
         })
       }
     },
@@ -163,6 +177,14 @@ export default {
         console.log(res.data.data)
         this.user();
       })
+    }
+  },
+  watch: {
+    searchQuery(newVal) {
+      if (!newVal || newVal.trim() === '') {
+        this.user();
+        this.currentPage = 1; // Reset ke halaman pertama
+      }
     }
   },
   computed: {

@@ -447,3 +447,50 @@ func GetAduanByProgramId(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": formattedAduan})
 }
+func GetAduanByUserId(c *gin.Context) {
+	userId := c.Param("user_id")
+
+	var aduan []models.Aduan
+
+	if err := setup.DB.
+		Preload("Program").
+		Preload("User.Jabatan").
+		Preload("User.Role").
+		Preload("TanggapanUser").
+		Where("user_id = ?", userId).
+		Order("created_at DESC").
+		Find(&aduan).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	formattedAduan := make([]gin.H, len(aduan))
+
+	for i, aduan := range aduan {
+		var userTanggapan models.User
+		if aduan.UserTanggapan != nil && *aduan.UserTanggapan != 0 {
+			setup.DB.
+				Preload("Jabatan").
+				Preload("Role").
+				First(&userTanggapan, aduan.UserTanggapan)
+		}
+
+		formattedAduan[i] = gin.H{
+			"id":             aduan.Id,
+			"program_id":     aduan.ProgramId,
+			"program":        aduan.Program,
+			"user_id":        aduan.UserId,
+			"user":           aduan.User,
+			"no_hp":          aduan.NoHp,
+			"alamat":         aduan.Alamat,
+			"keluhan":        aduan.Keluhan,
+			"status":         aduan.Status,
+			"tanggapan":      aduan.Tanggapan,
+			"user_tanggapan": userTanggapan,
+			"created_at":     aduan.CreatedAt.Format("02-01-2006"),
+			"updated_at":     aduan.UpdatedAt.Format("02-01-2006"),
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": formattedAduan})
+}
