@@ -11,7 +11,7 @@ func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		feURL := os.Getenv("FE_URL")
 		if feURL == "" {
-			feURL = "http://localhost:3000"
+			feURL = "https://transparansi-jatim.online"
 		}
 
 		c.Writer.Header().Set("Access-Control-Allow-Origin", feURL)

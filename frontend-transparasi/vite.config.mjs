@@ -8,6 +8,7 @@ import VueRouter from "unplugin-vue-router/vite";
 // Utilities
 import { defineConfig } from "vite";
 import { fileURLToPath, URL } from "node:url";
+import fs from 'fs';  // Import the fs module for file system operations
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -43,8 +44,13 @@ export default defineConfig({
     extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
   },
   server: {
-    host: "0.0.0.0",
-    port: 3000,
-    strictPort: true,
+    host: "0.0.0.0", // Allow external access (useful for testing on local network)
+    port: 443,       // Set the port to 443 for HTTPS
+    strictPort: true, // Ensure Vite will throw an error if the port is already in use
+    https: {
+      key: fs.readFileSync('privkey.pem'),  // Path to your private key
+      cert: fs.readFileSync('fullchain.pem'), // Path to your certificate
+    },
   },
 });
+
