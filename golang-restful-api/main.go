@@ -1,106 +1,115 @@
 package main
 
 import (
-	"Azzazin/backend/controllers"
-	middleware "Azzazin/backend/middlewares"
-	"Azzazin/backend/setup"
-
-	"github.com/gin-gonic/gin"
+    "Azzazin/backend/controllers"
+    middleware "Azzazin/backend/middlewares"
+    "Azzazin/backend/setup"
+    "log"
+    "github.com/gin-gonic/gin"
 )
 
 func main() {
-	//Declare New Gin Route System
-	router := gin.New()
-	router.Use(middleware.CORSMiddleware())
-	//Run Database Setup
-	setup.ConnectDatabase()
+    // Declare New Gin Route System
+    router := gin.New()
+    router.Use(middleware.CORSMiddleware())
 
-	//For route that doesnt need a middleware like login, register, etc.
-	router.POST("/register", controllers.Register)
-	router.POST("/login", controllers.Login)
-	router.GET("/program", controllers.GetProgramLandingPage)
+    // Run Database Setup
+    setup.ConnectDatabase()
 
-	//for route that need auth with middleware
-	protected := router.Group("/api")
-	protected.Use(middleware.AuthMiddleware())
+    // For routes that don't need a middleware (like login, register, etc.)
+    router.POST("/register", controllers.Register)
+    router.POST("/login", controllers.Login)
+    router.GET("/program", controllers.GetProgramLandingPage)
 
-	// Route User
-	protected.GET("/user", controllers.GetCurrentUser)
-	protected.GET("/user/all", controllers.GetAllUser)
-	protected.GET("/user/:id", controllers.GetDetailUser)            // get all user
-	protected.GET("/user/byrole/:id", controllers.GetUserByRole)     // get user by role
-	protected.PUT("/user/edituser/:id", controllers.EditUser)        // edit user (admin only)
-	protected.DELETE("/user/deleteuser/:id", controllers.DeleteUser) // delete user (admin only)
-	protected.POST("/logout", controllers.Logout)
-	protected.POST("/create-dprd", controllers.CreateDPRD)
-	protected.GET("/index-role", controllers.GetAllRole)
-	protected.GET("/user/username", controllers.GetUserByUsername)
-	
-	// Route Jabatan
-	protected.GET("/index-jabatan", controllers.GetAllJabatan)
-	protected.POST("/create-jabatan", controllers.CreateJabatan)
-	protected.GET("/jabatan/search", controllers.GetJabatanByNamaJabatan)
-	protected.DELETE("/jabatan/:id", controllers.DeleteJabatan)
+    // For routes that need auth with middleware
+    protected := router.Group("/api")
+    protected.Use(middleware.AuthMiddleware())
 
-	// Route Program
-	protected.GET("/index-program", controllers.GetAllProgram)
-	protected.GET("/program/user", controllers.GetProgramByUserId)
-	protected.GET("/program/:id", controllers.DetailProgram)
-	protected.POST("/program/tambah", controllers.TambahProgram)
-	protected.PUT("/program/edit/:id", controllers.EditProgram)
-	protected.PUT("/program/draft/:id", controllers.DraftProgram)
-	protected.PUT("/program/publish/:id", controllers.PublishProgram)
-	protected.GET("/program/status/:status", controllers.GetProgramByStatus)
-	protected.GET("/index-jenis-anggaran", controllers.GetAllJenisAnggaran)
-	protected.GET("/index-kategori-penggunaan", controllers.GetAllKategoriPenggunaan)
-	protected.GET("/program/search", controllers.SearchProgram)
-	protected.GET("/program/daerah", controllers.GetProgramByDaerah)
+    // Route User
+    protected.GET("/user", controllers.GetCurrentUser)
+    protected.GET("/user/all", controllers.GetAllUser)
+    protected.GET("/user/:id", controllers.GetDetailUser)            // get all user
+    protected.GET("/user/byrole/:id", controllers.GetUserByRole)     // get user by role
+    protected.PUT("/user/edituser/:id", controllers.EditUser)        // edit user (admin only)
+    protected.DELETE("/user/deleteuser/:id", controllers.DeleteUser) // delete user (admin only)
+    protected.POST("/logout", controllers.Logout)
+    protected.POST("/create-dprd", controllers.CreateDPRD)
+    protected.GET("/index-role", controllers.GetAllRole)
+    protected.GET("/user/username", controllers.GetUserByUsername)
 
-	// Route Kategori Penggunaan
-	protected.POST("/kategori-penggunaan", controllers.CreateKategoriPenggunaan)
-	protected.DELETE("/kategori-penggunaan/:id", controllers.DeleteKategoriPenggunaan)
+    // Route Jabatan
+    protected.GET("/index-jabatan", controllers.GetAllJabatan)
+    protected.POST("/create-jabatan", controllers.CreateJabatan)
+    protected.GET("/jabatan/search", controllers.GetJabatanByNamaJabatan)
+    protected.DELETE("/jabatan/:id", controllers.DeleteJabatan)
 
-	// Route Jenis Anggaran
-	protected.POST("/jenis-anggaran", controllers.CreateJenisAnggaran)
-	protected.DELETE("/jenis-anggaran/:id", controllers.DeleteJenisAnggaran)
+    // Route Program
+    protected.GET("/index-program", controllers.GetAllProgram)
+    protected.GET("/program/user", controllers.GetProgramByUserId)
+    protected.GET("/program/:id", controllers.DetailProgram)
+    protected.POST("/program/tambah", controllers.TambahProgram)
+    protected.PUT("/program/edit/:id", controllers.EditProgram)
+    protected.PUT("/program/draft/:id", controllers.DraftProgram)
+    protected.PUT("/program/publish/:id", controllers.PublishProgram)
+    protected.GET("/program/status/:status", controllers.GetProgramByStatus)
+    protected.GET("/index-jenis-anggaran", controllers.GetAllJenisAnggaran)
+    protected.GET("/index-kategori-penggunaan", controllers.GetAllKategoriPenggunaan)
+    protected.GET("/program/search", controllers.SearchProgram)
+    protected.GET("/program/daerah", controllers.GetProgramByDaerah)
 
+    // Route Kategori Penggunaan
+    protected.POST("/kategori-penggunaan", controllers.CreateKategoriPenggunaan)
+    protected.DELETE("/kategori-penggunaan/:id", controllers.DeleteKategoriPenggunaan)
 
-	// Route Aduan
-	protected.GET("/index-aduan", controllers.GetAllAduan)
-	protected.POST("/create-aduan", controllers.CreateAduan)
-	protected.GET("/count-aduan", controllers.CountAduan)
-	protected.GET("/count-aduan-perbulan", controllers.CountAduanPerBulan)
-	protected.GET("/count-aduan-pertahun", controllers.CountAduanPerTahun)
-	protected.GET("/aduan/:id", controllers.DetailAduan)
-	protected.PUT("/aduan/tanggapi/:id", controllers.TanggapiAduan)
-	protected.GET("/aduan/status/:status", controllers.GetAduanByStatus)
-	protected.GET("/aduan/aduan-by-program/:program_id", controllers.GetAduanByProgramId)
-	protected.GET("/aduan/aduan-by-user/:user_id", controllers.GetAduanByUserId)
+    // Route Jenis Anggaran
+    protected.POST("/jenis-anggaran", controllers.CreateJenisAnggaran)
+    protected.DELETE("/jenis-anggaran/:id", controllers.DeleteJenisAnggaran)
 
-	// Route Daerah
-	protected.GET("/index-kabupaten", controllers.GetAllKabupaten)
-	protected.GET("/index-kecamatan", controllers.GetAllKecamatan)
-	protected.GET("/index-desa", controllers.GetAllDesa)
-	protected.GET("/kecamatan/:id", controllers.GetKecamatanByKabupatenId)
-	protected.GET("/desa/:id", controllers.GetDesaByKecamatanId)
+    // Route Aduan
+    protected.GET("/index-aduan", controllers.GetAllAduan)
+    protected.POST("/create-aduan", controllers.CreateAduan)
+    protected.GET("/count-aduan", controllers.CountAduan)
+    protected.GET("/count-aduan-perbulan", controllers.CountAduanPerBulan)
+    protected.GET("/count-aduan-pertahun", controllers.CountAduanPerTahun)
+    protected.GET("/aduan/:id", controllers.DetailAduan)
+    protected.PUT("/aduan/tanggapi/:id", controllers.TanggapiAduan)
+    protected.GET("/aduan/status/:status", controllers.GetAduanByStatus)
+    protected.GET("/aduan/aduan-by-program/:program_id", controllers.GetAduanByProgramId)
+    protected.GET("/aduan/aduan-by-user/:user_id", controllers.GetAduanByUserId)
 
-	// Route Aspirator
-	protected.GET("/index-aspirator", controllers.GetAllAspirator)
-	protected.GET("/aspirator/search", controllers.GetAspiratorByNamaAspirator)
-	protected.POST("/create-aspirator", controllers.CreateAspirator)
-	protected.DELETE("/aspirator/:id", controllers.DeleteAspirator)
+    // Route Daerah
+    protected.GET("/index-kabupaten", controllers.GetAllKabupaten)
+    protected.GET("/index-kecamatan", controllers.GetAllKecamatan)
+    protected.GET("/index-desa", controllers.GetAllDesa)
+    protected.GET("/kecamatan/:id", controllers.GetKecamatanByKabupatenId)
+    protected.GET("/desa/:id", controllers.GetDesaByKecamatanId)
 
-	// Route Dinas Verifikator
-	protected.GET("/index-dinas-verifikator", controllers.GetAllDinasVerifikator)
-	protected.GET("/dinas-verifikator/search", controllers.GetDinasVerifikatorByNama)
-	protected.POST("/create-dinas-verifikator", controllers.CreateDinasVerifikator)
-	protected.DELETE("/dinas-verifikator/:id", controllers.DeleteDinasVerifikator)
+    // Route Aspirator
+    protected.GET("/index-aspirator", controllers.GetAllAspirator)
+    protected.GET("/aspirator/search", controllers.GetAspiratorByNamaAspirator)
+    protected.POST("/create-aspirator", controllers.CreateAspirator)
+    protected.DELETE("/aspirator/:id", controllers.DeleteAspirator)
 
-	//Route Log
-	protected.GET("/index-log", controllers.GetAllLog)
+    // Route Dinas Verifikator
+    protected.GET("/index-dinas-verifikator", controllers.GetAllDinasVerifikator)
+    protected.GET("/dinas-verifikator/search", controllers.GetDinasVerifikatorByNama)
+    protected.POST("/create-dinas-verifikator", controllers.CreateDinasVerifikator)
+    protected.DELETE("/dinas-verifikator/:id", controllers.DeleteDinasVerifikator)
 
-	// Route File Upload
-	router.Static("/uploads", "./uploads")
+    // Route Log
+    protected.GET("/index-log", controllers.GetAllLog)
 
-	router.Run(":8000")
+    // Route File Upload
+    router.Static("/uploads", "./uploads")
+
+    // Ensure certFile and keyFile paths are correct
+    certFile := "../frontend-transparasi/fullchain.pem"
+    keyFile := "../frontend-transparasi/privkey.pem"
+
+    // Start the server with HTTPS
+    err := router.RunTLS(":8080", certFile, keyFile) // HTTPS on port 8080
+    if err != nil {
+        log.Fatalf("Failed to start HTTPS server: %v", err)
+    }
 }
+
