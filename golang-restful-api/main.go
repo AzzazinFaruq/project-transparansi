@@ -26,16 +26,16 @@ func main() {
 
 	// Route User
 	protected.GET("/user", controllers.GetCurrentUser)
-	protected.GET("/user/all", controllers.GetAllUser)
-	protected.GET("/user/:id", controllers.GetDetailUser)            // get all user
+	protected.GET("/user/all", controllers.GetAllUser)               // get all user
+	protected.GET("/user/:id", controllers.GetDetailUser)            //get user by id
 	protected.GET("/user/byrole/:id", controllers.GetUserByRole)     // get user by role
-	protected.PUT("/user/edituser/:id", controllers.EditUser)        // edit user (admin only)
-	protected.DELETE("/user/deleteuser/:id", controllers.DeleteUser) // delete user (admin only)
+	protected.PUT("/user/edituser/:id", controllers.EditUser)        // edit user
+	protected.DELETE("/user/deleteuser/:id", controllers.DeleteUser) // delete user
 	protected.POST("/logout", controllers.Logout)
 	protected.POST("/create-dprd", controllers.CreateDPRD)
 	protected.GET("/index-role", controllers.GetAllRole)
 	protected.GET("/user/username", controllers.GetUserByUsername)
-	
+
 	// Route Jabatan
 	protected.GET("/index-jabatan", controllers.GetAllJabatan)
 	protected.POST("/create-jabatan", controllers.CreateJabatan)
@@ -64,7 +64,6 @@ func main() {
 	protected.POST("/jenis-anggaran", controllers.CreateJenisAnggaran)
 	protected.DELETE("/jenis-anggaran/:id", controllers.DeleteJenisAnggaran)
 
-
 	// Route Aduan
 	protected.GET("/index-aduan", controllers.GetAllAduan)
 	protected.POST("/create-aduan", controllers.CreateAduan)
@@ -75,7 +74,7 @@ func main() {
 	protected.PUT("/aduan/tanggapi/:id", controllers.TanggapiAduan)
 	protected.GET("/aduan/status/:status", controllers.GetAduanByStatus)
 	protected.GET("/aduan/aduan-by-program/:program_id", controllers.GetAduanByProgramId)
-	protected.GET("/aduan/aduan-by-program/:user_id", controllers.GetAduanByUserId)
+	protected.GET("/aduan/aduan-by-userid/:user_id", controllers.GetAduanByUserId)
 
 	// Route Daerah
 	protected.GET("/index-kabupaten", controllers.GetAllKabupaten)

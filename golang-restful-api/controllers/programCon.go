@@ -475,7 +475,7 @@ func EditProgram(c *gin.Context) {
 	// Hanya update field yang tidak kosong
 	for key, value := range updateData {
 		if value != "" {
-				tx.Model(&program).UpdateColumn(key, value)
+			tx.Model(&program).UpdateColumn(key, value)
 		} else if value == "" {
 			tx.Model(&program).UpdateColumn(key, "")
 		}
