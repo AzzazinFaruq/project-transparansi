@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div class="container-profile">
    <div class="my-5">
      <v-btn variant="text" @click="router.go(-1)" prepend-icon="mdi-chevron-left">Kembali</v-btn>
    </div>
@@ -7,33 +7,35 @@
      <v-row>
        <v-col cols="12" md="3">
          <div class="text-center">
-           <v-img 
-             v-if="!user.foto_profil && !imagePreview" 
-             src="@/assets/profile.png" 
-             width="80%" 
+           <img
+             v-if="!user.foto_profil && !imagePreview"
+             src="@/assets/profile.png"
+             width="200px"
              height="auto"
              class="mx-auto mb-3"
-           ></v-img>
-           <v-img 
-             v-else-if="imagePreview" 
-             :src="imagePreview" 
-             width="80%" 
+           >
+           <img
+             v-else-if="imagePreview"
+             :src="imagePreview"
+             width="200px"
              height="auto"
              class="mx-auto mb-3"
-           ></v-img>
-           <v-img 
-             v-else 
-             :src="`${getImageUrl(user.foto_profil)}`" 
-             width="80%" 
+           >
+           <img
+             v-else
+             :src="`${getImageUrl(user.foto_profil)}`"
+             width="200px"
              height="auto"
              class="mx-auto mb-3"
-           ></v-img>
+           >
+         </div>
+         <div class="text-center">
+         <v-btn
+             color="primary"
 
-           <v-btn 
-             color="primary" 
              size="small"
              @click="dialog = true"
-             style="width: 80%"
+             style="width: 150px"
            >
              Ubah Foto
            </v-btn>
@@ -51,30 +53,22 @@
            <label for="" class="label-form">Jabatan</label>
              <v-select v-model="user.jabatan_id" :items="jabatan" item-title="jabatan" item-value="Id" variant="outlined"></v-select>
            </div>
-         <div class="">
-           <label for="" class="label-form">No. HP</label>
-             <v-text-field v-model="user.no_hp" variant="outlined"></v-text-field>
-         </div>
            </v-col>
            <v-col cols="12" sm="6">
              <div class="mb-10">
            <label for="" class="label-form">Email</label>
            <v-text-field v-model="user.email" variant="outlined"></v-text-field>
          </div>
-         <div class="">
-           <label for="" class="label-form">Alamat</label>
-           <v-textarea v-model="user.alamat" variant="outlined"></v-textarea>
-         </div>
            </v-col>
          </v-row>
          <div class="mt-2">
             <v-btn
-            color="#387144" 
-                type="submit" 
+            color="#387144"
+                type="submit"
                 :loading="isSaving"
                 style="text-transform: none;">Simpan</v-btn>
             <v-btn color="#BF3232" class="ml-1"  @click="router.go(-1)" style="text-transform: none;">Batal</v-btn>
-   </div>     
+   </div>
   </v-form>
        </v-col>
      </v-row>
@@ -91,8 +85,8 @@
             @change="previewImage"
             prepend-icon="mdi-camera"
           ></v-file-input>
-          
-          <v-img 
+
+          <v-img
             v-if="imagePreview"
             :src="imagePreview"
             max-height="200"
@@ -103,8 +97,8 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="error" @click="closeDialog">Batal</v-btn>
-          <v-btn 
-            color="primary" 
+          <v-btn
+            color="primary"
             @click="confirmImage"
             :disabled="!selectedImage"
           >
@@ -113,15 +107,15 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-   
-  </v-container>
+
+  </div>
  </template>
  <script>
  import { useRouter } from 'vue-router';
  import axios from 'axios';
  import { getImageUrl } from '@/config/foto';
  import Swal from 'sweetalert2';
- 
+
  export default {
    setup() {
      const router = useRouter();
@@ -182,7 +176,7 @@
          if (this.user.jabatan_id) {
            formData.append('jabatan_id', this.user.jabatan_id);
          }
-         
+
          // Append foto jika ada
          if (this.selectedImage) {
            formData.append('foto_profil', this.selectedImage);
@@ -196,7 +190,7 @@
 
          // Refresh data
          await this.Getuser();
-         
+
          // Reset foto states
          this.selectedImage = null;
          this.imagePreview = null;
@@ -226,4 +220,19 @@
    }
  };
  </script>
- 
+ <style lang="scss">
+ .container-profile{
+   margin-top: 5vh;
+   margin-bottom: 5vh;
+   margin-right: 128px;
+   margin-left: 128px;
+   @media (max-width:1200px) {
+     margin-right: 64px;
+     margin-left: 64px;
+   }
+   @media (max-width:500px) {
+     margin-right: 32px;
+     margin-left: 32px;
+   }
+ }
+ </style>

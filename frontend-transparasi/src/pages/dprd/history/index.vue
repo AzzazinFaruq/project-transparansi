@@ -1,10 +1,9 @@
 <template>
-  <v-container>
+  <div class="mx-4">
     <v-row>
       <v-col>
-        <h2 class="text-h5 font-weight-bold mb-5">History Aktivitas</h2>
-
-        <v-card>
+        <v-card class="pa-4">
+          <h2 class="text-h5 font-weight-bold mb-5">History Aktivitas</h2>
           <v-table class="no-divider">
             <thead>
               <tr>
@@ -20,31 +19,49 @@
                 <td>{{ item.username }}</td>
                 <td>{{ item.aktivitas }}</td>
                 <td>
-                  <v-chip
+                  <v-badge
                     :color="getStatusColor(item.status)"
                     :text-color="item.status === 'Draft' ? 'black' : 'white'"
-                    size="small"
+                    dot
+                    inline
+
                   >
-                    {{ item.status }}
-                  </v-chip>
+                  </v-badge>
+                  {{ item.status }}
                 </td>
               </tr>
             </tbody>
           </v-table>
 
           <!-- Pagination -->
-          <div class="d-flex justify-center align-center pa-4">
-            <v-pagination
-              v-model="page"
-              :length="totalPages"
-              :total-visible="7"
-              rounded="circle"
-            ></v-pagination>
+          <v-divider class="my-3 "></v-divider>
+        <div class="d-flex justify-end align-center mb-2">
+          <p class="mr-3 d-none d-sm-block">Data/Halaman :</p>
+          <div class="mr-5 d-none d-sm-block" style="width: 100px;height: 40px;">
+            <v-select
+            density="compact"
+            class="custom-outline"
+            v-model="itemsPerPage"
+            :items="[5, 10, 25, 50, 100]"
+            variant="outlined"
+            @input="updateItemsPerPage"
+          ></v-select>
           </div>
+          <p class="mr-5">{{ currentPage }} dari {{ totalPages }} Halaman</p>
+          <v-pagination
+            class="custom-pagination"
+            :total-visible="0"
+            border
+            v-model="currentPage"
+            :length="totalPages"
+            @input="changePage"
+          >
+          </v-pagination>
+        </div>
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -55,8 +72,8 @@ export default {
     return {
       loading: false,
       history: [],
-      page: 1,
       itemsPerPage: 10,
+      currentPage: 1,
     }
   },
 
@@ -65,12 +82,9 @@ export default {
       return Math.ceil(this.history.length / this.itemsPerPage);
     },
     paginatedHistory() {
-      const start = (this.page - 1) * this.itemsPerPage;
-      const end = start + this.itemsPerPage;
-      return this.history.slice(start, end);
-    },
-    startNumber() {
-      return (this.page - 1) * this.itemsPerPage + 1;
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.history.slice(startIndex, endIndex);
     }
   },
 
@@ -105,16 +119,25 @@ export default {
     getStatusColor(status) {
       switch (status) {
         case 'Draft':
-          return 'warning';
+          return 'blue';
         case 'Publish':
-          return 'success';
-        case 'Ditolak':
-          return 'error';
-        case 'Menunggu':
-          return 'info';
+          return 'green';
+        case 'Sudah Ditanggapi':
+          return 'green';
+        case 'Belum Ditanggapi':
+          return 'orange';
         default:
           return 'grey';
       }
+    },
+
+    changePage(newPage) {
+      this.currentPage = newPage;
+    },
+
+    updateItemsPerPage(value) {
+      this.itemsPerPage = value;
+      this.currentPage = 1; // Reset ke halaman pertama ketika mengubah items per page
     }
   }
 }

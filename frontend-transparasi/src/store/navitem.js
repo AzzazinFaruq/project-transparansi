@@ -35,7 +35,7 @@ export const navitemstore = defineStore('navItem', {
           icon: 'mdi-office-building',
           route:'/admin/jabatan'
         },
-        
+
 
       ],
       itemAnggota: [
@@ -53,6 +53,11 @@ export const navitemstore = defineStore('navItem', {
           text: 'Keluhan',
           icon: 'mdi-email',
           route:'/dprd/keluhan'
+        },
+        {
+          text: 'History',
+          icon: 'mdi-history',
+          route:'/dprd/history'
         },
 
       ],
